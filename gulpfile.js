@@ -1,13 +1,13 @@
 "use strict";
 
-var autoprefixer = require("gulp-autoprefixer");
-var csso = require("gulp-csso");
-var del = require("del");
-var gulp = require("gulp");
-var rename = require("gulp-rename");
-var runSequence = require("run-sequence");
-var uglify = require("gulp-uglify");
-var babel = require("gulp-babel");
+var autoprefixer = require("gulp-autoprefixer"),
+  csso = require("gulp-csso"),
+  del = require("del"),
+  gulp = require("gulp"),
+  rename = require("gulp-rename"),
+  runSequence = require("run-sequence"),
+  uglify = require("gulp-uglify"),
+  babel = require("gulp-babel");
 
 gulp.task("styles", function() {
   return gulp
