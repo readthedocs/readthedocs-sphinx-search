@@ -4,3 +4,5 @@ __pycache__
 _build/
 *.egg-info
 .vscode/
+node_modules/
+package-lock.json
