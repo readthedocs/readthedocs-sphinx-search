@@ -307,6 +307,12 @@ window.addEventListener("DOMContentLoaded", evt => {
             }
         });
     });
+
+    // this is added specially for 'sphinx_rtd_theme'
+    // because the search results remains fixed to the windows
+    // when the user scrolls down, so if there is any scroll event,
+    // we remove the search results from the DOM to prevent
+    // the bad UI.
     if (READTHEDOCS_DATA.theme === "sphinx_rtd_theme") {
         document.addEventListener("scroll", e => {
             removeResults();
