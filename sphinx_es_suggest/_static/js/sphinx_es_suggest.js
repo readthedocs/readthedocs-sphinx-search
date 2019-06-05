@@ -1,4 +1,5 @@
 const MAX_SUGGESTIONS = 5;
+// const DEBOUNCE_TIME = 300; // in ms
 let total_results = 0;
 
 /*
@@ -32,26 +33,26 @@ const removeResults = () => {
  generate search suggestions list.
  structure of the generated html is like this:
 
-	<div class="search__result__box">
-		<div class="search__result__single" id="hit__1">...</div>
-		<div class="search__result__single" id="hit__2">...</div>
-		<div class="search__result__single" id="hit__3">
-			<a href="http://link-to-the-result.com/">
-				<div class="content">
-					<h2 class="search__result__title">Title of the result</h2>
-					<br>
-					<small class="search__result__path">
-						path/to/result (from <strong>subproject</strong>)
-					</small>
-					<p class="search__result__content">
-						... this is the description ...
-					</p>
-				</div>
-			</a>
-		</div>
-		<div class="search__result__single" id="hit__4">...</div>
-		<div class="search__result__single" id="hit__5">...</div>
-	</div>
+    <div class="search__result__box">
+        <div class="search__result__single" id="hit__1">...</div>
+        <div class="search__result__single" id="hit__2">...</div>
+        <div class="search__result__single" id="hit__3">
+            <a href="http://link-to-the-result.com/">
+                <div class="content">
+                    <h2 class="search__result__title">Title of the result</h2>
+                    <br>
+                    <small class="search__result__path">
+                        path/to/result (from <strong>subproject</strong>)
+                    </small>
+                    <p class="search__result__content">
+                        ... this is the description ...
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="search__result__single" id="hit__4">...</div>
+        <div class="search__result__single" id="hit__5">...</div>
+    </div>
 */
 const generateSuggestionsList = (data, projectName) => {
     let search_result_box = document.createElement("div");
@@ -89,7 +90,10 @@ const generateSuggestionsList = (data, projectName) => {
         // display the subproject.
         if (data.results[i].project !== projectName) {
             search_result_path.innerHTML =
-                data.results[i].path + "(from <strong>" + data.results[i].project + "</strong>)";
+                data.results[i].path +
+                "(from <strong>" +
+                data.results[i].project +
+                "</strong>)";
         }
 
         content.appendChild(search_result_path);
@@ -97,7 +101,8 @@ const generateSuggestionsList = (data, projectName) => {
         let search_result_content = document.createElement("p");
         search_result_content.className = "search__result__content";
         if (data.results[i].highlight.content !== undefined) {
-            search_result_content.innerHTML = "... " + data.results[i].highlight.content + " ...";
+            search_result_content.innerHTML =
+                "... " + data.results[i].highlight.content + " ...";
         } else {
             search_result_content.innerHTML = "";
         }
@@ -127,16 +132,99 @@ const removeAllActive = () => {
 */
 const addActive = current_focus => {
     const current_item = document.querySelector("#hit__" + current_focus);
-    current_item.classList.add("active");
-    current_item.scrollIntoView({ behavior: "smooth" });
+    // in case of no results or any error,
+    // current_item will not be found in the DOM.
+    if (current_item !== undefined && current_item !== null) {
+        current_item.classList.add("active");
+        current_item.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "start"
+        });
+    }
 };
 
 /*
  return search input field.
 */
 const getInputField = () => {
-    const inputField = document.querySelector('div[role="search"] input');
+    const inputField = document.querySelector("div[role='search'] input");
     return inputField;
+};
+
+/*
+ returns div containing the search input field.
+*/
+const getInputDivNode = () => {
+    const divNode = document.querySelector("div[role='search']");
+    return divNode;
+};
+
+/*
+ creates a div with error message.
+*/
+const getErrorDiv = error_msg => {
+    let err_div = document.createElement("div");
+    err_div.className = "search__result__single";
+    err_div.innerHTML = error_msg;
+    err_div.style.color = "black";
+    err_div.style.minWidth = "300px";
+    return err_div;
+};
+
+/*
+ fetch the suggestions from search backend,
+ and appends the resulting nodes to getInputDivNode()
+*/
+const fetchAndGenerateResults = (search_url, projectName) => {
+    let search_outer = document.createElement("div");
+    search_outer.className = "search__outer";
+
+    const search_div = getInputDivNode();
+
+    fetch(search_url)
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.results.length > 0) {
+                total_results =
+                    MAX_SUGGESTIONS <= data.results.length
+                        ? MAX_SUGGESTIONS
+                        : data.results.length;
+                let search_result_box = generateSuggestionsList(
+                    data,
+                    projectName
+                );
+                search_outer.appendChild(search_result_box);
+                removeResults();
+
+                // final html structure is
+                //  <div role="search">
+                //     <form>...</form>
+                //     <div class="search__outer">
+                //         <div class="search__result__box">...</div>
+                //     </div>
+                // <div>
+                search_div.appendChild(search_outer);
+
+                // remove active classes from all suggestions
+                // if the mouse hovers, otherwise styles from
+                // ::hover and .active will clash.
+                search_outer.addEventListener("mouseenter", e => {
+                    removeAllActive();
+                });
+            } else {
+                removeResults();
+                var err_div = getErrorDiv("No Results Found");
+                search_outer.appendChild(err_div);
+                search_div.appendChild(search_outer);
+            }
+        })
+        .catch(error => {
+            removeResults();
+            var err_div = getErrorDiv("Error Occurred. Please try again.");
+            search_outer.appendChild(err_div);
+            search_div.appendChild(search_outer);
+        });
 };
 
 window.addEventListener("DOMContentLoaded", evt => {
@@ -146,59 +234,27 @@ window.addEventListener("DOMContentLoaded", evt => {
     const api_host = READTHEDOCS_DATA.api_host;
 
     const search_bar = getInputField();
-    const search_div = document.querySelector('div[role="search"]');
 
     search_bar.addEventListener("input", event => {
+        let query = event.target.value;
         let search_params = {
-            q: encodeURIComponent(event.target.value),
+            q: encodeURIComponent(query),
             project: project,
             version: version,
             language: language
         };
 
         let search_url =
-            api_host + "/api/v2/docsearch/" + "?" + convertObjToUrlParams(search_params);
+            api_host +
+            "/api/v2/docsearch/" +
+            "?" +
+            convertObjToUrlParams(search_params);
 
         let current_focus = 0;
 
-        // don't fire a query if no input is empty or undefined or null.
-        if (search_params.q !== undefined && search_params.q !== "" && search_params.q !== null) {
-            fetch(search_url)
-                .then(resp => resp.json())
-                .then(data => {
-                    if (data.results.length > 0) {
-                        total_results =
-                            MAX_SUGGESTIONS <= data.results.length
-                                ? MAX_SUGGESTIONS
-                                : data.results.length;
-
-                        let search_outer = document.createElement("div");
-                        search_outer.className = "search__outer";
-                        let search_result_box = generateSuggestionsList(data, project);
-                        search_outer.appendChild(search_result_box);
-                        removeResults();
-
-                        // final html structure is
-                        //  <div role="search">
-                        //     <form>...</form>
-                        //     <div class="search__outer">
-                        //         <div class="search__result__box">...</div>
-                        //     </div>
-                        // <div>
-                        search_div.appendChild(search_outer);
-
-                        // remove active classes from all suggestions
-                        // if the mouse hovers, otherwise styles from
-                        // ::hover and .active will clash.
-                        search_outer.addEventListener("mouseenter", e => {
-                            removeAllActive();
-                        });
-                    } else {
-                        removeResults();
-                        console.log("No results", data);
-                    }
-                })
-                .catch(error => console.log("Error occurred", error));
+        // don't fire a query if input field is empty or undefined or null.
+        if (typeof query === "string" && query.length > 0) {
+            fetchAndGenerateResults(search_url, project);
         } else {
             // remove all results if the input field
             // is empty or undefined or null.
@@ -232,20 +288,30 @@ window.addEventListener("DOMContentLoaded", evt => {
             // if "Enter" key is pressed.
             if (e.keyCode === 13) {
                 e.preventDefault();
-                const current_item = document.querySelector(".search__result__single.active");
+                const current_item = document.querySelector(
+                    ".search__result__single.active"
+                );
                 // if an item is selected,
                 // then redirect to its link
                 if (current_item !== null) {
-                    link = current_item.firstChild["href"];
+                    const link = current_item.firstChild["href"];
                     window.location.href = link;
                 } else {
                     // submit search form if there
                     // is no active item.
-                    e.parentElement.submit();
+                    const form = document.querySelector(
+                        "div[role='search'] form"
+                    );
+                    form.submit();
                 }
             }
         });
     });
+    if (READTHEDOCS_DATA.theme === "sphinx_rtd_theme") {
+        document.addEventListener("scroll", e => {
+            removeResults();
+        });
+    }
 });
 
 /*
@@ -264,7 +330,9 @@ window.addEventListener("click", e => {
  removes all results if the 'Escape' button is pressed.
 */
 document.addEventListener("keydown", e => {
-    if (e.key === "Escapse" || e.key === "Esc" || e.keyCode === 27) {
+    // if "Escape" key is pressed,
+    // remove all results.
+    if (e.keyCode === 27) {
         removeResults();
     }
 });

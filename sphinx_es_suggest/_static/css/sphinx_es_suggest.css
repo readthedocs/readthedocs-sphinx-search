@@ -11,7 +11,6 @@
     text-align: left;
     max-width: 600px;
     margin-top: 5px;
-    animation: slide-up 0.4s ease;
 }
 
 .search__result__single {
@@ -65,15 +64,4 @@
 .search__outer .search__result__content em {
     background-color: #e5f6ff;
     border-bottom: 1px solid black;
-}
-
-@keyframes slide-up {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
