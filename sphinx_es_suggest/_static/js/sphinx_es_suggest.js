@@ -306,7 +306,7 @@ const showSearchModal = () => {
     let search_outer_wrapper = document.querySelector(
         ".search__outer__wrapper"
     );
-    search_outer_wrapper.classList.add("display-flex");
+    search_outer_wrapper.classList.add("display-block");
 };
 
 /**
@@ -327,7 +327,7 @@ const removeSearchModal = () => {
     let search_outer_wrapper = document.querySelector(
         ".search__outer__wrapper"
     );
-    search_outer_wrapper.classList.remove("display-flex");
+    search_outer_wrapper.classList.remove("display-block");
 };
 
 window.addEventListener("DOMContentLoaded", evt => {
@@ -354,8 +354,6 @@ window.addEventListener("DOMContentLoaded", evt => {
     });
 
     search_outer_input.addEventListener("input", e => {
-        search_outer.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-
         let query = e.target.value;
         let search_params = {
             q: encodeURIComponent(query),
