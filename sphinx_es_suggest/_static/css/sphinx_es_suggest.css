@@ -14,6 +14,10 @@
 }
 
 .search__outer {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50.1%);
     height: 80%;
     width: 80%;
     position: fixed;
@@ -63,7 +67,7 @@
     background-color: #fcfcfc;
 }
 
-.search__outer__input::focus {
+.search__outer__input:focus {
     outline: none;
 }
 
