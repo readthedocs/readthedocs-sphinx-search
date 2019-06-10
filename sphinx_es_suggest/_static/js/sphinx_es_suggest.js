@@ -19,6 +19,22 @@ const convertObjToUrlParams = obj => {
 };
 
 /**
+ * Create and return DOM nodes
+ * with passed attributes.
+ *
+ * @param {String} nodeName name of the node
+ * @param {Object} attributes obj of attributes to be assigned to the node
+ * @return {Object} dom node with attributes
+ */
+const createDomNode = (nodeName, attributes) => {
+    let node = document.createElement(nodeName);
+    for (let attr in attributes) {
+        node.setAttribute(attr, attributes[attr]);
+    }
+    return node;
+};
+
+/**
  * Generate search suggestions list.
  * Structure of the generated html which is
  * returned from this function is :-
@@ -49,22 +65,25 @@ const convertObjToUrlParams = obj => {
  * @return {Object} a <div> node with class "search__result__box" and with inner nodes
  */
 const generateSuggestionsList = (data, projectName) => {
-    let search_result_box = document.createElement("div");
-    search_result_box.className = "search__result__box";
+    let search_result_box = createDomNode("div", {
+        class: "search__result__box"
+    });
 
     for (let i = 0; i < total_results; ++i) {
-        let search_result_single = document.createElement("div");
-        search_result_single.className = "search__result__single";
-        search_result_single.id = "hit__" + (i + 1);
+        let search_result_single = createDomNode("div", {
+            class: "search__result__single",
+            id: "hit__" + (i + 1)
+        });
 
-        let link = document.createElement("a");
-        link.href = data.results[i].link + DOCUMENTATION_OPTIONS.FILE_SUFFIX;
+        let link = createDomNode("a", {
+            href: data.results[i].link + DOCUMENTATION_OPTIONS.FILE_SUFFIX
+        });
 
-        let content = document.createElement("div");
-        content.className = "content";
+        let content = createDomNode("div", { class: "content" });
 
-        let search_result_title = document.createElement("h2");
-        search_result_title.className = "search__result__title";
+        let search_result_title = createDomNode("h2", {
+            class: "search__result__title"
+        });
         // use highlighted title (if present)
         if (data.results[i].highlight.title !== undefined) {
             search_result_title.innerHTML = data.results[i].highlight.title[0];
@@ -73,10 +92,11 @@ const generateSuggestionsList = (data, projectName) => {
         }
 
         content.appendChild(search_result_title);
-        content.appendChild(document.createElement("br"));
+        content.appendChild(createDomNode("br"));
 
-        let search_result_path = document.createElement("small");
-        search_result_path.className = "search__result__path";
+        let search_result_path = createDomNode("small", {
+            class: "search__result__path"
+        });
         search_result_path.innerHTML = data.results[i].path;
 
         // check if the corresponding result is from same project or not.
@@ -92,8 +112,9 @@ const generateSuggestionsList = (data, projectName) => {
 
         content.appendChild(search_result_path);
 
-        let search_result_content = document.createElement("p");
-        search_result_content.className = "search__result__content";
+        let search_result_content = createDomNode("p", {
+            class: "search__result__content"
+        });
         if (data.results[i].highlight.content !== undefined) {
             search_result_content.innerHTML =
                 "... " + data.results[i].highlight.content + " ...";
@@ -170,11 +191,11 @@ const removeResults = () => {
  * @param {String} err_msg error message to be displayed
  */
 const getErrorDiv = err_msg => {
-    let err_div = document.createElement("div");
-    err_div.className = "search__result__box";
+    let err_div = createDomNode("div", {
+        class: "search__result__box",
+        style: "color: black; min-width: 300px"
+    });
     err_div.innerHTML = err_msg;
-    err_div.style.color = "black";
-    err_div.style.minWidth = "300px";
     return err_div;
 };
 
@@ -193,8 +214,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     // and show the "Searching ...." text to
     // the user.
     removeResults();
-    let search_loding = document.createElement("div");
-    search_loding.className = "search__result__box";
+    let search_loding = createDomNode("div", { class: "search__result__box" });
     search_loding.innerHTML = "Searching ....";
     search_outer.appendChild(search_loding);
 
@@ -266,22 +286,24 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  *                  "search__outer__wrapper", "search__outer__input" and "search__outer"
  */
 const generateAndReturnInitialHtml = () => {
-    let search_outer_wrapper = document.createElement("div");
-    search_outer_wrapper.className = "search__outer__wrapper search__backdrop";
+    let search_outer_wrapper = createDomNode("div", {
+        class: "search__outer__wrapper search__backdrop"
+    });
 
-    let search_outer = document.createElement("div");
-    search_outer.className = "search__outer";
+    let search_outer = createDomNode("div", { class: "search__outer" });
 
-    let cross_icon = document.createElement("div");
-    cross_icon.className = "search__cross";
-    cross_icon.title = "Close";
+    let cross_icon = createDomNode("div", {
+        class: "search__cross",
+        title: "Close"
+    });
     cross_icon.innerHTML =
         "<?xml version='1.0' encoding='UTF-8'?><svg class='search__cross__img' width='15px' height='15px' enable-background='new 0 0 612 612' version='1.1' viewBox='0 0 612 612' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><polygon points='612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01'/></svg>";
     search_outer.appendChild(cross_icon);
 
-    let search_outer_input = document.createElement("input");
-    search_outer_input.className = "search__outer__input";
-    search_outer_input.placeholder = "Search ...";
+    let search_outer_input = createDomNode("input", {
+        class: "search__outer__input",
+        placeholder: "Search ..."
+    });
 
     search_outer.appendChild(search_outer_input);
     search_outer_wrapper.appendChild(search_outer);
