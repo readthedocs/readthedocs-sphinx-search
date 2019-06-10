@@ -9,7 +9,7 @@ Install the package
 
         .. prompt:: bash
 
-            <Coming Soong>
+            <Coming Soon>
 
     .. tab:: from GitHub
 
