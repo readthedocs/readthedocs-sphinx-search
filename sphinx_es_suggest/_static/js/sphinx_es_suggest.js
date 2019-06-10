@@ -1,5 +1,6 @@
 const MAX_SUGGESTIONS = 10;
-let total_results = 0;
+let TOTAL_RESULTS = 0;
+let SEARCH_QUERY = "";
 
 /**
  * Take an object as parameter and convert it to
@@ -69,7 +70,7 @@ const generateSuggestionsList = (data, projectName) => {
         class: "search__result__box"
     });
 
-    for (let i = 0; i < total_results; ++i) {
+    for (let i = 0; i < TOTAL_RESULTS; ++i) {
         let search_result_single = createDomNode("div", {
             class: "search__result__single",
             id: "hit__" + (i + 1)
@@ -230,7 +231,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                 typeof resp.responseJSON !== "undefined"
             ) {
                 if (resp.responseJSON.results.length > 0) {
-                    total_results =
+                    TOTAL_RESULTS =
                         MAX_SUGGESTIONS <= resp.responseJSON.results.length
                             ? MAX_SUGGESTIONS
                             : resp.responseJSON.results.length;
@@ -371,7 +372,6 @@ window.addEventListener("DOMContentLoaded", evt => {
     const initialHtml = generateAndReturnInitialHtml();
     let search_outer_wrapper = initialHtml.search_outer_wrapper;
     let search_outer_input = initialHtml.search_outer_input;
-    let search_outer = initialHtml.search_outer;
     let cross_icon = initialHtml.cross_icon;
 
     document.body.appendChild(search_outer_wrapper);
@@ -386,9 +386,9 @@ window.addEventListener("DOMContentLoaded", evt => {
     });
 
     search_outer_input.addEventListener("input", e => {
-        let query = e.target.value;
+        SEARCH_QUERY = e.target.value;
         let search_params = {
-            q: encodeURIComponent(query),
+            q: encodeURIComponent(SEARCH_QUERY),
             project: project,
             version: version,
             language: language
@@ -399,7 +399,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             "/api/v2/docsearch/?" +
             convertObjToUrlParams(search_params);
 
-        if (typeof query === "string" && query.length > 0) {
+        if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
             fetchAndGenerateResults(search_url, project);
         } else {
             removeResults();
@@ -411,7 +411,7 @@ window.addEventListener("DOMContentLoaded", evt => {
         if (e.keyCode === 40) {
             e.preventDefault();
             current_focus += 1;
-            if (current_focus > total_results) {
+            if (current_focus > TOTAL_RESULTS) {
                 current_focus = 1;
             }
             removeAllActive();
@@ -423,7 +423,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             e.preventDefault();
             current_focus -= 1;
             if (current_focus < 1) {
-                current_focus = total_results;
+                current_focus = TOTAL_RESULTS;
             }
             removeAllActive();
             addActive(current_focus);
@@ -444,7 +444,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // submit search form if there
                 // is no active item.
                 const form = document.querySelector("div[role='search'] form");
-                search_bar.value = query || "";
+                search_bar.value = SEARCH_QUERY || "";
                 form.submit();
             }
         }
