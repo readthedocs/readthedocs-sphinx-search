@@ -114,7 +114,7 @@ const generateSuggestionsList = (data, projectName) => {
  */
 const removeAllActive = () => {
     const results = document.querySelectorAll(".search__result__single");
-    const results_arr = Object.values(results);
+    const results_arr = Object.keys(results).map(i => results[i]);
     for (let i = 1; i <= results_arr.length; ++i) {
         results_arr[i - 1].classList.remove("active");
     }
