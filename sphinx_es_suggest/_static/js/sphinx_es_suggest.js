@@ -153,7 +153,7 @@ const getInputField = () => {
 };
 
 /**
- * Removes all results from the seardh modal.
+ * Removes all results from the search modal.
  * It doesn't close the search box.
  */
 const removeResults = () => {
@@ -271,11 +271,12 @@ const generateAndReturnInitialHtml = () => {
 
     let search_outer = document.createElement("div");
     search_outer.className = "search__outer";
+    search_outer.title = "Close";
 
     let cross_icon = document.createElement("div");
     cross_icon.className = "search__cross";
     cross_icon.innerHTML =
-        "<img class='search__cross__img' alt='Close' src='https://image.flaticon.com/icons/svg/59/59836.svg' />";
+        "<?xml version='1.0' encoding='UTF-8'?><svg class='search__cross__img' width='15px' height='15px' enable-background='new 0 0 612 612' version='1.1' viewBox='0 0 612 612' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><polygon points='612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01'/></svg>";
     search_outer.appendChild(cross_icon);
 
     let search_outer_input = document.createElement("input");
