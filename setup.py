@@ -1,17 +1,17 @@
 import setuptools
-import sphinx_es_suggest
+import readthedocs_sphinx_search
 
 
 with open('README.rst', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='sphinx-es-search',
-    version=sphinx_es_suggest.version,
+    name='readthedocs_sphinx_search',
+    version=readthedocs_sphinx_search.version,
     author='Vaibhav Gupta',
     author_email='vaibhgupt199@gmail.com',
     description='Sphinx extension to enable `search as you type` for docs hosted by Read the Docs.',
-    url='https://github.com/dojutsu-user/sphinx-es-suggest',
+    url='https://github.com/rtfd/readthedocs-sphinx-search',
     license='MIT',
     packages=setuptools.find_packages(),
     long_description=long_description,
