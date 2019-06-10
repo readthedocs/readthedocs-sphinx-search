@@ -271,10 +271,10 @@ const generateAndReturnInitialHtml = () => {
 
     let search_outer = document.createElement("div");
     search_outer.className = "search__outer";
-    search_outer.title = "Close";
-
+    
     let cross_icon = document.createElement("div");
     cross_icon.className = "search__cross";
+    cross_icon.title = "Close";
     cross_icon.innerHTML =
         "<?xml version='1.0' encoding='UTF-8'?><svg class='search__cross__img' width='15px' height='15px' enable-background='new 0 0 612 612' version='1.1' viewBox='0 0 612 612' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><polygon points='612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01'/></svg>";
     search_outer.appendChild(cross_icon);
@@ -306,17 +306,17 @@ const showSearchModal = () => {
     let search_bar = getInputField();
     search_bar.blur();
 
+    let search_outer_wrapper = document.querySelector(
+        ".search__outer__wrapper"
+    );
+    search_outer_wrapper.classList.add("display-block");
+
     // sets the value of the input field to empty string and focus it.
     let search_outer_input = document.querySelector(".search__outer__input");
     if (search_outer_input !== null) {
         search_outer_input.value = "";
         search_outer_input.focus();
     }
-
-    let search_outer_wrapper = document.querySelector(
-        ".search__outer__wrapper"
-    );
-    search_outer_wrapper.classList.add("display-block");
 };
 
 /**
