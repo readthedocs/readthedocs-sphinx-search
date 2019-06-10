@@ -15,6 +15,12 @@ this extension is designed to greatly improve the search experience
 of the reader. This adds the full page search UI to the docs
 which supports ``search as you type`` feature.
 
+.. figure:: ./_static/demo.gif
+    :align: center
+    :target: ./_static/demo.gif
+
+    Demo
+
 Browser Support
 ~~~~~~~~~~~~~~~
 
