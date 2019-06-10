@@ -58,7 +58,7 @@ const generateSuggestionsList = (data, projectName) => {
         search_result_single.id = "hit__" + (i + 1);
 
         let link = document.createElement("a");
-        link.href = data.results[i].link;
+        link.href = data.results[i].link + DOCUMENTATION_OPTIONS.FILE_SUFFIX;
 
         let content = document.createElement("div");
         content.className = "content";
@@ -271,7 +271,7 @@ const generateAndReturnInitialHtml = () => {
 
     let search_outer = document.createElement("div");
     search_outer.className = "search__outer";
-    
+
     let cross_icon = document.createElement("div");
     cross_icon.className = "search__cross";
     cross_icon.title = "Close";
