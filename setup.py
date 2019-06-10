@@ -1,5 +1,5 @@
 import setuptools
-import readthedocs_sphinx_search
+import sphinx_search
 
 
 with open('README.rst', 'r') as fh:
@@ -7,7 +7,7 @@ with open('README.rst', 'r') as fh:
 
 setuptools.setup(
     name='readthedocs_sphinx_search',
-    version=readthedocs_sphinx_search.version,
+    version=sphinx_search.version,
     author='Vaibhav Gupta',
     author_email='vaibhgupt199@gmail.com',
     description='Sphinx extension to enable `search as you type` for docs hosted by Read the Docs.',

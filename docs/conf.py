@@ -25,8 +25,8 @@ author = 'Vaibhav Gupta'
 
 # The short X.Y version
 # The full version, including alpha/beta/rc tags
-import readthedocs_sphinx_search
-version = release = readthedocs_sphinx_search.version
+import sphinx_search
+version = release = sphinx_search.version
 
 
 # -- General configuration ---------------------------------------------------

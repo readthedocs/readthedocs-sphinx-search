@@ -3,7 +3,7 @@ readthedocs-sphinx-search
 
 |docs|
 
-Create a custom 404 page with absolute URLs hardcoded.
+Sphinx extension to enable `search as you type` feature for docs hosted by Read the Docs.
 
 
 Installation
@@ -23,7 +23,7 @@ Add this extension in your ``conf.py`` file as:
 
    extensions = [
     # ... other extensions here
-    'readthedocs_sphinx_search.extension',
+    'sphinx_search.extension',
    ]
 
 

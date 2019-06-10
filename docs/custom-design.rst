@@ -2,9 +2,7 @@ Custom Design
 =============
 
 If you want to change the styles of the search UI,
-you can do so by adding your custom stylesheet to your documentation.
-You can read more about this on the official documentation
-of `Read the Docs`_.
+you can do so by `adding your custom stylesheet`_ to your documentation.
 
 Basic structure of the HTML which is generated for the full-page search UI
 is given below for the reference:
@@ -50,4 +48,4 @@ is given below for the reference:
     </html>
 
 
-.. _Read the Docs: https://docs.readthedocs.io/page/guides/adding-custom-css.html
+.. _adding your custom stylesheet: https://docs.readthedocs.io/page/guides/adding-custom-css.html

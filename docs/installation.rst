@@ -25,9 +25,9 @@ Then, enable this extension by adding it to your ``conf.py``.
     # conf.py
     extensions = [
         # ... other extensions
-        'readthedocs_sphinx_search.extension',
+        'sphinx_search.extension',
     ]
 
 After installing the package and adding it to your ``conf.py`` file,
-build your documentation again on RTD and then you can see the search
+build your documentation again on Read the Docs and then you can see the search
 UI in your documentation.
