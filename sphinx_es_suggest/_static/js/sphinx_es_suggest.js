@@ -198,39 +198,48 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_loding.innerHTML = "Searching ....";
     search_outer.appendChild(search_loding);
 
-    fetch(search_url)
-        .then(resp => resp.json())
-        .then(data => {
-            if (data.results.length > 0) {
-                total_results =
-                    MAX_SUGGESTIONS <= data.results.length
-                        ? MAX_SUGGESTIONS
-                        : data.results.length;
-                let search_result_box = generateSuggestionsList(
-                    data,
-                    projectName
-                );
-                removeResults();
-                search_outer.appendChild(search_result_box);
+    $.ajax({
+        url: search_url,
+        crossDomain: true,
+        xhrFields: {
+            withCredentials: true
+        },
+        complete: (resp, status_code) => {
+            if (
+                status_code === "success" ||
+                typeof resp.responseJSON !== "undefined"
+            ) {
+                if (resp.responseJSON.results.length > 0) {
+                    total_results =
+                        MAX_SUGGESTIONS <= resp.responseJSON.results.length
+                            ? MAX_SUGGESTIONS
+                            : resp.responseJSON.results.length;
+                    let search_result_box = generateSuggestionsList(
+                        resp.responseJSON,
+                        projectName
+                    );
+                    removeResults();
+                    search_outer.appendChild(search_result_box);
 
-                // remove active classes from all suggestions
-                // if the mouse hovers, otherwise styles from
-                // :hover and .active will clash.
-                search_outer.addEventListener("mouseenter", e => {
-                    removeAllActive();
-                });
-            } else {
-                removeResults();
-                var err_div = getErrorDiv("No Results Found");
-                search_outer.appendChild(err_div);
+                    // remove active classes from all suggestions
+                    // if the mouse hovers, otherwise styles from
+                    // :hover and .active will clash.
+                    search_outer.addEventListener("mouseenter", e => {
+                        removeAllActive();
+                    });
+                } else {
+                    removeResults();
+                    var err_div = getErrorDiv("No Results Found");
+                    search_outer.appendChild(err_div);
+                }
             }
-        })
-        .catch(error => {
+        },
+        error: (resp, status_code, error) => {
             removeResults();
             var err_div = getErrorDiv("Error Occurred. Please try again.");
             search_outer.appendChild(err_div);
-            console.log("Search Error (RTD)", error);
-        });
+        }
+    });
 };
 
 /**
