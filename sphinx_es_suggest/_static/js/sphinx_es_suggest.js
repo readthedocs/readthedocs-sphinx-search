@@ -303,7 +303,11 @@ const generateAndReturnInitialHtml = () => {
         placeholder: "Search ..."
     });
 
+    // for material ui design input field
+    let horizontal_bar = createDomNode("span", { class: "bar" });
+
     search_outer.appendChild(search_outer_input);
+    search_outer.appendChild(horizontal_bar);
     search_outer_wrapper.appendChild(search_outer);
 
     return {

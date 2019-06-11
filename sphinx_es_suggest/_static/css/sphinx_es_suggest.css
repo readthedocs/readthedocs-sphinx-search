@@ -59,16 +59,43 @@
 .search__outer__input {
     outline: none;
     border: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #757575;
     width: 90%;
     height: 30px;
     font-size: 19px;
-    margin-bottom: 10px;
     background-color: #fcfcfc;
 }
 
 .search__outer__input:focus {
     outline: none;
+}
+
+.search__outer .bar {
+    position: relative;
+    display: block;
+    width: 90%;
+    margin-bottom: 15px;
+}
+.search__outer .bar:before,
+.search__outer .bar:after {
+    content: "";
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: #5264ae;
+    transition: 0.2s ease all;
+}
+.search__outer .bar:before {
+    left: 50%;
+}
+.search__outer .bar:after {
+    right: 50%;
+}
+
+.search__outer__input:focus ~ .bar:before,
+.search__outer__input:focus ~ .bar:after {
+    width: 50%;
 }
 
 .search__backdrop {
