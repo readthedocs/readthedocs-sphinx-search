@@ -5,6 +5,8 @@ let SEARCH_QUERY = "";
 /**
  * Take an object as parameter and convert it to
  * url params string.
+ * Eg. if obj = { 'a': 1, 'b': 2 }, then it will return
+ * the string a=1&b=2.
  *
  * @param {Object} obj the object to be converted
  * @return {String} object in url params form
@@ -281,8 +283,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  *      </div>
  *  </div>
  *
- * @return {Object} object containing the nodes with classes
- *                  "search__outer__wrapper", "search__outer__input" and "search__outer"
+ * @return {Object} object containing the nodes with classes "search__outer__wrapper", "search__outer__input" and "search__outer"
  */
 const generateAndReturnInitialHtml = () => {
     let search_outer_wrapper = createDomNode("div", {
@@ -366,10 +367,13 @@ const removeSearchModal = () => {
 };
 
 window.addEventListener("DOMContentLoaded", evt => {
-    const project = READTHEDOCS_DATA.project;
-    const version = READTHEDOCS_DATA.version;
+    if (READTHEDOCS_DATA === undefined) {
+        READTHEDOCS_DATA = {};
+    }
+    const project = READTHEDOCS_DATA.project || "docs";
+    const version = READTHEDOCS_DATA.version || "latest";
     const language = READTHEDOCS_DATA.language || "en";
-    const api_host = READTHEDOCS_DATA.api_host;
+    const api_host = READTHEDOCS_DATA.api_host || "http://localhost:8000";
 
     const initialHtml = generateAndReturnInitialHtml();
     let search_outer_wrapper = initialHtml.search_outer_wrapper;
