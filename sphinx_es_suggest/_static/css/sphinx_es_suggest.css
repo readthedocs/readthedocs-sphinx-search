@@ -29,6 +29,7 @@
     box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.09);
     line-height: 1.875;
     text-align: left;
+    border-radius: 5px;
 }
 
 .search__outer::-webkit-scrollbar-track {
