@@ -7,32 +7,53 @@
     z-index: 700;
 }
 
-.search__cross {
-    position: absolute;
+/* Backdrop */
+
+.search__backdrop {
+    /* Positioning */
+    position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
+    z-index: 500;
+
+    /* Display and box model */
+    width: 100%;
+    height: 100%;
+    display: none;
+
+    /* Other */
+    background-color: rgba(0, 0, 0, 0.502);
 }
 
 .search__outer {
+    /* Positioning */
     top: 50%;
     left: 50%;
-    position: absolute;
-    transform: translate(-50%, -50.1%);
-    height: 80%;
-    width: 80%;
+    transform: translate(
+        -50%,
+        -50.1%
+    ); /* -50.1% to prevent fraction of pixel */
     position: fixed;
     z-index: 100000;
-    padding: 10px;
-    overflow-y: scroll;
-    background-color: #fcfcfc;
-    border: 1px solid #e0e0e0;
-    box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.09);
-    line-height: 1.875;
-    text-align: left;
-    border-radius: 5px;
+
+    /* Display and box model */
+    height: 80%;
+    width: 80%;
     max-height: 1000px;
     max-width: 1500px;
+    padding: 10px;
+    overflow-y: scroll;
+
+    /* Other */
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    line-height: 1.875;
+    background-color: #fcfcfc;
+    box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.09);
+    text-align: left;
 }
+
+/* Custom scrollbar */
 
 .search__outer::-webkit-scrollbar-track {
     border-radius: 10px;
@@ -49,29 +70,44 @@
     background-color: #8f8f8f;
 }
 
+/* Cross icon on top-right corner */
+
 .search__cross__img {
     width: 15px;
     height: 15px;
     margin: 12px;
 }
 
+.search__cross {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .search__cross:hover {
     cursor: pointer;
 }
 
+/* Input field on search modal */
+
 .search__outer__input {
-    outline: none;
-    border: none;
-    border-bottom: 1px solid #757575;
+    /* Display and box model */
     width: 90%;
     height: 30px;
     font-size: 19px;
+    outline: none;
+
+    /* Other */
     background-color: #fcfcfc;
+    border: none;
+    border-bottom: 1px solid #757575;
 }
 
 .search__outer__input:focus {
     outline: none;
 }
+
+/* For material UI style underline on input field */
 
 .search__outer .bar {
     position: relative;
@@ -101,16 +137,7 @@
     width: 50%;
 }
 
-.search__backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 500;
-    background-color: rgba(0, 0, 0, 0.502);
-    display: none;
-}
+/* Search result */
 
 .search__result__single {
     padding: 10px;
@@ -130,9 +157,56 @@
     cursor: pointer;
 }
 
+/* Helper class */
+
 .display-block {
     display: block;
     animation: fade-in 0.4s;
+}
+
+/* Title of each search result */
+.search__result__title {
+    /* Display and box model */
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 14px;
+
+    /* Other */
+    color: #6ea0ec;
+    border-bottom: 1px solid #6ea0ec;
+}
+
+/* Path of each search result */
+.search__result__path {
+    color: #b3b3b3;
+}
+
+/* Content of each search result */
+.search__result__content {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    display: block;
+    margin-top: 3px;
+    margin-bottom: 5px;
+}
+
+/* Highlighting of matched results */
+.search__outer em {
+    font-style: normal;
+}
+
+.search__outer .search__result__title em {
+    background-color: #e5f6ff;
+    padding-bottom: 4px;
+    border-bottom-color: black;
+}
+
+.search__outer .search__result__content em {
+    background-color: #e5f6ff;
+    border-bottom: 1px solid black;
 }
 
 @keyframes fade-in {
@@ -142,39 +216,4 @@
     to {
         opacity: 1;
     }
-}
-
-.search__result__title {
-    color: #6ea0ec;
-    border-bottom: 1px solid #6ea0ec;
-    font-weight: 500;
-    margin-bottom: 0;
-    margin-top: 0;
-    display: inline-block;
-    font-size: 14px;
-}
-
-.search__result__path {
-    color: #b3b3b3;
-}
-
-.search__result__content {
-    text-decoration: none;
-    color: black;
-    font-size: 14px;
-    display: block;
-    margin-top: 3px;
-    margin-bottom: 5px;
-}
-.search__outer em {
-    font-style: normal;
-}
-.search__outer .search__result__title em {
-    background-color: #e5f6ff;
-    padding-bottom: 4px;
-    border-bottom-color: black;
-}
-.search__outer .search__result__content em {
-    background-color: #e5f6ff;
-    border-bottom: 1px solid black;
 }
