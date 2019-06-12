@@ -6,3 +6,4 @@ _build/
 .vscode/
 node_modules/
 package-lock.json
+*.log
