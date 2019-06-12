@@ -367,115 +367,118 @@ const removeSearchModal = () => {
 };
 
 window.addEventListener("DOMContentLoaded", evt => {
-    if (READTHEDOCS_DATA === undefined) {
-        READTHEDOCS_DATA = {};
-    }
-    const project = READTHEDOCS_DATA.project || "docs";
-    const version = READTHEDOCS_DATA.version || "latest";
-    const language = READTHEDOCS_DATA.language || "en";
-    const api_host = READTHEDOCS_DATA.api_host || "http://localhost:8000";
+    // only add event listeners if READTHEDOCS_DATA global
+    // variable is found.
+    if (READTHEDOCS_DATA !== undefined) {
+        const project = READTHEDOCS_DATA.project;
+        const version = READTHEDOCS_DATA.version;
+        const language = READTHEDOCS_DATA.language || "en";
+        const api_host = READTHEDOCS_DATA.api_host;
 
-    const initialHtml = generateAndReturnInitialHtml();
-    let search_outer_wrapper = initialHtml.search_outer_wrapper;
-    let search_outer_input = initialHtml.search_outer_input;
-    let cross_icon = initialHtml.cross_icon;
+        const initialHtml = generateAndReturnInitialHtml();
+        let search_outer_wrapper = initialHtml.search_outer_wrapper;
+        let search_outer_input = initialHtml.search_outer_input;
+        let cross_icon = initialHtml.cross_icon;
 
-    document.body.appendChild(search_outer_wrapper);
+        document.body.appendChild(search_outer_wrapper);
 
-    // this denotes the search suggestion which is currently selected
-    // via tha ArrowUp/ArrowDown keys.
-    let current_focus = 0;
+        // this denotes the search suggestion which is currently selected
+        // via tha ArrowUp/ArrowDown keys.
+        let current_focus = 0;
 
-    let search_bar = getInputField();
-    search_bar.addEventListener("focus", e => {
-        showSearchModal();
-    });
+        let search_bar = getInputField();
+        search_bar.addEventListener("focus", e => {
+            showSearchModal();
+        });
 
-    search_outer_input.addEventListener("input", e => {
-        SEARCH_QUERY = e.target.value;
-        let search_params = {
-            q: encodeURIComponent(SEARCH_QUERY),
-            project: project,
-            version: version,
-            language: language
-        };
+        search_outer_input.addEventListener("input", e => {
+            SEARCH_QUERY = e.target.value;
+            let search_params = {
+                q: encodeURIComponent(SEARCH_QUERY),
+                project: project,
+                version: version,
+                language: language
+            };
 
-        const search_url =
-            api_host +
-            "/api/v2/docsearch/?" +
-            convertObjToUrlParams(search_params);
+            const search_url =
+                api_host +
+                "/api/v2/docsearch/?" +
+                convertObjToUrlParams(search_params);
 
-        if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
-            fetchAndGenerateResults(search_url, project);
-        } else {
-            removeResults();
-        }
-    });
-
-    search_outer_input.addEventListener("keydown", e => {
-        // if "ArrowDown is pressed"
-        if (e.keyCode === 40) {
-            e.preventDefault();
-            current_focus += 1;
-            if (current_focus > TOTAL_RESULTS) {
-                current_focus = 1;
-            }
-            removeAllActive();
-            addActive(current_focus);
-        }
-
-        // if "ArrowUp" is pressed.
-        if (e.keyCode === 38) {
-            e.preventDefault();
-            current_focus -= 1;
-            if (current_focus < 1) {
-                current_focus = TOTAL_RESULTS;
-            }
-            removeAllActive();
-            addActive(current_focus);
-        }
-
-        // if "Enter" key is pressed.
-        if (e.keyCode === 13) {
-            e.preventDefault();
-            const current_item = document.querySelector(
-                ".search__result__single.active"
-            );
-            // if an item is selected,
-            // then redirect to its link
-            if (current_item !== null) {
-                const link = current_item.firstChild["href"];
-                window.location.href = link;
+            if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
+                fetchAndGenerateResults(search_url, project);
             } else {
-                // submit search form if there
-                // is no active item.
-                const form = document.querySelector("div[role='search'] form");
-                search_bar.value = SEARCH_QUERY || "";
-                form.submit();
+                removeResults();
             }
-        }
-    });
+        });
 
-    search_outer_wrapper.addEventListener("click", e => {
-        // HACK: only close the search modal if the
-        // element clicked has <body> as the parent Node.
-        // This is done so that search modal only gets closed
-        // if the user clicks on the backdrop area.
-        if (e.target.parentNode === document.body) {
+        search_outer_input.addEventListener("keydown", e => {
+            // if "ArrowDown is pressed"
+            if (e.keyCode === 40) {
+                e.preventDefault();
+                current_focus += 1;
+                if (current_focus > TOTAL_RESULTS) {
+                    current_focus = 1;
+                }
+                removeAllActive();
+                addActive(current_focus);
+            }
+
+            // if "ArrowUp" is pressed.
+            if (e.keyCode === 38) {
+                e.preventDefault();
+                current_focus -= 1;
+                if (current_focus < 1) {
+                    current_focus = TOTAL_RESULTS;
+                }
+                removeAllActive();
+                addActive(current_focus);
+            }
+
+            // if "Enter" key is pressed.
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                const current_item = document.querySelector(
+                    ".search__result__single.active"
+                );
+                // if an item is selected,
+                // then redirect to its link
+                if (current_item !== null) {
+                    const link = current_item.firstChild["href"];
+                    window.location.href = link;
+                } else {
+                    // submit search form if there
+                    // is no active item.
+                    const form = document.querySelector(
+                        "div[role='search'] form"
+                    );
+                    search_bar.value = SEARCH_QUERY || "";
+                    form.submit();
+                }
+            }
+        });
+
+        search_outer_wrapper.addEventListener("click", e => {
+            // HACK: only close the search modal if the
+            // element clicked has <body> as the parent Node.
+            // This is done so that search modal only gets closed
+            // if the user clicks on the backdrop area.
+            if (e.target.parentNode === document.body) {
+                removeSearchModal();
+            }
+        });
+
+        // close the search modal if clicked on cross icon.
+        cross_icon.addEventListener("click", e => {
             removeSearchModal();
-        }
-    });
+        });
 
-    // close the search modal if clicked on cross icon.
-    cross_icon.addEventListener("click", e => {
-        removeSearchModal();
-    });
-
-    // close the search modal if the user pressed
-    // Escape button
-    document.addEventListener("keydown", e => {
-        if (e.keyCode === 27) {
-            removeSearchModal();
-        }
-    });
+        // close the search modal if the user pressed
+        // Escape button
+        document.addEventListener("keydown", e => {
+            if (e.keyCode === 27) {
+                removeSearchModal();
+            }
+        });
+    }
 });
