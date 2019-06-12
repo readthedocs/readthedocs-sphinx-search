@@ -11,12 +11,12 @@ before_script:
   - wget -N https://chromedriver.storage.googleapis.com/76.0.3809.12/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/
   - rm ~/chromedriver_linux64.zip
-  - sudo mv -f ~/chromedriver /usr/local/share/
-  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo mv -f ~/chromedriver /usr/local/bin/
+  - sudo chmod +x /usr/local/bin/chromedriver
   - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz -P ~/
   - tar xvzf ~/geckodriver-v0.24.0-linux64.tar.gz -C ~/
   - rm ~/geckodriver-v0.24.0-linux64.tar.gz
-  - sudo mv -f ~/geckodriver /usr/local/share/
-  - sudo chmod +x /usr/local/share/geckodriver
+  - sudo mv -f ~/geckodriver /usr/local/bin/
+  - sudo chmod +x /usr/local/bin/geckodriver
 script:
   - tox
