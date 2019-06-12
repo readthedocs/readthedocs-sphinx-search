@@ -13,9 +13,3 @@ Features
 * User should be able to iterate through the results by ArrowUp/ArrowDown buttons.
   There should be smooth scrolling.
 * When the search modal appears, there should be no previous results or previous query.
-
-.. toctree::
-   :glob:
-   :caption: Table of Contents
-
-   *
