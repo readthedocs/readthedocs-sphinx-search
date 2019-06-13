@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import json
 import pytest
 import shutil
 import sphinx
@@ -13,16 +14,34 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-# directory where the example docs are located for testing
+# Directory where the example docs are located for testing
 TEST_DOCS_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'example')
+
+READTHEDOCS_DATA = {
+    'project': 'docs',
+    'version': 'latest',
+    'language': 'en',
+    'api_host': 'https://readthedocs.org/',
+}
+
+# This will be inserted in the html page
+# to support the working of extension
+# in test cases.
+SCRIPT_TAG = '<script>var READTHEDOCS_DATA = {};</script>'.format(json.dumps(READTHEDOCS_DATA))
 
 
 @pytest.fixture(scope='module', autouse=True)
 def remove_build_folder():
     """Remove _build folder, if exist."""
     _build_path = os.path.join(TEST_DOCS_SRC, '_build')
-    if os.path.exists(_build_path):
-        shutil.rmtree(_build_path)
+
+    def delete_build_path():
+        if os.path.exists(_build_path):
+            shutil.rmtree(_build_path)
+    
+    delete_build_path()
+    yield
+    delete_build_path()
 
 
 class TestExtensionWorking:
@@ -48,7 +67,7 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
         self.driver.get('file://%s' % path)
-        assert 'readthedocs-sphinx-search' in self.driver.title, 'title of the documentation is wrong'
+        assert 'readthedocs-sphinx-search' in self.driver.title, 'title of the documentation must contains "readthedocs-sphinx-search"'
 
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
     def test_appending_of_initial_html(self, app, status, warning):
@@ -56,8 +75,9 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
+
             search_outer_wrapper = self.driver.find_elements_by_class_name('search__outer__wrapper')
 
             # there should be only one of these element
@@ -70,17 +90,17 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
 
             sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
             search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
 
             assert search_outer_wrapper.is_displayed() == False, 'search modal should not be displayed when the page loads'
-            
+
             sphinx_search_input.click()
             WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
-            
+
             assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
 
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
@@ -89,12 +109,12 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
 
             sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
             sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, '.search__outer__wrapper')))
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'search__outer__wrapper')))
 
             search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
             assert sphinx != self.driver.switch_to.active_element, 'active element should be search input field of the modal and not the default search field'
@@ -102,11 +122,11 @@ class TestExtensionFrontend:
 
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
     def test_closing_the_modal_by_clicking_on_backdrop(self, app, status, warning):
-        """Test if the search modal is closed when clicked on backdrop."""
+        """Test if the search modal is closed when user clicks on backdrop."""
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
 
             sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
@@ -132,7 +152,7 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
             sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
             search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
@@ -140,6 +160,7 @@ class TestExtensionFrontend:
             WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
             assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
 
+            # active element is the search input on the modal
             self.driver.switch_to.active_element.send_keys(Keys.ESCAPE)
 
             assert search_outer_wrapper.is_displayed() == False, 'search modal should disappear after pressing Escape button'
@@ -150,7 +171,7 @@ class TestExtensionFrontend:
         app.build()
         path = app.outdir / 'index.html'
 
-        with InjectJsManager(path) as _:
+        with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
 
             sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
@@ -163,3 +184,278 @@ class TestExtensionFrontend:
             cross_icon.click()
 
             assert search_outer_wrapper.is_displayed() == False, 'search modal should disappear after clicking on cross icon'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_no_results_msg(self, app, status, warning):
+        """Test if the user is notified that there are no search results."""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        # to test this, we need to override the $.ajax function
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return params.complete(
+                        {
+                            responseJSON: {
+                                results: []
+                            }
+                        },
+                        'success'
+                    )
+                }
+            </script>
+        '''
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('no results for this')
+
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+
+            assert search_result_box.text == 'No Results Found', 'user should be notified that there are no results'
+            assert len(search_result_box.find_elements_by_css_selector('*')) == 0, 'search result box should not have any child elements because there are no results'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_error_msg(self, app, status, warning):
+        """Test if the user is notified that there is an error while performing search"""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        # to test this, we need to override the $.ajax function
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return params.error(
+                        { },
+                        'error',
+                        'Dummy Error.'
+                    )
+                }
+            </script>
+        '''
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('this will result in error')
+
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+
+            assert search_result_box.text == 'Error Occurred. Please try again.', 'user should be notified that there is an error'
+            assert len(search_result_box.find_elements_by_css_selector('*')) == 0, 'search result box should not have any child elements because there are no results'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_searching_msg(self, app, status, warning):
+        """Test if the user is notified that search is in progress."""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        # to test this, we need to override the $.ajax function
+        # setTimeout is used here to give a real feel of the API call
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return setTimeout(function(params){
+                        return params.complete(
+                            {
+                                responseJSON: {
+                                    results: []
+                               }
+                            },
+                            'success'
+                        )
+                    }, 2000, params);
+                }
+            </script>
+        '''
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('serching the results')
+
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            assert search_result_box.text == 'Searching ....', 'user should be notified that search is in progress'
+            assert len(search_result_box.find_elements_by_css_selector('*')) == 0, 'search result box should not have any child elements because there are no results'
+
+            WebDriverWait(self.driver, 10).until(EC.text_to_be_present_in_element((By.CLASS_NAME, 'search__result__box'), 'No Results Found'))
+
+            # fetching search_result_box again to update its content
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            assert search_result_box.text == 'No Results Found', 'user should be notified that there are no results'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_results_displayed_to_user(self, app, status, warning):
+        """Test if the results are displayed correctly to the user."""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        dummy_results_path = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'dummy_results.json'
+        )
+
+        with open(dummy_results_path, 'r') as f:
+            dummy_res = f.read()
+
+        # to test this, we need to override the $.ajax function
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return params.complete(
+                        {
+                            responseJSON: %s
+                        }
+                    )
+                }
+            </script>
+        ''' % dummy_res
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('sphinx')
+
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, 'search__result__single')))
+
+            # fetching search_result_box again to update its content
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            assert len(search_result_box.find_elements_by_class_name('search__result__single')) == 10, 'search result box should have maximum 10 results'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_navigate_results_with_arrow_up_and_down(self, app, status, warning):
+        """Test if the user is able to navigate through search results via arrow up and down keys."""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        dummy_results_path = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'dummy_results.json'
+        )
+
+        with open(dummy_results_path, 'r') as f:
+            dummy_res = f.read()
+
+        # to test this, we need to override the $.ajax function
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return params.complete(
+                        {
+                            responseJSON: %s
+                        }
+                    )
+                }
+            </script>
+        ''' % dummy_res
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('sphinx')
+
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, 'search__result__single')))
+
+            # fetching search_result_box again to update its content
+            search_result_box = self.driver.find_element_by_class_name('search__result__box')
+            results = self.driver.find_elements_by_class_name('search__result__single')
+
+            search_outer_input.send_keys(Keys.DOWN)
+            assert results[0] == self.driver.find_element_by_css_selector('.search__result__single.active'), 'first result should be active'
+
+            search_outer_input.send_keys(Keys.DOWN)
+            assert results[1] == self.driver.find_element_by_css_selector('.search__result__single.active'), 'second result should be active'
+
+            search_outer_input.send_keys(Keys.UP)
+            search_outer_input.send_keys(Keys.UP)
+            assert results[-1] == self.driver.find_element_by_css_selector('.search__result__single.active'), 'last result should be active'
+
+            search_outer_input.send_keys(Keys.DOWN)
+            assert results[0] == self.driver.find_element_by_css_selector('.search__result__single.active'), 'first result should be active'
+
+    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+    def test_enter_button_on_input_field_when_no_result_active(self, app, status, warning):
+        """Test if pressing Enter on search input field, when no result is active, redirects the user to the search page."""
+        app.build()
+        path = app.outdir / 'index.html'
+
+        # to test this, we need to override the $.ajax function
+        ajax_func = '''
+            <script>
+                $.ajax = function(params) {
+                    return params.error(
+                        { },
+                        'error',
+                        'Dummy Error.'
+                    )
+                }
+            </script>
+        '''
+
+        injected_script = SCRIPT_TAG + ajax_func
+
+        with InjectJsManager(path, injected_script) as _:
+            self.driver.get('file://%s' % path)
+
+            sphinx_search_input = self.driver.find_element_by_css_selector('div[role="search"] input')
+            search_outer_wrapper = self.driver.find_element_by_class_name('search__outer__wrapper')
+            sphinx_search_input.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of(search_outer_wrapper))
+            assert search_outer_wrapper.is_displayed() == True, 'search modal should open after clicking on input field'
+
+            search_outer_input = self.driver.find_element_by_class_name('search__outer__input')
+            search_outer_input.send_keys('i am searching')
+            search_outer_input.send_keys(Keys.ENTER)
+
+            # enter button should redirect the user to search page
+            assert 'search.html' in self.driver.current_url, 'search.html must be in the url of the page'
+            assert 'Search' in self.driver.title, '"Search" must be in the title of the page'
