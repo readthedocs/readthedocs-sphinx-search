@@ -1,4 +1,4 @@
 prune common
 include LICENSE
-include sphinx_es_suggest/_static/js/sphinx_es_suggest.js
-include sphinx_es_suggest/_static/css/sphinx_es_suggest.css
+include sphinx_search/_static/js/rtd_sphinx_search.js
+include sphinx_search/_static/css/rtd_sphinx_search.css
