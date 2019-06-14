@@ -59,9 +59,7 @@ def remove_build_folder():
 
 class TestExtensionWorking:
 
-    """
-    Test if the extension is working correctly.
-    """
+    """Test if the extension is working correctly."""
 
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
     def test_static_files_exists(self, app, status, warning):
@@ -69,8 +67,8 @@ class TestExtensionWorking:
         app.build()
         path = app.outdir
 
-        js_file = os.path.join(path, '_static', 'js', 'sphinx_es_suggest.js')
-        css_file = os.path.join(path, '_static', 'css', 'sphinx_es_suggest.css')
+        js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.js')
+        css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.css')
 
         assert (
             os.path.exists(js_file) is True

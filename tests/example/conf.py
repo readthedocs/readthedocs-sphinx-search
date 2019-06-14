@@ -2,5 +2,5 @@
 
 master_doc = 'index'
 extensions = [
-    'sphinx_es_suggest.extension',
+    'sphinx_search.extension',
 ]
