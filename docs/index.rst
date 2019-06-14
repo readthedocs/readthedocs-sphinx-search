@@ -38,6 +38,7 @@ The CSS is also autoprefixed to extend the support to most of the browsers.
 
    installation
    custom-design
+   testing
    get-involved
 
 
