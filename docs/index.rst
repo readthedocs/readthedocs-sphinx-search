@@ -4,7 +4,7 @@ readthedocs-sphinx-search
 ``readthedocs-sphinx-search`` is a `Sphinx`_ extension to enable `Read the Docs`_'s
 in-doc search UI.
 
-This extension is originally developed to be used on `Read the Docs`_.
+This extension is developed to be used on `Read the Docs`_.
 
 
 In-Doc Search UI
