@@ -17,8 +17,8 @@ class TestExtensionWorking:
         app.build()
         path = app.outdir
 
-        js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.js')
-        css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.css')
+        js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.min.js')
+        css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.min.css')
 
         assert (
             os.path.exists(js_file) is True
