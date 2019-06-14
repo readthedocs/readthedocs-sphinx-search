@@ -9,14 +9,8 @@ addons:
   chrome: stable
 matrix:
   include:
-    - python: 2.7
-      env: TOXENV=ALL
     - python: 3.6
-      env: TOXENV=ALL,docs
-    - python: 3.7
-      env: TOXENV=ALL
-    - python: 3.8
-      env: TOXENV=ALL
+      env: TOXENV=docs
 install:
   pip install tox-travis
 before_script:
