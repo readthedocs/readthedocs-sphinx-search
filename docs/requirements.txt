@@ -3,3 +3,4 @@ sphinx-prompt==1.1.0
 sphinx-tabs==1.1.10
 sphinx-rtd-theme==0.4.3
 sphinx-notfound-page==0.3
+git+https://github.com/rtfd/readthedocs-sphinx-search@master
