@@ -42,6 +42,27 @@ class TestExtensionFrontend:
 
     """UI tests for testing javascript."""
 
+    def open_search_modal(self, driver):
+        sphinx_search_input = driver.find_element_by_css_selector(
+            'div[role="search"] input'
+        )
+        search_outer_wrapper = driver.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is False
+        ), 'search modal should not be displayed when the page loads'
+
+        sphinx_search_input.click()
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of(search_outer_wrapper)
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is True
+        ), 'search modal should open after clicking on input field'
+
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
     def test_index_page_opening(self, app, status, warning):
         """Test if `index.html` is generated/opening correctly."""
@@ -82,26 +103,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is False
-            ), 'search modal should not be displayed when the page loads'
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
     @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
     def test_focussing_of_input_field(self, app, status, warning):
@@ -111,23 +113,17 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
+            self.open_search_modal(self.driver)
 
             sphinx_search_input = self.driver.find_element_by_css_selector(
                 'div[role="search"] input'
             )
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located(
-                    (By.CLASS_NAME, 'search__outer__wrapper')
-                )
-            )
-
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
             )
 
             assert (
-                sphinx != self.driver.switch_to.active_element
+                sphinx_search_input != self.driver.switch_to.active_element
             ), 'active element should be input field of the modal and not the default search field'
 
             assert (
@@ -142,27 +138,11 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
+            self.open_search_modal(self.driver)
 
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
+            search_outer_wrapper = driver.find_element_by_class_name(
                 'search__outer__wrapper'
             )
-
-            assert (
-                search_outer_wrapper.is_displayed() is False
-            ), 'search modal should not be displayed when the page loads'
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
-
             search_outer = self.driver.find_element_by_class_name('search__outer')
             actions = webdriver.common.action_chains.ActionChains(self.driver)
             actions.move_to_element_with_offset(
@@ -183,22 +163,11 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
+            self.open_search_modal(self.driver)
+            
             search_outer_wrapper = self.driver.find_element_by_class_name(
                 'search__outer__wrapper'
             )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
 
             # active element is the search input on the modal
             self.driver.switch_to.active_element.send_keys(Keys.ESCAPE)
@@ -215,24 +184,15 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, SCRIPT_TAG) as _:
             self.driver.get('file://%s' % path)
+            self.open_search_modal(self.driver)
 
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
             search_outer_wrapper = self.driver.find_element_by_class_name(
                 'search__outer__wrapper'
             )
 
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
+            cross_icon = self.driver.find_element_by_class_name(
+                'search__cross'
             )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
-
-            cross_icon = self.driver.find_element_by_class_name('search__cross')
             cross_icon.click()
 
             assert (
@@ -265,22 +225,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
@@ -321,22 +266,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
@@ -383,22 +313,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
@@ -459,22 +374,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
@@ -529,22 +429,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
@@ -617,22 +502,7 @@ class TestExtensionFrontend:
 
         with InjectJsManager(path, injected_script) as _:
             self.driver.get('file://%s' % path)
-
-            sphinx_search_input = self.driver.find_element_by_css_selector(
-                'div[role="search"] input'
-            )
-            search_outer_wrapper = self.driver.find_element_by_class_name(
-                'search__outer__wrapper'
-            )
-
-            sphinx_search_input.click()
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of(search_outer_wrapper)
-            )
-
-            assert (
-                search_outer_wrapper.is_displayed() is True
-            ), 'search modal should open after clicking on input field'
+            self.open_search_modal(self.driver)
 
             search_outer_input = self.driver.find_element_by_class_name(
                 'search__outer__input'
