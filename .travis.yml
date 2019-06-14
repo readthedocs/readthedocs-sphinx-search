@@ -2,8 +2,8 @@ language: python
 dist: xenial
 python:
   - 2.7
-  - 3.6
   - 3.5
+  - 3.6
   - 3.7
 addons:
   chrome: stable
@@ -22,3 +22,6 @@ before_script:
   - sudo chmod +x /usr/local/bin/geckodriver
 script:
   - tox
+branches:
+  only:
+  - master
