@@ -1,0 +1,13 @@
+version: 2
+
+python:
+  version: 3
+  install:
+    - method: pip
+      path: .
+    - requirements: docs/requirements.txt
+
+sphinx:
+  configuration: docs/conf.py
+
+formats: all
