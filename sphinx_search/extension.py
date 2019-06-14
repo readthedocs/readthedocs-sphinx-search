@@ -2,8 +2,8 @@ import os
 from sphinx.util.fileutil import copy_asset
 
 CUSTOM_ASSETS_FILES = [
-    os.path.join('js', 'sphinx_es_suggest.min.js'),
-    os.path.join('css', 'sphinx_es_suggest.min.css'),
+    os.path.join('js', 'rtd_sphinx_search.min.js'),
+    os.path.join('css', 'rtd_sphinx_search.min.css'),
 ]
 
 
