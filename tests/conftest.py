@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""Pytest fixtures and other things."""
+
+import os
+import shutil
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.ie.options import Options as IeOptions
+
+from tests import TEST_DOCS_SRC
 
 
 pytest_plugins = 'sphinx.testing.fixtures'
@@ -28,3 +34,17 @@ def driver_init(request):
     request.cls.driver = web_driver
     yield
     web_driver.close()
+
+
+@pytest.fixture(scope='module', autouse=True)
+def remove_build_folder():
+    """Remove _build folder, if exist."""
+    _build_path = os.path.join(TEST_DOCS_SRC, '_build')
+
+    def delete_build_path():
+        if os.path.exists(_build_path):
+            shutil.rmtree(_build_path)
+
+    delete_build_path()
+    yield
+    delete_build_path()

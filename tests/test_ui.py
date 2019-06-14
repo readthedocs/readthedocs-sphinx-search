@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""UI tests for the extensions."""
+"""UI tests."""
 
 import os
 import json
@@ -15,13 +15,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from tests.utils import InjectJsManager
+from tests import TEST_DOCS_SRC
 
-
-# Directory where the example docs are located for testing
-TEST_DOCS_SRC = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    'example'
-)
 
 DUMMY_RESULTS = os.path.join(
     os.path.abspath(os.path.dirname(__file__)),
@@ -41,42 +36,6 @@ READTHEDOCS_DATA = {
 SCRIPT_TAG = '<script>var READTHEDOCS_DATA = {};</script>'.format(
     json.dumps(READTHEDOCS_DATA)
 )
-
-
-@pytest.fixture(scope='module', autouse=True)
-def remove_build_folder():
-    """Remove _build folder, if exist."""
-    _build_path = os.path.join(TEST_DOCS_SRC, '_build')
-
-    def delete_build_path():
-        if os.path.exists(_build_path):
-            shutil.rmtree(_build_path)
-
-    delete_build_path()
-    yield
-    delete_build_path()
-
-
-class TestExtensionWorking:
-
-    """Test if the extension is working correctly."""
-
-    @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
-    def test_static_files_exists(self, app, status, warning):
-        """Test if the static files are present in the _build folder."""
-        app.build()
-        path = app.outdir
-
-        js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.js')
-        css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.css')
-
-        assert (
-            os.path.exists(js_file) is True
-        ), 'js file should be copied to build folder'
-
-        assert (
-            os.path.exists(css_file) is True
-        ), 'css file should be copied to build folder'
 
 
 class TestExtensionFrontend:

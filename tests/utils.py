@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Utils for testing."""
+
 import os
 
 
