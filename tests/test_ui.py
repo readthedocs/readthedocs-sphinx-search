@@ -140,7 +140,7 @@ class TestExtensionFrontend:
             self.driver.get('file://%s' % path)
             self.open_search_modal(self.driver)
 
-            search_outer_wrapper = driver.find_element_by_class_name(
+            search_outer_wrapper = self.driver.find_element_by_class_name(
                 'search__outer__wrapper'
             )
             search_outer = self.driver.find_element_by_class_name('search__outer')
@@ -319,7 +319,7 @@ class TestExtensionFrontend:
                 'search__outer__input'
             )
             search_outer_input.send_keys(
-                'serching the results'
+                'searching the results'
             )
             search_result_box = self.driver.find_element_by_class_name(
                 'search__result__box'
@@ -509,6 +509,10 @@ class TestExtensionFrontend:
             )
             search_outer_input.send_keys('i am searching')
             search_outer_input.send_keys(Keys.ENTER)
+
+            WebDriverWait(self.driver, 10).until(
+                EC.url_matches(app.outdir / 'search.html')
+            )
 
             # enter button should redirect the user to search page
             assert (
