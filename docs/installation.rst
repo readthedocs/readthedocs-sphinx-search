@@ -29,5 +29,8 @@ Then, enable this extension by adding it to your ``conf.py``.
     ]
 
 After installing the package and adding it to your ``conf.py`` file,
-build your documentation again on Read the Docs and then you can see the search
+build your documentation again on `Read the Docs`_ and then you can see the search
 UI in your documentation.
+
+
+.. _Read the Docs: https://readthedocs.org/

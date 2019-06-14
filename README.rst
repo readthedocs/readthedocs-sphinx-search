@@ -1,7 +1,7 @@
 readthedocs-sphinx-search
 =========================
 
-|docs|
+|docs| |license|
 
 Sphinx extension to enable `search as you type` feature for docs hosted by Read the Docs.
 
@@ -37,3 +37,7 @@ Check out the full documentation at https://readthedocs-sphinx-search.readthedoc
     :alt: Documentation Status
     :scale: 100%
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
+
+.. |License| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
+   :target: LICENSE
+   :alt: Repository license
