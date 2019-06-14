@@ -1,0 +1,35 @@
+{
+  "name": "sphinx-es-suggest",
+  "version": "0.0.1",
+  "description": "Enable search-as-you-type feature.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dojutsu-user/sphinx-es-suggest.git"
+  },
+  "author": "Vaibhav Gupta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dojutsu-user/sphinx-es-suggest/issues"
+  },
+  "homepage": "https://github.com/dojutsu-user/sphinx-es-suggest",
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "browserslist": "^4.6.1",
+    "del": "^4.1.1",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-csso": "^3.0.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.2",
+    "run-sequence": "^2.2.1"
+  },
+  "browserslist": [
+    "last 10 versions",
+    "ie 11"
+  ]
+}
