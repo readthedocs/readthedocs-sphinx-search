@@ -16,23 +16,13 @@ Install Tox via pip:
 
 Download and setup the ChromeDriver:
 
-.. prompt:: bash
-
-    wget -N https://chromedriver.storage.googleapis.com/75.0.3770.8/chromedriver_linux64.zip -P ~/
-    unzip ~/chromedriver_linux64.zip -d ~/
-    rm ~/chromedriver_linux64.zip
-    sudo mv -f ~/chromedriver /usr/local/bin/
-    sudo chmod +x /usr/local/bin/chromedriver
+.. literalinclude:: ../scripts/setup_chromedriver.sh
+    :language: bash
 
 Download and setup the GeckoDriver:
 
-.. prompt:: bash
-
-    wget -N https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz -P ~/
-    tar xvzf ~/geckodriver-v0.24.0-linux64.tar.gz -C ~/
-    rm ~/geckodriver-v0.24.0-linux64.tar.gz
-    sudo mv -f ~/geckodriver /usr/local/bin/
-    sudo chmod +x /usr/local/bin/geckodriver
+.. literalinclude:: ../scripts/setup_geckodriver.sh
+    :language: bash
 
 To run the full test suite against your changes, simply run Tox.
 Tox should return without any errors.

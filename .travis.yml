@@ -14,16 +14,8 @@ matrix:
 install:
   pip install tox-travis
 before_script:
-  - wget -N https://chromedriver.storage.googleapis.com/75.0.3770.8/chromedriver_linux64.zip -P ~/
-  - unzip ~/chromedriver_linux64.zip -d ~/
-  - rm ~/chromedriver_linux64.zip
-  - sudo mv -f ~/chromedriver /usr/local/bin/
-  - sudo chmod +x /usr/local/bin/chromedriver
-  - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz -P ~/
-  - tar xvzf ~/geckodriver-v0.24.0-linux64.tar.gz -C ~/
-  - rm ~/geckodriver-v0.24.0-linux64.tar.gz
-  - sudo mv -f ~/geckodriver /usr/local/bin/
-  - sudo chmod +x /usr/local/bin/geckodriver
+  - sudo ./scripts/setup_chromedriver.sh
+  - sudo ./scripts/setup_geckodriver.sh
 script:
   - tox -- --driver Chrome
   - tox -- --driver Firefox
