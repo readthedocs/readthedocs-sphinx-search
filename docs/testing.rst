@@ -36,17 +36,31 @@ Download and setup the GeckoDriver:
 
 To run the full test suite against your changes, simply run Tox.
 Tox should return without any errors.
-You can run Tox against all of our environments by running:
+You can run Tox against all of our environments and both browsers by running:
 
 .. prompt:: bash
 
     tox
 
-To target a specific environment:
+To run tests with a specific environment and for both browsers:
 
 .. prompt:: bash
 
     tox -e py36-sphinx20
+
+To run tests with a specific environment and for a specified browser:
+
+.. prompt:: bash
+
+    tox -e py36-sphinx20 -- --driver Chrome  # run tests with Python 3.6 and Sphinx < 2.1 with Chrome browser
+    tox -e py36-sphinx20 -- --driver Firefox  # run tests with Python 3.6 and Sphinx < 2.1 with Firefox browser
+
+To run tests against all environments but with a specified browser:
+
+.. prompt:: bash
+
+    tox -- --driver Chrome  # run tests with all environments with Chrome browser
+    tox -- --driver Firefox  # run tests with all environments with Firefox browser
 
 The ``tox`` configuration has the following environments configured.
 You can target a single environment to limit the test suite:

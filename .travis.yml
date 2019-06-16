@@ -25,7 +25,8 @@ before_script:
   - sudo mv -f ~/geckodriver /usr/local/bin/
   - sudo chmod +x /usr/local/bin/geckodriver
 script:
-  - tox
+  - tox -- driver Chrome
+  - tox -- driver Firefox
 branches:
   only:
   - master
