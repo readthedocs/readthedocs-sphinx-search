@@ -1,5 +1,4 @@
 language: python
-sudo: required
 dist: xenial
 python:
   - 2.7
@@ -15,8 +14,8 @@ matrix:
 install:
   pip install tox-travis
 before_script:
-  - ./scripts/setup_chromedriver.sh
-  - ./scripts/setup_geckodriver.sh
+  - sudo bash ./scripts/setup_chromedriver.sh
+  - sudo bash ./scripts/setup_geckodriver.sh
 script:
   - tox -- --driver Chrome
   - tox -- --driver Firefox
