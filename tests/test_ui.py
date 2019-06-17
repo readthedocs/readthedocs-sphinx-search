@@ -531,3 +531,7 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
         assert (
             'Search' in selenium.title
         ), '"Search" must be in the title of the page'
+
+
+def test_fail():
+    assert 0
