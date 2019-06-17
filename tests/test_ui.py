@@ -65,7 +65,7 @@ def test_index_page_opening(selenium, app, status, warning):
     """Test if `index.html` is generated/opening correctly."""
     app.build()
     path = app.outdir / 'index.html'
-    selenium.get('file://%s' % path)
+    selenium.get(f'file://{path}')
     assert (
         'readthedocs-sphinx-search' in selenium.title
     ), 'title of the documentation must contains "readthedocs-sphinx-search"'
@@ -78,7 +78,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
 
         search_outer_wrapper = selenium.find_elements_by_class_name(
             'search__outer__wrapper'
@@ -101,7 +101,7 @@ def test_opening_of_search_modal(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
 
@@ -112,7 +112,7 @@ def test_focussing_of_input_field(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         sphinx_search_input = selenium.find_element_by_css_selector(
@@ -138,7 +138,7 @@ def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warnin
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_wrapper = selenium.find_element_by_class_name(
@@ -164,7 +164,7 @@ def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
         
         search_outer_wrapper = selenium.find_element_by_class_name(
@@ -186,7 +186,7 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     with InjectJsManager(path, SCRIPT_TAG) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_wrapper = selenium.find_element_by_class_name(
@@ -228,7 +228,7 @@ def test_no_results_msg(selenium, app, status, warning):
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
@@ -270,7 +270,7 @@ def test_error_msg(selenium, app, status, warning):
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
@@ -318,7 +318,7 @@ def test_searching_msg(selenium, app, status, warning):
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
@@ -365,22 +365,22 @@ def test_results_displayed_to_user(selenium, app, status, warning):
         dummy_res = f.read()
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
+    ajax_func = f'''
         <script>
-            $.ajax = function(params) {
+            $.ajax = function(params) {{
                 return params.complete(
-                    {
-                        responseJSON: %s
-                    }
+                    {{
+                        responseJSON: { dummy_res }
+                    }}
                 )
-            }
+            }}
         </script>
-    ''' % dummy_res
+    '''
 
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
@@ -421,22 +421,22 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
         dummy_res = f.read()
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
+    ajax_func = f'''
         <script>
-            $.ajax = function(params) {
+            $.ajax = function(params) {{
                 return params.complete(
-                    {
-                        responseJSON: %s
-                    }
+                    {{
+                        responseJSON: { dummy_res }
+                    }}
                 )
-            }
+            }}
         </script>
-    ''' % dummy_res
+    '''
 
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
@@ -510,7 +510,7 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
-        selenium.get('file://%s' % path)
+        selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
         search_outer_input = selenium.find_element_by_class_name(
