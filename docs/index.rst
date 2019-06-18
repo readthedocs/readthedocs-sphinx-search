@@ -40,7 +40,7 @@ The CSS is also autoprefixed to extend the support to most of the browsers.
 
    installation
    custom-design
-   build-docs-locally
+   development
    get-involved
 
 
@@ -52,7 +52,7 @@ The CSS is also autoprefixed to extend the support to most of the browsers.
     :alt: Documentation Status
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
-.. |License| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
+.. |license| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
    :target: LICENSE
    :alt: Repository license
 

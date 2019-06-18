@@ -1,6 +1,15 @@
 Installation
 ============
 
+.. note::
+
+    This extension is developed to be used only on `Read the Docs`_.
+    If you are building your documentation locally,
+    this extension will degrade gracefully.
+    However, if you have a local instance of Read the Docs running,
+    you can make this extension work by building your documentation with it by
+    following the instructions on the :doc:`Development page <development>`.
+
 Install the package
 
 .. tabs::
@@ -9,7 +18,7 @@ Install the package
 
         .. prompt:: bash
 
-            <Coming Soon>
+            pip install readthedocs-sphinx-search
 
     .. tab:: from GitHub
 
