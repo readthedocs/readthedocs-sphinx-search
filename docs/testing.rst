@@ -57,29 +57,17 @@ You can target a single environment to limit the test suite:
 
 .. code-block:: text
 
-    py27-sphinx18
-        Run test suite with Python 2.7 and Sphinx<1.9
-
-    py35-sphinx18
-        Run test suite with Python 3.5 and Sphinx<1.9
-
     py36-sphinx18
         Run test suite with Python 3.6 and Sphinx<1.9
-
-    py35-sphinx20
-        Run test suite with Python 3.5 and Sphinx<2.1
 
     py36-sphinx20
         Run test suite with Python 3.6 and Sphinx<2.1
 
-    py37-sphinx20
-        Run test suite with Python 3.7 and Sphinx<2.1
-
-    py35-sphinx21
-        Run test suite with Python 3.5 and Sphinx 2.1.0
-
     py36-sphinx21
         Run test suite with Python 3.6 and Sphinx 2.1.0
+
+    py37-sphinx20
+        Run test suite with Python 3.7 and Sphinx<2.1
 
     py37-sphinx21
         Run test suite with Python 3.7 and Sphinx 2.1.0
