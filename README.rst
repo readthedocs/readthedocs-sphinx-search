@@ -1,7 +1,7 @@
 readthedocs-sphinx-search
 =========================
 
-|docs| |license|
+|docs| |license| |build-status|
 
 Sphinx extension to enable `search as you type` feature for docs hosted by Read the Docs.
 
@@ -11,7 +11,7 @@ Installation
 
 ::
 
-   pip install git+https://github.com/rtfd/readthedocs-sphinx-search@master
+   pip install readthedocs-sphinx-search
 
 
 Configuration
@@ -38,6 +38,10 @@ Check out the full documentation at https://readthedocs-sphinx-search.readthedoc
     :scale: 100%
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
-.. |License| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
+.. |license| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
    :target: LICENSE
    :alt: Repository license
+
+.. |build-status| image:: https://travis-ci.org/rtfd/readthedocs-sphinx-search.svg?branch=master
+   :alt: Build Status
+   :target: https://travis-ci.org/rtfd/readthedocs-sphinx-search
