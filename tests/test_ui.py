@@ -93,6 +93,26 @@ def test_appending_of_initial_html(selenium, app, status, warning):
             search_outer_wrapper[0].is_displayed() is False
         ), 'search outer wrapper shoud not be displayed when the page loads'
 
+        initial_html = """
+            <div class="search__outer__wrapper search__backdrop">
+                <div class="search__outer">
+                    <div class="search__cross" title="Close">
+                        <!--?xml version='1.0' encoding='UTF-8'?-->
+                        <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
+                        </svg>
+                    </div>
+                    <input class="search__outer__input" placeholder="Search ...">
+                    <span class="bar"></span>
+                </div>
+            </div>
+        """
+        # removing all whitespaces and newlines between html tags
+        initial_html = [ele.strip() for ele in initial_html.split('\n') if ele]
+
+        assert (
+            ''.join(initial_html) in selenium.page_source
+        ), 'initial html must be present when the page finished loading.'
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_opening_of_search_modal(selenium, app, status, warning):
