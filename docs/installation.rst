@@ -1,6 +1,15 @@
 Installation
 ============
 
+.. note::
+
+    This extension is developed to be used only on `Read the Docs`_.
+    If you are building your documentation locally,
+    this extension will degrade gracefully.
+    However, if you have a local instance of Read the Docs running,
+    you can make this extension work by building your documentation with it by
+    following the instructions on the :doc:`Development page <development>`.
+
 Install the package
 
 .. tabs::
@@ -9,7 +18,7 @@ Install the package
 
         .. prompt:: bash
 
-            <Coming Soon>
+            <Coming-Soon>
 
     .. tab:: from GitHub
 
@@ -29,5 +38,8 @@ Then, enable this extension by adding it to your ``conf.py``.
     ]
 
 After installing the package and adding it to your ``conf.py`` file,
-build your documentation again on Read the Docs and then you can see the search
+build your documentation again on `Read the Docs`_ and then you can see the search
 UI in your documentation.
+
+
+.. _Read the Docs: https://readthedocs.org/

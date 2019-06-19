@@ -1,6 +1,8 @@
 readthedocs-sphinx-search
 =========================
 
+|docs| |license| |build-status|
+
 ``readthedocs-sphinx-search`` is a `Sphinx`_ extension to enable `Read the Docs`_'s
 in-doc search UI.
 
@@ -19,7 +21,7 @@ which supports ``search as you type`` feature.
     :align: center
     :target: ./_static/demo.gif
 
-    Demo
+    demo
 
 Browser Support
 ~~~~~~~~~~~~~~~
@@ -34,13 +36,27 @@ The CSS is also autoprefixed to extend the support to most of the browsers.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Table of Contents
 
    installation
    custom-design
+   development
    testing
    get-involved
 
 
 .. _Sphinx: https://www.sphinx-doc.org/
 .. _Read the Docs: https://readthedocs.org
+
+
+.. |docs| image:: https://readthedocs.org/projects/readthedocs-sphinx-search/badge/?version=latest
+    :alt: Documentation Status
+    :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
+
+.. |license| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
+   :target: LICENSE
+   :alt: Repository license
+
+.. |build-status| image:: https://travis-ci.org/rtfd/readthedocs-sphinx-search.svg?branch=master
+   :alt: Build Status
+   :target: https://travis-ci.org/rtfd/readthedocs-sphinx-search
