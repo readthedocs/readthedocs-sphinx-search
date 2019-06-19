@@ -93,7 +93,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
             search_outer_wrapper[0].is_displayed() is False
         ), 'search outer wrapper shoud not be displayed when the page loads'
 
-        initial_html = """
+        initial_html = '''
             <div class="search__outer__wrapper search__backdrop">
                 <div class="search__outer">
                     <div class="search__cross" title="Close">
@@ -106,7 +106,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                     <span class="bar"></span>
                 </div>
             </div>
-        """
+        '''
         # removing all whitespaces and newlines between html tags
         initial_html = [ele.strip() for ele in initial_html.split('\n') if ele]
 
