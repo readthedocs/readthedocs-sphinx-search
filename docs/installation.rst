@@ -18,7 +18,7 @@ Install the package
 
         .. prompt:: bash
 
-            pip install readthedocs-sphinx-search
+            <Coming-Soon>
 
     .. tab:: from GitHub
 

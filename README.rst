@@ -11,7 +11,7 @@ Installation
 
 ::
 
-   pip install readthedocs-sphinx-search
+   pip install git+https://github.com/rtfd/readthedocs-sphinx-search@master
 
 
 Configuration
