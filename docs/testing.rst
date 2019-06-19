@@ -6,7 +6,6 @@ Testing is done using `Selenium WebDriver`_ for automating browser tests.
 
 Before running all tests locally, `ChromeDriver`_ (for testing on Chrome browser)
 and `GeckoDriver`_ (for testing on Firefox browser) are required.
-Currently `ChromeDriver v75.0.3770.8`_ and `GeckoDriver v0.24.0`_ are being used for the tests.
 
 Install Tox via pip:
 

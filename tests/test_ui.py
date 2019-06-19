@@ -571,10 +571,17 @@ def test_position_search_modal(selenium, app, status, warning):
         )
 
         window_sizes = [
-            (800, 600),     # SVGA
-            (1280, 720),    # WXCGA
-            (1366, 768),    # HD
-            (1920, 1080),   # FHD
+            # mobile-sized viewports
+            (414, 896),
+            (375, 812),
+            (414, 896),
+            (375, 812),
+
+            # desktop-sized viewports
+            (800, 600),
+            (1280, 720),
+            (1366, 768),
+            (1920, 1080),
         ]
 
         for window_size in window_sizes:
@@ -586,12 +593,12 @@ def test_position_search_modal(selenium, app, status, warning):
             calculated_x = (window_size[0] - modal_size['width'])/2
             actual_x = modal_location['x']
             assert (
-                abs(actual_x - calculated_x) < 8
-            ), 'difference between calculated and actual x coordinate should not be greater than 10 pixels'
+                abs(actual_x - calculated_x) < 10
+            ), f'difference between calculated and actual x coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
 
             # checking for vertical position
             calculated_y = (window_size[1] - modal_size['height'])/2
             actual_y = modal_location['y']
             assert (
-                abs(actual_y - calculated_y) < 8
-            ), 'difference between calculated and actual y coordinate should not be greater than 10 pixels'
+                abs(actual_y - calculated_y) < 10
+            ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
