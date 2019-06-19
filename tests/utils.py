@@ -34,3 +34,16 @@ class InjectJsManager:
         if os.path.exists(self._file):
             with open(self._file, 'w') as f:
                 f.write(self.old_content)
+
+
+def set_viewport_size(driver, width, height):
+    """Sets the viewport size to the given width and height."""
+    window_size = driver.execute_script(
+        """
+        return [window.outerWidth - window.innerWidth + arguments[0],
+            window.outerHeight - window.innerHeight + arguments[1]];
+        """,
+        width,
+        height
+    )
+    driver.set_window_size(*window_size)

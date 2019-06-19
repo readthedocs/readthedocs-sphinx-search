@@ -13,7 +13,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from tests.utils import InjectJsManager
+from tests.utils import InjectJsManager, set_viewport_size
 from tests import TEST_DOCS_SRC
 
 
@@ -551,3 +551,48 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
         assert (
             'Search' in selenium.title
         ), '"Search" must be in the title of the page'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_position_search_modal(selenium, app, status, warning):
+    """Test if the search modal is in the middle of the page."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    with InjectJsManager(path, SCRIPT_TAG) as _:
+        selenium.get(f'file://{path}')
+        open_search_modal(selenium)
+
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+        search_outer = selenium.find_element_by_class_name(
+            'search__outer'
+        )
+
+        window_sizes = [
+            (800, 600),     # SVGA
+            (1280, 720),    # WXCGA
+            (1366, 768),    # HD
+            (1920, 1080),   # FHD
+        ]
+
+        for window_size in window_sizes:
+            set_viewport_size(selenium, *window_size)
+            modal_location = search_outer.location
+            modal_size = search_outer.size
+
+            # checking for horizontal position
+            calculated_x = (window_size[0] - modal_size['width'])/2
+            actual_x = modal_location['x']
+            assert (
+                abs(actual_x - calculated_x) < 8
+            ), 'difference between calculated and actual x coordinate should not be greater than 10 pixels'
+
+            # checking for vertical position
+            calculated_y = (window_size[1] - modal_size['height'])/2
+            actual_y = modal_location['y']
+
+            assert (
+                abs(actual_y - calculated_y) < 8
+            ), 'difference between calculated and actual y coordinate should not be greater than 10 pixels'
