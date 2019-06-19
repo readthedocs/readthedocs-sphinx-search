@@ -592,7 +592,6 @@ def test_position_search_modal(selenium, app, status, warning):
             # checking for vertical position
             calculated_y = (window_size[1] - modal_size['height'])/2
             actual_y = modal_location['y']
-
             assert (
                 abs(actual_y - calculated_y) < 8
             ), 'difference between calculated and actual y coordinate should not be greater than 10 pixels'
