@@ -87,5 +87,3 @@ https://travis-ci.org/rtfd/readthedocs-sphinx-search
 .. _Tox: https://tox.readthedocs.io/en/latest/
 .. _ChromeDriver: http://chromedriver.chromium.org/
 .. _GeckoDriver: https://github.com/mozilla/geckodriver
-.. _ChromeDriver v75.0.3770.8: https://chromedriver.storage.googleapis.com/index.html?path=75.0.3770.8/
-.. _GeckoDriver v0.24.0: https://github.com/mozilla/geckodriver/releases/tag/v0.24.0
