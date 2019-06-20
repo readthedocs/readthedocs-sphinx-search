@@ -4,6 +4,7 @@
 
 import os
 import json
+import time
 
 import pytest
 import sphinx
@@ -51,9 +52,9 @@ def open_search_modal(driver):
     ), 'search modal should not be displayed when the page loads'
 
     sphinx_search_input.click()
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of(search_outer_wrapper)
-    )
+
+    # sleep for 1 second so that the fadeIn animation gets completed
+    time.sleep(1)
 
     assert (
         search_outer_wrapper.is_displayed() is True
@@ -171,6 +172,9 @@ def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warnin
         )
         actions.click()
         actions.perform()
+        WebDriverWait(selenium, 10).until(
+            EC.invisibility_of_element(search_outer_wrapper)
+        )
 
         assert (
             search_outer_wrapper.is_displayed() is False
@@ -193,6 +197,9 @@ def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
 
         # active element is the search input on the modal
         selenium.switch_to.active_element.send_keys(Keys.ESCAPE)
+        WebDriverWait(selenium, 10).until(
+            EC.invisibility_of_element(search_outer_wrapper)
+        )
 
         assert (
             search_outer_wrapper.is_displayed() is False
@@ -217,6 +224,9 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
             'search__cross'
         )
         cross_icon.click()
+        WebDriverWait(selenium, 10).until(
+            EC.invisibility_of_element(search_outer_wrapper)
+        )
 
         assert (
             search_outer_wrapper.is_displayed() is False
