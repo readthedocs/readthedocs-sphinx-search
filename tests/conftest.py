@@ -39,6 +39,6 @@ def remove_build_folder():
     delete_build_path()
     yield
 
-	# delete _build directory (if present)
-	# after each test.
+    # delete _build directory (if present)
+    # after each test.
     delete_build_path()
