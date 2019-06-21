@@ -34,6 +34,11 @@ def remove_build_folder():
         if os.path.exists(_build_path):
             shutil.rmtree(_build_path)
 
+	# delete _build directory (if present)
+	# before each test.
     delete_build_path()
     yield
+
+	# delete _build directory (if present)
+	# after each test.
     delete_build_path()
