@@ -221,7 +221,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_loding.innerHTML = "Searching ....";
     search_outer.appendChild(search_loding);
 
-    $.ajax({
+    var request = $.ajax({
         url: search_url,
         crossDomain: true,
         xhrFields: {
@@ -263,6 +263,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
             search_outer.appendChild(err_div);
         }
     });
+    return request;
 };
 
 /**
@@ -388,6 +389,9 @@ window.addEventListener("DOMContentLoaded", evt => {
         // via tha ArrowUp/ArrowDown keys.
         let current_focus = 0;
 
+        // this stores the current ajax request.
+        let current_request = null;
+
         let search_bar = getInputField();
         search_bar.addEventListener("focus", e => {
             showSearchModal();
@@ -408,7 +412,15 @@ window.addEventListener("DOMContentLoaded", evt => {
                 convertObjToUrlParams(search_params);
 
             if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
-                fetchAndGenerateResults(search_url, project);
+                if (
+                    current_request !== null &&
+                    current_request.readyState < 4
+                ) {
+                    // cancel the ajax request if still in progress
+                    // before sending the next request.
+                    current_request.abort();
+                }
+                current_request = fetchAndGenerateResults(search_url, project);
             } else {
                 removeResults();
             }
