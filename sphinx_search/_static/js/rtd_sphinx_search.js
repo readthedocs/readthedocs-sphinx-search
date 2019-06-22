@@ -221,7 +221,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_loding.innerHTML = "Searching ....";
     search_outer.appendChild(search_loding);
 
-    var request = $.ajax({
+    let request = $.ajax({
         url: search_url,
         crossDomain: true,
         xhrFields: {
