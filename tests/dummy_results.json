@@ -1,0 +1,237 @@
+{
+    "count": 35759,
+    "next": "https://readthedocs.org/api/v2/docsearch/?language=en&page=2&project=docs&q=sphinx&version=latest",
+    "previous": null,
+    "results": [
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Getting Started with Sphinx",
+            "path": "intro/getting-started-with-sphinx",
+            "link": "https://docs.readthedocs.io/en/latest/intro/getting-started-with-sphinx",
+            "highlight": {
+                "headers": [
+                    "Getting Started with <em>Sphinx</em>",
+                    "Using Markdown with <em>Sphinx</em>"
+                ],
+                "title": ["Getting Started with <em>Sphinx</em>"],
+                "content": [
+                    "Getting Started with <em>Sphinx</em>. <em>Sphinx</em> is a powerful documentation generator that has many great features",
+                    "docs. Run <em>sphinx</em>-quickstart in there:. cd docs <em>sphinx</em>-quickstart. This quick start will walk you through",
+                    "Using Markdown with <em>Sphinx</em>. You can use Markdown and reStructuredText in the same <em>Sphinx</em> project."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Adding Custom CSS or JavaScript to a Sphinx Project",
+            "path": "guides/adding-custom-css",
+            "link": "https://docs.readthedocs.io/en/latest/guides/adding-custom-css",
+            "highlight": {
+                "headers": [
+                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project"
+                ],
+                "title": [
+                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project"
+                ],
+                "content": [
+                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project. The easiest way to add custom stylesheets or scripts",
+                    "way that allows for overriding of existing styles or scripts, is to add these files using a conf.py <em>Sphinx</em>",
+                    "Inside your conf.py, if a function setup(app) exists, <em>Sphinx</em> will call this function as a normal extension"
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Read the Docs data passed to Sphinx build context",
+            "path": "design/theme-context",
+            "link": "https://docs.readthedocs.io/en/latest/design/theme-context",
+            "highlight": {
+                "headers": [
+                    "Read the Docs data passed to <em>Sphinx</em> build context"
+                ],
+                "title": [
+                    "Read the Docs data passed to <em>Sphinx</em> build context"
+                ],
+                "content": [
+                    "Read the Docs data passed to <em>Sphinx</em> build context. Before calling <em>sphinx</em>-build to render your docs, Read",
+                    "the Docs injects some extra context in the templates by using the html_context <em>Sphinx</em> setting in the",
+                    "More information about <em>Sphinx</em> variables can be found in the <em>Sphinx</em> documentation."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Customizing Advertising",
+            "path": "advertising/ad-customization",
+            "link": "https://docs.readthedocs.io/en/latest/advertising/ad-customization",
+            "highlight": {
+                "headers": ["In <em>Sphinx</em>"],
+                "content": [
+                    "&lt;div id=&quot;ethical-ad-placement&quot;&gt;&lt;&#x2F;div&gt;. In <em>Sphinx</em>. In <em>Sphinx</em>, this is typically done by adding a new template"
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Embed API",
+            "path": "embed",
+            "link": "https://docs.readthedocs.io/en/latest/embed",
+            "highlight": {
+                "headers": ["<em>Sphinx</em> Extension"],
+                "content": [
+                    "How to use it. <em>Sphinx</em> Extension. You can embed content directly in <em>Sphinx</em> with builds on Read the Docs."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "User-defined Redirects",
+            "path": "user-defined-redirects",
+            "link": "https://docs.readthedocs.io/en/latest/user-defined-redirects",
+            "highlight": {
+                "headers": ["<em>Sphinx</em> Redirects"],
+                "content": [
+                    "<em>Sphinx</em> Redirects. We also support redirects for changing the type of documentation <em>Sphinx</em> is building."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Build Process",
+            "path": "builds",
+            "link": "https://docs.readthedocs.io/en/latest/builds",
+            "highlight": {
+                "headers": ["<em>Sphinx</em>"],
+                "content": [
+                    "<em>Sphinx</em>. When you choose <em>Sphinx</em> as your Documentation Type, we will first look for a conf.py file in your",
+                    "Then <em>Sphinx</em> will build any files with an .rst extension.",
+                    "When we build your <em>Sphinx</em> documentation, we run <em>sphinx</em>-build -b html ."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Configuration File V2",
+            "path": "config-file/v2",
+            "link": "https://docs.readthedocs.io/en/latest/config-file/v2",
+            "highlight": {
+                "headers": ["<em>sphinx</em>"],
+                "content": [
+                    "<em>sphinx</em>: configuration: docs&#x2F;conf.py # Build documentation with MkDocs #mkdocs: # configuration: mkdocs.yml",
+                    "Configuration for <em>Sphinx</em> documentation (this is the default documentation type).",
+                    "type for the <em>Sphinx</em> documentation."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Google Summer of Code",
+            "path": "gsoc",
+            "link": "https://docs.readthedocs.io/en/latest/gsoc",
+            "highlight": {
+                "headers": ["Build a new <em>Sphinx</em> theme"],
+                "content": [
+                    "Integration with OpenAPI&#x2F;Swagger. Integrate the existing tooling around OpenAPI &amp; Swagger into <em>Sphinx</em>",
+                    "theme. <em>Sphinx</em> v2 will introduce a new format for themes, supporting HTML5 and new markup.",
+                    "We are hoping to buid a new <em>Sphinx</em> theme that supports this new structure."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Frequently Asked Questions",
+            "path": "faq",
+            "link": "https://docs.readthedocs.io/en/latest/faq",
+            "highlight": {
+                "headers": [
+                    "I want to use the Blue&#x2F;Default <em>Sphinx</em> theme",
+                    "<em>Sphinx</em>"
+                ],
+                "content": [
+                    "With <em>Sphinx</em> you can use the built-in autodoc_mock_imports for mocking.",
+                    "Where it finds the conf.py, it will run <em>sphinx</em>-build in that directory.",
+                    "<em>Sphinx</em>. <em>Sphinx</em> uses html_extra option to add static files to the output."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Manage Translations",
+            "path": "guides/manage-translations",
+            "link": "https://docs.readthedocs.io/en/latest/guides/manage-translations",
+            "highlight": {
+                "content": [
+                    "Translate text from source language. Manually. We recommend using <em>sphinx</em>-intl tool for this workflow.",
+                    "&quot;It supports :ref:`<em>Sphinx</em> &lt;<em>sphinx</em>&gt;` docs written with reStructuredText.&quot; msgstr &quot;&quot; &quot;FILL HERE BY TARGET",
+                    "LANGUAGE FILL HERE BY TARGET LANGUAGE FILL HERE &quot; &quot;BY TARGET LANGUAGE :ref:`<em>Sphinx</em> &lt;<em>sphinx</em>&gt;` FILL HERE"
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Build PDF format for non-ASCII languages",
+            "path": "guides/pdf-non-ascii-languages",
+            "link": "https://docs.readthedocs.io/en/latest/guides/pdf-non-ascii-languages",
+            "highlight": {
+                "content": [
+                    "Build PDF format for non-ASCII languages. <em>Sphinx</em> offers different LaTeX engines that support Unicode characters",
+                    "By default <em>Sphinx</em> uses pdflatex, which does not have good support for Unicode characters and may make",
+                    "There are several settings that can be defined (all the ones starting with latex_), to modify <em>Sphinx</em>"
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Conda Support",
+            "path": "conda",
+            "link": "https://docs.readthedocs.io/en/latest/conda",
+            "highlight": {
+                "content": [
+                    "This Conda environment will also have <em>Sphinx</em> and other build time dependencies installed.",
+                    "operations that we support currently:. Environment Creation (conda env create). Dependency Installation (<em>Sphinx</em>"
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Local VM Install",
+            "path": "custom_installs/local_rtd_vm",
+            "link": "https://docs.readthedocs.io/en/latest/custom_installs/local_rtd_vm",
+            "highlight": {
+                "content": [
+                    "&#x2F;docs&#x2F;source. <em>Sphinx</em>:. sudo pip install <em>sphinx</em>. Note. Not using sudo may prevent access.",
+                    "Run the following <em>Sphinx</em> commands:. make html. This generates the HTML documentation site using the default",
+                    "<em>Sphinx</em> theme."
+                ]
+            }
+        },
+        {
+            "project": "docs",
+            "version": "latest",
+            "title": "Read the Docs: Documentation Simplified",
+            "path": "index",
+            "link": "https://docs.readthedocs.io/en/latest/index",
+            "highlight": {
+                "content": [
+                    "Learn about documentation authoring tools such as <em>Sphinx</em> and MkDocs to help you create fantastic documentation",
+                    "I want to use the Blue&#x2F;Default <em>Sphinx</em> theme. I want to use the Read the Docs theme locally. Image scaling",
+                    "Configuration File. Version 2. Version 1. Guides. Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project. Enabling"
+                ]
+            }
+        }
+    ]
+}
