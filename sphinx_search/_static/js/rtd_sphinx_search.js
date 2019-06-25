@@ -3,6 +3,40 @@ let TOTAL_RESULTS = 0;
 let SEARCH_QUERY = "";
 
 /**
+ * Debounce the function.
+ * Usage:
+ *
+ *      var func = debounce(() => console.log("Hello World"), 3000);
+ *
+ *      // calling the func
+ *      func();
+ *
+ *      //cancelling the execution of the func (if not executed)
+ *      func.cancel();
+ *
+ * @param {Function} func function to be debounced
+ * @param {Number} wait time to wait before running func (in miliseconds)
+ * @return {Function} debounced function
+ */
+const debounce = (func, wait) => {
+    let timeout;
+
+    let debounced = function() {
+        let context = this;
+        let args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+
+    debounced.cancel = () => {
+        clearTimeout(timeout);
+        timeout = null;
+    };
+
+    return debounced;
+};
+
+/**
  * Take an object as parameter and convert it to
  * url params string.
  * Eg. if obj = { 'a': 1, 'b': 2 }, then it will return
@@ -221,49 +255,52 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_loding.innerHTML = "Searching ....";
     search_outer.appendChild(search_loding);
 
-    let request = $.ajax({
-        url: search_url,
-        crossDomain: true,
-        xhrFields: {
-            withCredentials: true
-        },
-        complete: (resp, status_code) => {
-            if (
-                status_code === "success" ||
-                typeof resp.responseJSON !== "undefined"
-            ) {
-                if (resp.responseJSON.results.length > 0) {
-                    TOTAL_RESULTS =
-                        MAX_SUGGESTIONS <= resp.responseJSON.results.length
-                            ? MAX_SUGGESTIONS
-                            : resp.responseJSON.results.length;
-                    let search_result_box = generateSuggestionsList(
-                        resp.responseJSON,
-                        projectName
-                    );
-                    removeResults();
-                    search_outer.appendChild(search_result_box);
+    let ajaxFunc = () => {
+        $.ajax({
+            url: search_url,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            complete: (resp, status_code) => {
+                if (
+                    status_code === "success" ||
+                    typeof resp.responseJSON !== "undefined"
+                ) {
+                    if (resp.responseJSON.results.length > 0) {
+                        TOTAL_RESULTS =
+                            MAX_SUGGESTIONS <= resp.responseJSON.results.length
+                                ? MAX_SUGGESTIONS
+                                : resp.responseJSON.results.length;
+                        let search_result_box = generateSuggestionsList(
+                            resp.responseJSON,
+                            projectName
+                        );
+                        removeResults();
+                        search_outer.appendChild(search_result_box);
 
-                    // remove active classes from all suggestions
-                    // if the mouse hovers, otherwise styles from
-                    // :hover and .active will clash.
-                    search_outer.addEventListener("mouseenter", e => {
-                        removeAllActive();
-                    });
-                } else {
-                    removeResults();
-                    var err_div = getErrorDiv("No Results Found");
-                    search_outer.appendChild(err_div);
+                        // remove active classes from all suggestions
+                        // if the mouse hovers, otherwise styles from
+                        // :hover and .active will clash.
+                        search_outer.addEventListener("mouseenter", e => {
+                            removeAllActive();
+                        });
+                    } else {
+                        removeResults();
+                        var err_div = getErrorDiv("No Results Found");
+                        search_outer.appendChild(err_div);
+                    }
                 }
+            },
+            error: (resp, status_code, error) => {
+                removeResults();
+                var err_div = getErrorDiv("Error Occurred. Please try again.");
+                search_outer.appendChild(err_div);
             }
-        },
-        error: (resp, status_code, error) => {
-            removeResults();
-            var err_div = getErrorDiv("Error Occurred. Please try again.");
-            search_outer.appendChild(err_div);
-        }
-    });
-    return request;
+        });
+    };
+    ajaxFunc = debounce(ajaxFunc, 500);
+    return ajaxFunc;
 };
 
 /**
@@ -389,7 +426,7 @@ window.addEventListener("DOMContentLoaded", evt => {
         // via tha ArrowUp/ArrowDown keys.
         let current_focus = 0;
 
-        // this stores the current ajax request.
+        // this stores the current request.
         let current_request = null;
 
         let search_bar = getInputField();
@@ -412,15 +449,12 @@ window.addEventListener("DOMContentLoaded", evt => {
                 convertObjToUrlParams(search_params);
 
             if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
-                if (
-                    current_request !== null &&
-                    current_request.readyState < 4
-                ) {
-                    // cancel the ajax request if still in progress
-                    // before sending the next request.
-                    current_request.abort();
+                if (current_request !== null) {
+                    // cancel previous ajax request.
+                    current_request.cancel();
                 }
                 current_request = fetchAndGenerateResults(search_url, project);
+                current_request();
             } else {
                 removeResults();
             }
