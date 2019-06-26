@@ -265,6 +265,12 @@ def test_no_results_msg(selenium, app, status, warning):
             'search__outer__input'
         )
         search_outer_input.send_keys('no results for this')
+        WebDriverWait(selenium, 10).until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'search__result__box'),
+                'No Results Found'
+            )
+        )
         search_result_box = selenium.find_element_by_class_name(
             'search__result__box'
         )
@@ -307,6 +313,12 @@ def test_error_msg(selenium, app, status, warning):
             'search__outer__input'
         )
         search_outer_input.send_keys('this will result in error')
+        WebDriverWait(selenium, 10).until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'search__result__box'),
+                'Error Occurred. Please try again.'
+            )
+        )
         search_result_box = selenium.find_element_by_class_name(
             'search__result__box'
         )
