@@ -449,8 +449,16 @@ def test_results_displayed_to_user(selenium, app, status, warning):
                     'search__result__single'
                 )
             )
-            == 10
-        ), 'search result box should have maximum 10 results'
+            == 1
+        ), 'search result box should have results from only 1 page (as per the dummy_results.json)'
+
+        assert (
+            len(
+                search_result_box.find_elements_by_class_name(
+                    'outer_div_page_results'
+                )
+            ) == 6
+        ), 'total 6 results should be shown to the user (as per the dummy_results.json)'
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
@@ -499,28 +507,28 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
             'search__result__box'
         )
         results = selenium.find_elements_by_class_name(
-            'search__result__single'
+            'outer_div_page_results'
         )
         search_outer_input.send_keys(Keys.DOWN)
 
         assert results[0] == selenium.find_element_by_css_selector(
-            '.search__result__single.active'
+            '.outer_div_page_results.active'
         ), 'first result should be active'
 
         search_outer_input.send_keys(Keys.DOWN)
         assert results[1] == selenium.find_element_by_css_selector(
-            '.search__result__single.active'
+            '.outer_div_page_results.active'
         ), 'second result should be active'
 
         search_outer_input.send_keys(Keys.UP)
         search_outer_input.send_keys(Keys.UP)
         assert results[-1] == selenium.find_element_by_css_selector(
-            '.search__result__single.active'
+            '.outer_div_page_results.active'
         ), 'last result should be active'
 
         search_outer_input.send_keys(Keys.DOWN)
         assert results[0] == selenium.find_element_by_css_selector(
-            '.search__result__single.active'
+            '.outer_div_page_results.active'
         ), 'first result should be active'
 
 

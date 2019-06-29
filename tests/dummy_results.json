@@ -1,235 +1,98 @@
 {
-    "count": 35759,
-    "next": "https://readthedocs.org/api/v2/docsearch/?language=en&page=2&project=docs&q=sphinx&version=latest",
+    "count": 31,
+    "next": null,
     "previous": null,
     "results": [
         {
-            "project": "docs",
+            "project": "rtd-test",
             "version": "latest",
-            "title": "Getting Started with Sphinx",
-            "path": "intro/getting-started-with-sphinx",
-            "link": "https://docs.readthedocs.io/en/latest/intro/getting-started-with-sphinx",
-            "highlight": {
-                "headers": [
-                    "Getting Started with <em>Sphinx</em>",
-                    "Using Markdown with <em>Sphinx</em>"
+            "title": "API v2",
+            "path": "api/v2",
+            "link": "http://localhost:8000/docs/template/projects/rtd-test/en/latest/api/v2",
+            "highlight": { "title": ["<em>API</em> v2"] },
+            "inner_hits": {
+                "sections": [
+                    {
+                        "_source": {
+                            "id": "api-v2",
+                            "title": "API v2",
+                            "content": "\nNote\nA newer API v3 is in early development stages. Some improvements coming in v3 are:\nSearch API\nWrite access\nSimpler URLs which use slugs instead of numeric IDs\nImproved error reporting\nIf there are features you would like in v3, please get in touch in the issue tracker.\n"
+                        },
+                        "highlight": {
+                            "sections.content": [
+                                "Note. A newer <em>API</em> v3 is in early development stages."
+                            ],
+                            "sections.title": ["<em>API</em> v2"]
+                        }
+                    },
+                    {
+                        "_source": {
+                            "id": "authentication-and-authorization",
+                            "title": "Authentication and authorization",
+                            "content": "Requests to the Read the Docs public API are for public information only and do not require any authentication."
+                        },
+                        "highlight": {
+                            "sections.content": [
+                                "Requests to the Read the Docs public <em>API</em> are for public information only and do not require any authentication"
+                            ]
+                        }
+                    },
+                    {
+                        "_source": {
+                            "id": "resources",
+                            "title": "Resources",
+                            "content": "Projects\nProjects are the main building block of Read the Docs. Projects are built when there are changes to the code and the resulting documentation is hosted and served by Read the Docs.\nAs an example, this documentation is part of the Docs project which has documentation at https://docs.readthedocs.io.\nYou can always view your Read the Docs projects in your project dashboard.\nProject list\nGET /api/v2/project/\nRetrieve a list of all Read the Docs projects.\nExample request:\nspan.prompt1:before { content: \"$ \"; }\ncurl https://readthedocs.org/api/v2/project/?slug=pip\nExample response:\n{ \"count\": 1, \"next\": null, \"previous\": null, \"results\": [PROJECTS] }\nResponse JSON Object:\nnext (string) – URI for next set of Projects.\nprevious (string) – URI for previous set of Projects.\ncount (integer) – Total number of Projects.\nresults (array) – Array of Project objects.\nQuery Parameters:\nslug (string) – Narrow the results by matching the exact project slug\nProject details\nGET /api/v2/project/(int: id)/\nRetrieve details of a single project.\n{ \"id\": 6, \"name\": \"Pip\", \"slug\": \"pip\", \"programming_language\": \"py\", \"default_version\": \"stable\", \"default_branch\": \"master\", \"repo_type\": \"git\", \"repo\": \"https://github.com/pypa/pip\", \"description\": \"Pip Installs Packages.\", \"language\": \"en\", \"documentation_type\": \"sphinx_htmldir\", \"canonical_url\": \"http://pip.pypa.io/en/stable/\", \"users\": [USERS] }\nResponse JSON Object:\nid (integer) – The ID of the project\nname (string) – The name of the project.\nslug (string) – The project slug (used in the URL).\nprogramming_language (string) – The programming language of the project (eg. “py”, “js”)\ndefault_version (string) – The default version of the project (eg. “latest”, “stable”, “v3”)\ndefault_branch (string) – The default version control branch\nrepo_type (string) – Version control repository of the project\nrepo (string) – The repository URL for the project\ndescription (string) – An RST description of the project\nlanguage (string) – The language code of this project\ndocumentation_type (string) – An RST description of the project\ncanonical_url (string) – The canonical URL of the default docs\nusers (array) – Array of User IDs who are maintainers of the project.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Project with this ID\nProject versions\nGET /api/v2/project/(int: id)/active_versions/\nRetrieve a list of active versions (eg. “latest”, “stable”, “v1.x”) for a single project.\n{ \"versions\": [VERSION, VERSION, ...] }\nResponse JSON Object:\nversions (array) – Version objects for the given Project\nSee the Version detail call for the format of the Version object.\nVersions\nVersions are different versions of the same project documentation\nThe versions for a given project can be viewed in a project’s version screen. For example, here is the Pip project’s version screen.\nVersion list\nGET /api/v2/version/\nRetrieve a list of all Versions for all projects\n{ \"count\": 1000, \"previous\": null, \"results\": [VERSIONS], \"next\": \"https://readthedocs.org/api/v2/version/?limit=10&offset=10\" }\nResponse JSON Object:\nnext (string) – URI for next set of Versions.\nprevious (string) – URI for previous set of Versions.\ncount (integer) – Total number of Versions.\nresults (array) – Array of Version objects.\nQuery Parameters:\nproject__slug (string) – Narrow to the versions for a specific Project\nactive (boolean) – Pass true or false to show only active or inactive versions. By default, the API returns all versions.\nVersion detail\nGET /api/v2/version/(int: id)/\nRetrieve details of a single version.\n{ \"id\": 1437428, \"slug\": \"stable\", \"verbose_name\": \"stable\", \"built\": true, \"active\": true, \"type\": \"tag\", \"identifier\": \"3a6b3995c141c0888af6591a59240ba5db7d9914\", \"downloads\": { \"pdf\": \"//readthedocs.org/projects/pip/downloads/pdf/stable/\", \"htmlzip\": \"//readthedocs.org/projects/pip/downloads/htmlzip/stable/\", \"epub\": \"//readthedocs.org/projects/pip/downloads/epub/stable/\" }, \"project\": {PROJECT}, }\nResponse JSON Object:\nid (integer) – The ID of the version\nverbose_name (string) – The name of the version.\nslug (string) – The version slug.\nbuilt (string) – Whether this version has been built\nactive (string) – Whether this version is still active\ntype (string) – The type of this version (typically “tag” or “branch”)\nidentifier (string) – A version control identifier for this version (eg. the commit hash of the tag)\ndownloads (array) – URLs to downloads of this version’s documentation\nproject (object) – Details of the Project for this version.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Version with this ID\nBuilds\nBuilds are created by Read the Docs whenever a Project has its documentation built. Frequently this happens automatically via a web hook but can be triggered manually.\nBuilds can be viewed in the build screen for a project. For example, here is Pip’s build screen.\nBuild list\nGET /api/v2/build/\nRetrieve details of builds ordered by most recent first\nExample request:\ncurl https://readthedocs.org/api/v2/build/?project__slug=pip\nExample response:\n{ \"count\": 100, \"next\": null, \"previous\": null, \"results\": [BUILDS] }\nResponse JSON Object:\nnext (string) – URI for next set of Builds.\nprevious (string) – URI for previous set of Builds.\ncount (integer) – Total number of Builds.\nresults (array) – Array of Build objects.\nQuery Parameters:\nproject__slug (string) – Narrow to builds for a specific Project\ncommit (string) – Narrow to builds for a specific commit\nBuild detail\nGET /api/v2/build/(int: id)/\nRetrieve details of a single build.\n{ \"id\": 7367364, \"date\": \"2018-06-19T15:15:59.135894\", \"length\": 59, \"type\": \"html\", \"state\": \"finished\", \"success\": true, \"error\": \"\", \"commit\": \"6f808d743fd6f6907ad3e2e969c88a549e76db30\", \"docs_url\": \"http://pip.pypa.io/en/latest/\", \"project\": 13, \"project_slug\": \"pip\", \"version\": 3681, \"version_slug\": \"latest\", \"commands\": [ { \"description\": \"\", \"start_time\": \"2018-06-19T20:16:00.951959\", \"exit_code\": 0, \"build\": 7367364, \"command\": \"git remote set-url origin git://github.com/pypa/pip.git\", \"run_time\": 0, \"output\": \"\", \"id\": 42852216, \"end_time\": \"2018-06-19T20:16:00.969170\" }, ... ], ... }\nResponse JSON Object:\nid (integer) – The ID of the build\ndate (string) – The ISO-8601 datetime of the build.\nlength (integer) – The length of the build in seconds.\ntype (string) – The type of the build (one of “html”, “pdf”, “epub”)\nstate (string) – The state of the build (one of “triggered”, “building”, “installing”, “cloning”, or “finished”)\nsuccess (boolean) – Whether the build was successful\nerror (string) – An error message if the build was unsuccessful\ncommit (string) – A version control identifier for this build (eg. the commit hash)\ndocs_url (string) – The canonical URL of the build docs\nproject (integer) – The ID of the project being built\nproject_slug (string) – The slug for the project being built\nversion (integer) – The ID of the version of the project being built\nversion_slug (string) – The slug for the version of the project being built\ncommands (array) – Array of commands for the build with details including output.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Build with this ID\nSome fields primarily used for UI elements in Read the Docs are omitted.\nUndocumented resources and endpoints\nThere are some undocumented endpoints in the API. These should not be used and could change at any time. These include:\nThe search API (/api/v2/search/)\nEndpoints for returning footer and version data to be injected into docs. (/api/v2/footer_html)\nEndpoints used for advertising (/api/v2/sustainability/)\nAny other endpoints not detailed above."
+                        },
+                        "highlight": {
+                            "sections.content": [
+                                "These include:. The search <em>API</em> (/<em>api</em>/v2/search/). Endpoints for returning footer and version data to be"
+                            ]
+                        }
+                    }
                 ],
-                "title": ["Getting Started with <em>Sphinx</em>"],
-                "content": [
-                    "Getting Started with <em>Sphinx</em>. <em>Sphinx</em> is a powerful documentation generator that has many great features",
-                    "docs. Run <em>sphinx</em>-quickstart in there:. cd docs <em>sphinx</em>-quickstart. This quick start will walk you through",
-                    "Using Markdown with <em>Sphinx</em>. You can use Markdown and reStructuredText in the same <em>Sphinx</em> project."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Adding Custom CSS or JavaScript to a Sphinx Project",
-            "path": "guides/adding-custom-css",
-            "link": "https://docs.readthedocs.io/en/latest/guides/adding-custom-css",
-            "highlight": {
-                "headers": [
-                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project"
-                ],
-                "title": [
-                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project"
-                ],
-                "content": [
-                    "Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project. The easiest way to add custom stylesheets or scripts",
-                    "way that allows for overriding of existing styles or scripts, is to add these files using a conf.py <em>Sphinx</em>",
-                    "Inside your conf.py, if a function setup(app) exists, <em>Sphinx</em> will call this function as a normal extension"
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Read the Docs data passed to Sphinx build context",
-            "path": "design/theme-context",
-            "link": "https://docs.readthedocs.io/en/latest/design/theme-context",
-            "highlight": {
-                "headers": [
-                    "Read the Docs data passed to <em>Sphinx</em> build context"
-                ],
-                "title": [
-                    "Read the Docs data passed to <em>Sphinx</em> build context"
-                ],
-                "content": [
-                    "Read the Docs data passed to <em>Sphinx</em> build context. Before calling <em>sphinx</em>-build to render your docs, Read",
-                    "the Docs injects some extra context in the templates by using the html_context <em>Sphinx</em> setting in the",
-                    "More information about <em>Sphinx</em> variables can be found in the <em>Sphinx</em> documentation."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Customizing Advertising",
-            "path": "advertising/ad-customization",
-            "link": "https://docs.readthedocs.io/en/latest/advertising/ad-customization",
-            "highlight": {
-                "headers": ["In <em>Sphinx</em>"],
-                "content": [
-                    "&lt;div id=&quot;ethical-ad-placement&quot;&gt;&lt;&#x2F;div&gt;. In <em>Sphinx</em>. In <em>Sphinx</em>, this is typically done by adding a new template"
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Embed API",
-            "path": "embed",
-            "link": "https://docs.readthedocs.io/en/latest/embed",
-            "highlight": {
-                "headers": ["<em>Sphinx</em> Extension"],
-                "content": [
-                    "How to use it. <em>Sphinx</em> Extension. You can embed content directly in <em>Sphinx</em> with builds on Read the Docs."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "User-defined Redirects",
-            "path": "user-defined-redirects",
-            "link": "https://docs.readthedocs.io/en/latest/user-defined-redirects",
-            "highlight": {
-                "headers": ["<em>Sphinx</em> Redirects"],
-                "content": [
-                    "<em>Sphinx</em> Redirects. We also support redirects for changing the type of documentation <em>Sphinx</em> is building."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Build Process",
-            "path": "builds",
-            "link": "https://docs.readthedocs.io/en/latest/builds",
-            "highlight": {
-                "headers": ["<em>Sphinx</em>"],
-                "content": [
-                    "<em>Sphinx</em>. When you choose <em>Sphinx</em> as your Documentation Type, we will first look for a conf.py file in your",
-                    "Then <em>Sphinx</em> will build any files with an .rst extension.",
-                    "When we build your <em>Sphinx</em> documentation, we run <em>sphinx</em>-build -b html ."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Configuration File V2",
-            "path": "config-file/v2",
-            "link": "https://docs.readthedocs.io/en/latest/config-file/v2",
-            "highlight": {
-                "headers": ["<em>sphinx</em>"],
-                "content": [
-                    "<em>sphinx</em>: configuration: docs&#x2F;conf.py # Build documentation with MkDocs #mkdocs: # configuration: mkdocs.yml",
-                    "Configuration for <em>Sphinx</em> documentation (this is the default documentation type).",
-                    "type for the <em>Sphinx</em> documentation."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Google Summer of Code",
-            "path": "gsoc",
-            "link": "https://docs.readthedocs.io/en/latest/gsoc",
-            "highlight": {
-                "headers": ["Build a new <em>Sphinx</em> theme"],
-                "content": [
-                    "Integration with OpenAPI&#x2F;Swagger. Integrate the existing tooling around OpenAPI &amp; Swagger into <em>Sphinx</em>",
-                    "theme. <em>Sphinx</em> v2 will introduce a new format for themes, supporting HTML5 and new markup.",
-                    "We are hoping to buid a new <em>Sphinx</em> theme that supports this new structure."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Frequently Asked Questions",
-            "path": "faq",
-            "link": "https://docs.readthedocs.io/en/latest/faq",
-            "highlight": {
-                "headers": [
-                    "I want to use the Blue&#x2F;Default <em>Sphinx</em> theme",
-                    "<em>Sphinx</em>"
-                ],
-                "content": [
-                    "With <em>Sphinx</em> you can use the built-in autodoc_mock_imports for mocking.",
-                    "Where it finds the conf.py, it will run <em>sphinx</em>-build in that directory.",
-                    "<em>Sphinx</em>. <em>Sphinx</em> uses html_extra option to add static files to the output."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Manage Translations",
-            "path": "guides/manage-translations",
-            "link": "https://docs.readthedocs.io/en/latest/guides/manage-translations",
-            "highlight": {
-                "content": [
-                    "Translate text from source language. Manually. We recommend using <em>sphinx</em>-intl tool for this workflow.",
-                    "&quot;It supports :ref:`<em>Sphinx</em> &lt;<em>sphinx</em>&gt;` docs written with reStructuredText.&quot; msgstr &quot;&quot; &quot;FILL HERE BY TARGET",
-                    "LANGUAGE FILL HERE BY TARGET LANGUAGE FILL HERE &quot; &quot;BY TARGET LANGUAGE :ref:`<em>Sphinx</em> &lt;<em>sphinx</em>&gt;` FILL HERE"
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Build PDF format for non-ASCII languages",
-            "path": "guides/pdf-non-ascii-languages",
-            "link": "https://docs.readthedocs.io/en/latest/guides/pdf-non-ascii-languages",
-            "highlight": {
-                "content": [
-                    "Build PDF format for non-ASCII languages. <em>Sphinx</em> offers different LaTeX engines that support Unicode characters",
-                    "By default <em>Sphinx</em> uses pdflatex, which does not have good support for Unicode characters and may make",
-                    "There are several settings that can be defined (all the ones starting with latex_), to modify <em>Sphinx</em>"
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Conda Support",
-            "path": "conda",
-            "link": "https://docs.readthedocs.io/en/latest/conda",
-            "highlight": {
-                "content": [
-                    "This Conda environment will also have <em>Sphinx</em> and other build time dependencies installed.",
-                    "operations that we support currently:. Environment Creation (conda env create). Dependency Installation (<em>Sphinx</em>"
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Local VM Install",
-            "path": "custom_installs/local_rtd_vm",
-            "link": "https://docs.readthedocs.io/en/latest/custom_installs/local_rtd_vm",
-            "highlight": {
-                "content": [
-                    "&#x2F;docs&#x2F;source. <em>Sphinx</em>:. sudo pip install <em>sphinx</em>. Note. Not using sudo may prevent access.",
-                    "Run the following <em>Sphinx</em> commands:. make html. This generates the HTML documentation site using the default",
-                    "<em>Sphinx</em> theme."
-                ]
-            }
-        },
-        {
-            "project": "docs",
-            "version": "latest",
-            "title": "Read the Docs: Documentation Simplified",
-            "path": "index",
-            "link": "https://docs.readthedocs.io/en/latest/index",
-            "highlight": {
-                "content": [
-                    "Learn about documentation authoring tools such as <em>Sphinx</em> and MkDocs to help you create fantastic documentation",
-                    "I want to use the Blue&#x2F;Default <em>Sphinx</em> theme. I want to use the Read the Docs theme locally. Image scaling",
-                    "Configuration File. Version 2. Version 1. Guides. Adding Custom CSS or JavaScript to a <em>Sphinx</em> Project. Enabling"
+                "domains": [
+                    {
+                        "_source": {
+                            "role_name": "http:get",
+                            "doc_name": "api/v2.html",
+                            "anchor": "get--api-v2-version-",
+                            "type_display": "",
+                            "doc_display": "",
+                            "name": "/api/v2/version/",
+                            "display_name": "-"
+                        },
+                        "highlight": {
+                            "domains.name": ["/<em>api</em>/v2/version/"]
+                        }
+                    },
+                    {
+                        "_source": {
+                            "role_name": "http:get",
+                            "doc_name": "api/v2.html",
+                            "anchor": "get--api-v2-project-",
+                            "type_display": "",
+                            "doc_display": "",
+                            "name": "/api/v2/project/",
+                            "display_name": "-"
+                        },
+                        "highlight": {
+                            "domains.name": ["/<em>api</em>/v2/project/"]
+                        }
+                    },
+                    {
+                        "_source": {
+                            "role_name": "http:get",
+                            "doc_name": "api/v2.html",
+                            "anchor": "get--api-v2-build-",
+                            "type_display": "",
+                            "doc_display": "",
+                            "name": "/api/v2/build/",
+                            "display_name": "-"
+                        },
+                        "highlight": {
+                            "domains.name": ["/<em>api</em>/v2/build/"]
+                        }
+                    }
                 ]
             }
         }
