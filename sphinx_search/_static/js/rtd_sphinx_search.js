@@ -1,6 +1,10 @@
-const MAX_SUGGESTIONS = 10;
-let TOTAL_RESULTS = 0;
+const MAX_SUGGESTIONS = 30;
+let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
+
+// this is used to store the total result counts,
+// which includes all the sections and domains of all the pages.
+let COUNT = 0;
 
 /**
  * Debounce the function.
@@ -72,96 +76,247 @@ const createDomNode = (nodeName, attributes) => {
 };
 
 /**
+ * Generate search results for a single page.
+ * It generates the following html structure:
+ *
+ *  <div>
+ *      <a href="https://example.readthedocs.io">
+ *          <h2 class="search__result__title">
+ *              Title of the page
+ *          </h2>
+ *      </a>
+ *      <br>
+ *
+ *      <!-- Page Sections -->
+ *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-1">
+ *          <div class="outer_div_page_results" id="hit__1">...</div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-2">
+ *          <div class="outer_div_page_results" id="hit__2">
+ *              <span class="search__result__subheading">
+ *                  Dummy <em>Section</em> 2
+ *              </span>
+ *              <p class="search__result__content">
+ *                  ... this is sample <em>section</em> text ...
+ *              </p>
+ *          </div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-3">
+ *          <div class="outer_div_page_results" id="hit__3">...</div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-4">
+ *          <div class="outer_div_page_results" id="hit__4">...</div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ * 
+ *      <!-- Sphinx Domains -->
+ *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-1">
+ *          <div class="outer_div_page_results" id="hit__5">...</div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-2">
+ *          <div class="outer_div_page_results" id="hit__6">...</div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-3">
+ *          <div class="outer_div_page_results" id="hit__7">
+ *              <div class="search__result__subheading">
+ *                  http:get
+ *              </div>
+ *              <p class="search__result__content">
+ *                  api/v3/<em>section</em>/4
+ *              </p>
+ *          </div>
+ *      </a>
+ *      <br class="br-for-hits">
+ * 
+ *  </div>
+ *
+ * @param {Object} resultData search results of a page
+ * @return {Object} a <div> node with the results of a single page
+ */
+const generateSingleResult = resultData => {
+    let content = createDomNode("div");
+
+    let page_link = createDomNode("a", {
+        href: `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`
+    });
+    let title = createDomNode("h2", { class: "search__result__title" });
+
+    // if title is present in highlighted field, use that.
+    if (resultData.highlight !== undefined && resultData.highlight !== null) {
+        if (
+            resultData.highlight.title !== undefined &&
+            resultData.highlight.title !== null
+        ) {
+            title.innerHTML = resultData.highlight.title;
+        } else {
+            title.innerHTML = resultData.title;
+        }
+    } else {
+        title.innerHTML = resultData.title;
+    }
+
+    page_link.appendChild(title);
+    content.appendChild(page_link);
+    content.appendChild(createDomNode("br"));
+
+    // all the sections of the page.
+    let sections = resultData.inner_hits.sections;
+
+    // all the sphinx domains of the page.
+    let domains = resultData.inner_hits.domains;
+
+    if (sections !== undefined && sections !== null) {
+        for (let i = 0; i < sections.length; ++i) {
+            COUNT += 1;
+            let section_link = createDomNode("a", {
+                href: `${page_link.href}#${sections[i]._source.id}`
+            });
+            let section_title = createDomNode("span", {
+                class: "search__result__subheading"
+            });
+
+            // if section title is present in the highlighted field, use that.
+            // else use the title present in the _souce.
+            if (
+                sections[i].highlight["sections.title"] !== undefined &&
+                sections[i].highlight["sections.title"].length >= 1
+            ) {
+                section_title.innerHTML =
+                    sections[i].highlight["sections.title"][0];
+            } else {
+                section_title.innerHTML = sections[i]._source.title;
+            }
+
+            let section_content = createDomNode("p", {
+                class: "search__result__content"
+            });
+
+            // if section content is present in the highlighted field, use that.
+            // else use the content present in the _souce.
+            if (
+                sections[i].highlight["sections.content"] !== undefined &&
+                sections[i].highlight["sections.content"].length >= 1
+            ) {
+                section_content.innerHTML =
+                    "... " +
+                    sections[i].highlight["sections.content"][0] +
+                    " ...";
+            } else {
+                section_content.innerHTML =
+                    sections[i]._source.content.substring(0, 50) + " ...";
+            }
+
+            let outer_div = createDomNode("div", {
+                class: "outer_div_page_results",
+                id: "hit__" + COUNT
+            });
+            outer_div.appendChild(section_title);
+            outer_div.appendChild(section_content);
+            section_link.appendChild(outer_div);
+            content.appendChild(section_link);
+            content.appendChild(createDomNode("br", { class: "br-for-hits" }));
+        }
+    }
+
+    if (domains !== undefined && domains !== null) {
+        for (let i = 0; i < domains.length; ++i) {
+            COUNT += 1;
+
+            let domain_link = createDomNode("a", {
+                href: `${page_link.href}#${domains[i]._source.anchor}`
+            });
+
+            let domain_title = createDomNode("span", {
+                class: "search__result__subheading"
+            });
+            domain_title.innerHTML = domains[i]._source.role_name;
+
+            let domain_content = createDomNode("p", {
+                class: "search__result__content"
+            });
+
+            // if sphinx domain's name is present in the highlighted field, use that.
+            // else use the value present in the _souce.
+            if (
+                domains[i].highlight !== undefined &&
+                domains.highlight !== null
+            ) {
+                if (
+                    domains[i].highlight["domains.name"] !== undefined &&
+                    domains[i].highlight["domains.name"].length >= 1
+                ) {
+                    domain_content.innerHTML =
+                        domains[i].highlight["domains.name"][0];
+                } else {
+                    domain_content.innerHTML =
+                        domains[i]._source.name.substring(0, 40) + " ...";
+                }
+            } else {
+                domain_content.innerHTML =
+                    domains[i]._source.name.substring(0, 40) + " ...";
+            }
+
+            let outer_div = createDomNode("div", {
+                class: "outer_div_page_results",
+                id: "hit__" + COUNT
+            });
+            outer_div.appendChild(domain_title);
+            outer_div.appendChild(domain_content);
+            domain_link.appendChild(outer_div);
+            content.appendChild(domain_link);
+            content.appendChild(createDomNode("br", { class: "br-for-hits" }));
+        }
+    }
+    return content;
+};
+
+/**
  * Generate search suggestions list.
  * Structure of the generated html which is
  * returned from this function is :-
  *
- *  <div class="search__result__box">
- *      <div class="search__result__single" id="hit__1">...</div>
- *      <div class="search__result__single" id="hit__2">...</div>
- *      <div class="search__result__single" id="hit__3">
- *          <a href="http://link-to-the-result.com/">
- *              <div class="content">
- *                  <h2 class="search__result__title">Title of the result</h2>
- *                  <br>
- *                  <small class="search__result__path">
- *                      path/to/result (from <strong>subproject</strong>)
- *                  </small>
- *                  <p class="search__result__content">
- *                      ... this is the description ...
- *                  </p>
- *              </div>
- *          </a>
+ *      <div class="search__result__box">
+ *          ...
+ *          <div class="search__result__single">
+ *              <div>...</div>
+ *          </div>
+ *          <div class="search__result__single">
+ *              <div>...</div>
+ *          </div>
+ *          <div class="search__result__single">
+ *              <div>...</div>
+ *          </div>
+ *          ...
  *      </div>
- *      <div class="search__result__single" id="hit__4">...</div>
- *      <div class="search__result__single" id="hit__5">...</div>
- *  </div>
  *
  * @param {Object} data response data from the search backend
  * @param {String} projectName name (slug) of the project
- * @return {Object} a <div> node with class "search__result__box" and with inner nodes
+ * @return {Object} a <div> node with class "search__result__box" with results
  */
 const generateSuggestionsList = (data, projectName) => {
     let search_result_box = createDomNode("div", {
         class: "search__result__box"
     });
 
-    for (let i = 0; i < TOTAL_RESULTS; ++i) {
+    for (let i = 0; i < TOTAL_PAGE_RESULTS; ++i) {
         let search_result_single = createDomNode("div", {
-            class: "search__result__single",
-            id: "hit__" + (i + 1)
+            class: "search__result__single"
         });
 
-        let link = createDomNode("a", {
-            href: data.results[i].link + DOCUMENTATION_OPTIONS.FILE_SUFFIX
-        });
+        let content = generateSingleResult(data.results[i]);
 
-        let content = createDomNode("div", { class: "content" });
-
-        let search_result_title = createDomNode("h2", {
-            class: "search__result__title"
-        });
-        // use highlighted title (if present)
-        if (data.results[i].highlight.title !== undefined) {
-            search_result_title.innerHTML = data.results[i].highlight.title[0];
-        } else {
-            search_result_title.innerHTML = data.results[i].title;
-        }
-
-        content.appendChild(search_result_title);
-        content.appendChild(createDomNode("br"));
-
-        let search_result_path = createDomNode("small", {
-            class: "search__result__path"
-        });
-        search_result_path.innerHTML = data.results[i].path;
-
-        // check if the corresponding result is from same project or not.
-        // if it is not from same project, then it must be from a subproject.
-        // display the subproject.
-        if (data.results[i].project !== projectName) {
-            search_result_path.innerHTML =
-                data.results[i].path +
-                " (from <strong>" +
-                data.results[i].project +
-                "</strong>)";
-        }
-
-        content.appendChild(search_result_path);
-
-        let search_result_content = createDomNode("p", {
-            class: "search__result__content"
-        });
-        if (data.results[i].highlight.content !== undefined) {
-            search_result_content.innerHTML =
-                "... " + data.results[i].highlight.content + " ...";
-        } else {
-            search_result_content.innerHTML = "";
-        }
-
-        content.appendChild(search_result_content);
-        link.appendChild(content);
-        search_result_single.appendChild(link);
+        search_result_single.appendChild(content);
         search_result_box.appendChild(search_result_single);
     }
     return search_result_box;
@@ -171,7 +326,7 @@ const generateSuggestionsList = (data, projectName) => {
  * Removes .active class from all the suggestions.
  */
 const removeAllActive = () => {
-    const results = document.querySelectorAll(".search__result__single");
+    const results = document.querySelectorAll(".outer_div_page_results");
     const results_arr = Object.keys(results).map(i => results[i]);
     for (let i = 1; i <= results_arr.length; ++i) {
         results_arr[i - 1].classList.remove("active");
@@ -268,7 +423,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                     typeof resp.responseJSON !== "undefined"
                 ) {
                     if (resp.responseJSON.results.length > 0) {
-                        TOTAL_RESULTS =
+                        TOTAL_PAGE_RESULTS =
                             MAX_SUGGESTIONS <= resp.responseJSON.results.length
                                 ? MAX_SUGGESTIONS
                                 : resp.responseJSON.results.length;
@@ -456,7 +611,11 @@ window.addEventListener("DOMContentLoaded", evt => {
                 current_request = fetchAndGenerateResults(search_url, project);
                 current_request();
             } else {
-                removeResults();
+                // if the last request returns the results,
+                // the suggestions list is generated even if there
+                // is no query. To prevent that, this function
+                // is debounced here.
+                debounce(removeResults, 3000)();
             }
         });
 
@@ -465,7 +624,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             if (e.keyCode === 40) {
                 e.preventDefault();
                 current_focus += 1;
-                if (current_focus > TOTAL_RESULTS) {
+                if (current_focus > COUNT) {
                     current_focus = 1;
                 }
                 removeAllActive();
@@ -477,7 +636,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 e.preventDefault();
                 current_focus -= 1;
                 if (current_focus < 1) {
-                    current_focus = TOTAL_RESULTS;
+                    current_focus = COUNT;
                 }
                 removeAllActive();
                 addActive(current_focus);
@@ -487,12 +646,12 @@ window.addEventListener("DOMContentLoaded", evt => {
             if (e.keyCode === 13) {
                 e.preventDefault();
                 const current_item = document.querySelector(
-                    ".search__result__single.active"
+                    ".outer_div_page_results.active"
                 );
                 // if an item is selected,
                 // then redirect to its link
                 if (current_item !== null) {
-                    const link = current_item.firstChild["href"];
+                    const link = current_item.parentElement["href"];
                     window.location.href = link;
                 } else {
                     // submit search form if there
