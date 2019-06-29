@@ -1,4 +1,4 @@
-const MAX_SUGGESTIONS = 30;
+const MAX_SUGGESTIONS = 50;
 let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
 
@@ -591,6 +591,8 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         search_outer_input.addEventListener("input", e => {
             SEARCH_QUERY = e.target.value;
+            COUNT = 0;
+
             let search_params = {
                 q: encodeURIComponent(SEARCH_QUERY),
                 project: project,
