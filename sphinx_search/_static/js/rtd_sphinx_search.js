@@ -406,14 +406,51 @@ const removeSearchModal = () => {
     search_outer_wrapper.classList.remove("display-block");
 };
 
+/**
+ * Returns the search URL
+ *
+ * @param {Object} searchParams params for search
+ */
+const getSearchUrl = searchParams => {
+    const api_host = getProjectInfo().api_host;
+    const url =
+        api_host + "/api/v2/docsearch/?" + convertObjToUrlParams(searchParams);
+    return url;
+};
+
+/**
+ * Returns project info
+ */
+const getProjectInfo = () => {
+    return {
+        project: READTHEDOCS_DATA.project,
+        version: READTHEDOCS_DATA.version,
+        language: READTHEDOCS_DATA.language || "en",
+        api_host: READTHEDOCS_DATA.api_host
+    };
+};
+
+/**
+ * Returns the URL parameters in the form of Object
+ *
+ * @return {Object} url params
+ */
+const getUrlVars = () => {
+    let vars = {};
+    let params = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        (m, key, value) => {
+            vars[key] = value;
+        }
+    );
+    return vars;
+};
+
 window.addEventListener("DOMContentLoaded", evt => {
     // only add event listeners if READTHEDOCS_DATA global
     // variable is found.
     if (READTHEDOCS_DATA !== undefined) {
-        const project = READTHEDOCS_DATA.project;
-        const version = READTHEDOCS_DATA.version;
-        const language = READTHEDOCS_DATA.language || "en";
-        const api_host = READTHEDOCS_DATA.api_host;
+        const project_info = getProjectInfo();
 
         const initialHtml = generateAndReturnInitialHtml();
         let search_outer_wrapper = initialHtml.search_outer_wrapper;
@@ -438,22 +475,22 @@ window.addEventListener("DOMContentLoaded", evt => {
             SEARCH_QUERY = e.target.value;
             let search_params = {
                 q: encodeURIComponent(SEARCH_QUERY),
-                project: project,
-                version: version,
-                language: language
+                project: project_info.project,
+                version: project_info.version,
+                language: project_info.language
             };
 
-            const search_url =
-                api_host +
-                "/api/v2/docsearch/?" +
-                convertObjToUrlParams(search_params);
+            const search_url = getSearchUrl(search_params);
 
             if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
                 if (current_request !== null) {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                current_request = fetchAndGenerateResults(search_url, project);
+                current_request = fetchAndGenerateResults(
+                    search_url,
+                    project_info.project
+                );
                 current_request();
             } else {
                 removeResults();
@@ -528,5 +565,35 @@ window.addEventListener("DOMContentLoaded", evt => {
                 removeSearchModal();
             }
         });
+
+        // if "rtd_search" is present in URL parameters,
+        // then open the search modal and show the results
+        // for the value of "rtd_search"
+        const url_params = getUrlVars();
+        if (
+            url_params["rtd_search"] !== undefined &&
+            url_params["rtd_search"] !== ""
+        ) {
+            let query = url_params["rtd_search"];
+            SEARCH_QUERY = decodeURIComponent(query);
+            let search_outer_input = document.querySelector(
+                ".search__outer__input"
+            );
+            const projectInfo = getProjectInfo();
+            const searchParams = {
+                q: encodeURIComponent(SEARCH_QUERY),
+                project: projectInfo.project,
+                version: projectInfo.version,
+                language: projectInfo.language
+            };
+            const search_url = getSearchUrl(searchParams);
+            showSearchModal();
+            search_outer_input.value = SEARCH_QUERY;
+            let ajax_call = fetchAndGenerateResults(
+                search_url,
+                projectInfo.project
+            );
+            ajax_call();
+        }
     }
 });
