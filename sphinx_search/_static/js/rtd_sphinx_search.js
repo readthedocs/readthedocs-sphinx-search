@@ -617,7 +617,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // the suggestions list is generated even if there
                 // is no query. To prevent that, this function
                 // is debounced here.
-                debounce(removeResults, 3000)();
+                debounce(removeResults, 1000)();
             }
         });
 
