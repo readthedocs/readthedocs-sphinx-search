@@ -624,3 +624,57 @@ def test_position_search_modal(selenium, app, status, warning):
             assert (
                 abs(actual_y - calculated_y) < 10
             ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_modal_open_with_url_params(selenium, app, status, warning):
+    """Test if the modal opens when search query is passed through url params."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    # to test this, we need to override the $.ajax function
+    ajax_func = '''
+        <script>
+            $.ajax = function(params) {
+                return params.error(
+                    { },
+                    'error',
+                    'Dummy Error.'
+                )
+            }
+        </script>
+    '''
+
+    injected_script = SCRIPT_TAG + ajax_func
+
+    with InjectJsManager(path, injected_script) as _:
+        selenium.get(f'file://{path}?rtd_search=read the docs')
+        time.sleep(1)  # give time to fade in the modal
+
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+        search_outer_input = selenium.find_element_by_class_name(
+            'search__outer__input'
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is True
+        ), 'search modal should be displayed, if the url params "rtd_search" is present, on the page load'
+        assert (
+            search_outer_input.get_attribute('value') == 'read the docs'
+        ), 'input field should have the same value as rtd_search url param'
+
+        WebDriverWait(selenium, 10).until(
+            EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'search__result__box'),
+                'Error Occurred. Please try again.'
+            )
+        )
+        search_result_box = selenium.find_element_by_class_name(
+            'search__result__box'
+        )
+
+        assert (
+            search_result_box.text == 'Error Occurred. Please try again.'
+        ), 'user should be notified that there is an error'
