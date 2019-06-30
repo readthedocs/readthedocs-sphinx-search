@@ -9,4 +9,4 @@ you can check out the `list of issues we have on GitHub`_
 and comment there if you need further guidance or just send a Pull Request.
 
 
-.. _list of issues we have on GitHub: https://github.com/rtfd/readthedocs-sphinx-search/issues
+.. _list of issues we have on GitHub: https://github.com/readthedocs/readthedocs-sphinx-search/issues

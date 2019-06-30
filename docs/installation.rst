@@ -24,7 +24,7 @@ Install the package
 
         .. prompt:: bash
 
-            pip install git+https://github.com/rtfd/readthedocs-sphinx-search@master
+            pip install git+https://github.com/readthedocs/readthedocs-sphinx-search@master
 
 
 Then, enable this extension by adding it to your ``conf.py``.
