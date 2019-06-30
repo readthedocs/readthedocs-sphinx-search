@@ -33,6 +33,16 @@ to support all browsers.
 
 The CSS is also autoprefixed to extend the support to most of the browsers.
 
+Link To The Search UI
+~~~~~~~~~~~~~~~~~~~~~
+
+If you want to share your search, you can do so by passing a URL param -- ``rtd_search``.
+The search UI will opens on page loads and search for the query specified in the URL.
+
+Example::
+
+    https://readthedocs-sphinx-search.readthedocs.io/en/latest?rtd_search=get involved
+
 
 .. toctree::
    :maxdepth: 1
