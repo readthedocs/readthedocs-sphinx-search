@@ -95,6 +95,7 @@
     height: 30px;
     font-size: 19px;
     outline: none;
+    padding-right: 25px;
 
     /* Other */
     background-color: #fcfcfc;
@@ -213,6 +214,24 @@
 .search__outer .search__result__content em {
     background-color: #e5f6ff;
     border-bottom: 1px solid black;
+}
+
+.search__link__button {
+    margin-left: -25px;
+    background-color: #fcfcfc;
+    border: none;
+    color: black;
+    opacity: 0.125;
+    outline: none;
+}
+
+.search__link__button:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.search__link__button:focus {
+    outline: none;
 }
 
 @keyframes fade-in {
