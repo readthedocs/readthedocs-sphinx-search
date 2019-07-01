@@ -5,7 +5,7 @@ Clone the repository:
 
 .. prompt:: bash
 
-    git clone https://github.com/rtfd/readthedocs-sphinx-search
+    git clone https://github.com/readthedocs/readthedocs-sphinx-search
     cd readthedocs-sphinx-search/
 
 Install dependencies via ``npm``:

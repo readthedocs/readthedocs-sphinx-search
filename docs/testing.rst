@@ -80,7 +80,7 @@ Continuous Integration
 
 For every push to GitHub, Travis CI runs all the tests.
 You can check the current build status:
-https://travis-ci.org/rtfd/readthedocs-sphinx-search
+https://travis-ci.org/readthedocs/readthedocs-sphinx-search
 
 
 .. _Selenium WebDriver: https://seleniumhq.github.io/selenium/docs/api/py/index.html
