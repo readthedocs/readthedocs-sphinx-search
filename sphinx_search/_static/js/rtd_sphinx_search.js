@@ -75,6 +75,90 @@ const createDomNode = (nodeName, attributes) => {
     return node;
 };
 
+const get_section_html = (sectionData, page_link) => {
+    let section_template =
+        '<a href="{{ section_link }}"> \
+            <div class="outer_div_page_results" id="{{ section_id }}"> \
+                <span class="search__result__subheading"> \
+                    {{ section_subheading|safe}} \
+                </span> \
+                <p class="search__result__content"> \
+                    {{ section_content|safe }} \
+                </p> \
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
+    let section_subheading = sectionData._source.title;
+
+    if (
+        sectionData.highlight["sections.title"] !== undefined &&
+        sectionData.highlight["sections.title"].length >= 1
+    ) {
+        section_subheading = sectionData.highlight["sections.title"][0];
+    }
+
+    let section_content =
+        sectionData._source.content.substring(0, 100) + " ...";
+
+    if (
+        sectionData.highlight["sections.content"] !== undefined &&
+        sectionData.highlight["sections.content"].length >= 1
+    ) {
+        section_content =
+            "... " + sectionData.highlight["sections.content"][0] + " ...";
+    }
+
+    let section_link = `${page_link.href}#${sectionData._source.id}`;
+
+    let section_id = "hit__" + COUNT;
+
+    let section_html = Sqrl.Render(section_template, {
+        section_link: section_link,
+        section_id: section_id,
+        section_subheading: section_subheading,
+        section_content: section_content
+    });
+
+    return section_html;
+};
+
+const get_domain_html = (domainData, page_link) => {
+    let domain_template =
+        '<a href="{{ domain_link }}"> \
+            <div class="outer_div_page_results" id="{{ domain_id }}"> \
+                <span class="search__result__subheading"> \
+                    {{ domain_role_name|safe }} \
+                </span> \
+                <p class="search__result__content">{{ domain_name|safe }}</p> \
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
+    let domain_link = `${page_link.href}#${domainData._source.anchor}`;
+    let domain_role_name = domainData._source.role_name;
+    let domain_name = domainData._source.name.substring(0, 100) + " ...";
+
+    if (domainData.highlight !== undefined && domainData.highlight !== null) {
+        if (
+            domainData.highlight["domains.name"] !== undefined &&
+            domainData.highlight["domains.name"].length >= 1
+        ) {
+            domain_name = domainData.highlight["domains.name"][0];
+        }
+    }
+
+    let domain_id = "hit__" + COUNT;
+    let domain_html = Sqrl.Render(domain_template, {
+        domain_link: domain_link,
+        domain_id: domain_id,
+        domain_role_name: domain_role_name,
+        domain_name: domain_name
+    });
+
+    return domain_html;
+};
+
 /**
  * Generate search results for a single page.
  * It generates the following html structure:
@@ -145,32 +229,7 @@ const createDomNode = (nodeName, attributes) => {
  * @return {Object} a <div> node with the results of a single page
  */
 const generateSingleResult = (resultData, projectName) => {
-    let section_template =
-        '<a href="{{ section_link }}"> \
-            <div class="outer_div_page_results" id="{{ section_id }}"> \
-                <span class="search__result__subheading"> \
-                    {{ section_subheading|safe}} \
-                </span> \
-                <p class="search__result__content"> \
-                    {{ section_content|safe }} \
-                </p> \
-            </div> \
-        </a> \
-        <br class="br-for-hits">';
-
-    let domain_template =
-        '<a href="{{ domain_link }}"> \
-            <div class="outer_div_page_results" id="{{ domain_id }}"> \
-                <span class="search__result__subheading"> \
-                    {{ domain_role_name|safe }} \
-                </span> \
-                <p class="search__result__content">{{ domain_name|safe }}</p> \
-            </div> \
-        </a> \
-        <br class="br-for-hits">';
-
     let content = createDomNode("div");
-
     let page_link = createDomNode("a", {
         href: `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`
     });
@@ -200,85 +259,24 @@ const generateSingleResult = (resultData, projectName) => {
     content.appendChild(page_link);
     content.appendChild(createDomNode("br"));
 
-    // all the sections of the page.
-    let sections = resultData.inner_hits.sections;
+    for (let i = 0; i < resultData.inner_hits.length; ++i) {
+        const type = resultData.inner_hits[i].type;
+        let html_structure = "";
 
-    // all the sphinx domains of the page.
-    let domains = resultData.inner_hits.domains;
-
-    if (sections !== undefined && sections !== null) {
-        for (let i = 0; i < sections.length; ++i) {
-            COUNT += 1;
-
-            let section_subheading = sections[i]._source.title;
-
-            if (
-                sections[i].highlight["sections.title"] !== undefined &&
-                sections[i].highlight["sections.title"].length >= 1
-            ) {
-                section_subheading = sections[i].highlight["sections.title"][0];
+        if (type === "sections") {
+            html_structure = get_section_html(
+                resultData.inner_hits[i],
+                page_link
+            );
+        } else {
+            if (type === "domains") {
+                html_structure = get_domain_html(
+                    resultData.inner_hits[i],
+                    page_link
+                );
             }
-
-            let section_content =
-                sections[i]._source.content.substring(0, 100) + " ...";
-
-            if (
-                sections[i].highlight["sections.content"] !== undefined &&
-                sections[i].highlight["sections.content"].length >= 1
-            ) {
-                section_content =
-                    "... " +
-                    sections[i].highlight["sections.content"][0] +
-                    " ...";
-            }
-
-            let section_link = `${page_link.href}#${sections[i]._source.id}`;
-
-            let section_id = "hit__" + COUNT;
-
-            let section_html = Sqrl.Render(section_template, {
-                section_link: section_link,
-                section_id: section_id,
-                section_subheading: section_subheading,
-                section_content: section_content
-            });
-            content.innerHTML += section_html;
         }
-    }
-
-    if (domains !== undefined && domains !== null) {
-        for (let i = 0; i < domains.length; ++i) {
-            COUNT += 1;
-
-            let domain_link = `${page_link.href}#${domains[i]._source.anchor}`;
-
-            let domain_role_name = domains[i]._source.role_name;
-
-            let domain_name =
-                domains[i]._source.name.substring(0, 100) + " ...";
-
-            if (
-                domains[i].highlight !== undefined &&
-                domains.highlight !== null
-            ) {
-                if (
-                    domains[i].highlight["domains.name"] !== undefined &&
-                    domains[i].highlight["domains.name"].length >= 1
-                ) {
-                    domain_name = domains[i].highlight["domains.name"][0];
-                }
-            }
-
-            let domain_id = "hit__" + COUNT;
-
-            let domain_html = Sqrl.Render(domain_template, {
-                domain_link: domain_link,
-                domain_id: domain_id,
-                domain_role_name: domain_role_name,
-                domain_name: domain_name
-            });
-            content.innerHTML += domain_html;
-        }
+        content.innerHTML += html_structure;
     }
     return content;
 };
