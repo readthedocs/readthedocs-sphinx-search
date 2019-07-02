@@ -92,7 +92,7 @@ const createDomNode = (nodeName, attributes) => {
  *          <div class="outer_div_page_results" id="hit__1">...</div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-2">
  *          <div class="outer_div_page_results" id="hit__2">
  *              <span class="search__result__subheading">
@@ -104,29 +104,29 @@ const createDomNode = (nodeName, attributes) => {
  *          </div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-3">
  *          <div class="outer_div_page_results" id="hit__3">...</div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-4">
  *          <div class="outer_div_page_results" id="hit__4">...</div>
  *      </a>
  *      <br class="br-for-hits">
- * 
- * 
+ *
+ *
  *      <!-- Sphinx Domains -->
  *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-1">
  *          <div class="outer_div_page_results" id="hit__5">...</div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-2">
  *          <div class="outer_div_page_results" id="hit__6">...</div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-3">
  *          <div class="outer_div_page_results" id="hit__7">
  *              <div class="search__result__subheading">
@@ -138,13 +138,37 @@ const createDomNode = (nodeName, attributes) => {
  *          </div>
  *      </a>
  *      <br class="br-for-hits">
- * 
+ *
  *  </div>
  *
  * @param {Object} resultData search results of a page
  * @return {Object} a <div> node with the results of a single page
  */
-const generateSingleResult = resultData => {
+const generateSingleResult = (resultData, projectName) => {
+    let section_template =
+        '<a href="{{ section_link }}"> \
+            <div class="outer_div_page_results" id="{{ section_id }}"> \
+                <span class="search__result__subheading"> \
+                    {{ section_subheading|safe}} \
+                </span> \
+                <p class="search__result__content"> \
+                    {{ section_content|safe }} \
+                </p> \
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
+    let domain_template =
+        '<a href="{{ domain_link }}"> \
+            <div class="outer_div_page_results" id="{{ domain_id }}"> \
+                <span class="search__result__subheading"> \
+                    {{ domain_role_name|safe }} \
+                </span> \
+                <p class="search__result__content">{{ domain_name|safe }}</p> \
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
     let content = createDomNode("div");
 
     let page_link = createDomNode("a", {
@@ -166,6 +190,12 @@ const generateSingleResult = resultData => {
         title.innerHTML = resultData.title;
     }
 
+    // if result is not from the same project,
+    // then it must be from subproject.
+    if (projectName !== resultData.project) {
+        title.innerHTML += " " + resultData.project;
+    }
+
     page_link.appendChild(title);
     content.appendChild(page_link);
     content.appendChild(createDomNode("br"));
@@ -179,53 +209,40 @@ const generateSingleResult = resultData => {
     if (sections !== undefined && sections !== null) {
         for (let i = 0; i < sections.length; ++i) {
             COUNT += 1;
-            let section_link = createDomNode("a", {
-                href: `${page_link.href}#${sections[i]._source.id}`
-            });
-            let section_title = createDomNode("span", {
-                class: "search__result__subheading"
-            });
 
-            // if section title is present in the highlighted field, use that.
-            // else use the title present in the _souce.
+            let section_subheading = sections[i]._source.title;
+
             if (
                 sections[i].highlight["sections.title"] !== undefined &&
                 sections[i].highlight["sections.title"].length >= 1
             ) {
-                section_title.innerHTML =
-                    sections[i].highlight["sections.title"][0];
-            } else {
-                section_title.innerHTML = sections[i]._source.title;
+                section_subheading = sections[i].highlight["sections.title"][0];
             }
 
-            let section_content = createDomNode("p", {
-                class: "search__result__content"
-            });
+            let section_content =
+                sections[i]._source.content.substring(0, 100) + " ...";
 
-            // if section content is present in the highlighted field, use that.
-            // else use the content present in the _souce.
             if (
                 sections[i].highlight["sections.content"] !== undefined &&
                 sections[i].highlight["sections.content"].length >= 1
             ) {
-                section_content.innerHTML =
+                section_content =
                     "... " +
                     sections[i].highlight["sections.content"][0] +
                     " ...";
-            } else {
-                section_content.innerHTML =
-                    sections[i]._source.content.substring(0, 50) + " ...";
             }
 
-            let outer_div = createDomNode("div", {
-                class: "outer_div_page_results",
-                id: "hit__" + COUNT
+            let section_link = `${page_link.href}#${sections[i]._source.id}`;
+
+            let section_id = "hit__" + COUNT;
+
+            let section_html = Sqrl.Render(section_template, {
+                section_link: section_link,
+                section_id: section_id,
+                section_subheading: section_subheading,
+                section_content: section_content
             });
-            outer_div.appendChild(section_title);
-            outer_div.appendChild(section_content);
-            section_link.appendChild(outer_div);
-            content.appendChild(section_link);
-            content.appendChild(createDomNode("br", { class: "br-for-hits" }));
+            content.innerHTML += section_html;
         }
     }
 
@@ -233,21 +250,13 @@ const generateSingleResult = resultData => {
         for (let i = 0; i < domains.length; ++i) {
             COUNT += 1;
 
-            let domain_link = createDomNode("a", {
-                href: `${page_link.href}#${domains[i]._source.anchor}`
-            });
+            let domain_link = `${page_link.href}#${domains[i]._source.anchor}`;
 
-            let domain_title = createDomNode("span", {
-                class: "search__result__subheading"
-            });
-            domain_title.innerHTML = domains[i]._source.role_name;
+            let domain_role_name = domains[i]._source.role_name;
 
-            let domain_content = createDomNode("p", {
-                class: "search__result__content"
-            });
+            let domain_name =
+                domains[i]._source.name.substring(0, 100) + " ...";
 
-            // if sphinx domain's name is present in the highlighted field, use that.
-            // else use the value present in the _souce.
             if (
                 domains[i].highlight !== undefined &&
                 domains.highlight !== null
@@ -256,26 +265,19 @@ const generateSingleResult = resultData => {
                     domains[i].highlight["domains.name"] !== undefined &&
                     domains[i].highlight["domains.name"].length >= 1
                 ) {
-                    domain_content.innerHTML =
-                        domains[i].highlight["domains.name"][0];
-                } else {
-                    domain_content.innerHTML =
-                        domains[i]._source.name.substring(0, 40) + " ...";
+                    domain_name = domains[i].highlight["domains.name"][0];
                 }
-            } else {
-                domain_content.innerHTML =
-                    domains[i]._source.name.substring(0, 40) + " ...";
             }
 
-            let outer_div = createDomNode("div", {
-                class: "outer_div_page_results",
-                id: "hit__" + COUNT
+            let domain_id = "hit__" + COUNT;
+
+            let domain_html = Sqrl.Render(domain_template, {
+                domain_link: domain_link,
+                domain_id: domain_id,
+                domain_role_name: domain_role_name,
+                domain_name: domain_name
             });
-            outer_div.appendChild(domain_title);
-            outer_div.appendChild(domain_content);
-            domain_link.appendChild(outer_div);
-            content.appendChild(domain_link);
-            content.appendChild(createDomNode("br", { class: "br-for-hits" }));
+            content.innerHTML += domain_html;
         }
     }
     return content;
@@ -314,7 +316,7 @@ const generateSuggestionsList = (data, projectName) => {
             class: "search__result__single"
         });
 
-        let content = generateSingleResult(data.results[i]);
+        let content = generateSingleResult(data.results[i], projectName);
 
         search_result_single.appendChild(content);
         search_result_box.appendChild(search_result_single);
