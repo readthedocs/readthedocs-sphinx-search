@@ -193,7 +193,7 @@ const generateSingleResult = (resultData, projectName) => {
     // if result is not from the same project,
     // then it must be from subproject.
     if (projectName !== resultData.project) {
-        title.innerHTML += " " + resultData.project;
+        title.innerHTML += " (" + resultData.project + ")";
     }
 
     page_link.appendChild(title);
