@@ -275,6 +275,7 @@ const generateSingleResult = (resultData, projectName) => {
 
     for (let i = 0; i < resultData.inner_hits.length; ++i) {
         const type = resultData.inner_hits[i].type;
+        COUNT += 1;
         let html_structure = "";
 
         if (type === "sections") {

@@ -457,8 +457,8 @@ def test_results_displayed_to_user(selenium, app, status, warning):
                 search_result_box.find_elements_by_class_name(
                     'outer_div_page_results'
                 )
-            ) == 6
-        ), 'total 6 results should be shown to the user (as per the dummy_results.json)'
+            ) == 3
+        ), 'total 3 results should be shown to the user (as per the dummy_results.json)'
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)

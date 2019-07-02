@@ -1,100 +1,58 @@
 {
-    "count": 31,
+    "count": 26,
     "next": null,
     "previous": null,
     "results": [
         {
-            "project": "rtd-test",
+            "project": "sphinx",
             "version": "latest",
-            "title": "API v2",
-            "path": "api/v2",
-            "link": "http://localhost:8000/docs/template/projects/rtd-test/en/latest/api/v2",
-            "highlight": { "title": ["<em>API</em> v2"] },
-            "inner_hits": {
-                "sections": [
-                    {
-                        "_source": {
-                            "id": "api-v2",
-                            "title": "API v2",
-                            "content": "\nNote\nA newer API v3 is in early development stages. Some improvements coming in v3 are:\nSearch API\nWrite access\nSimpler URLs which use slugs instead of numeric IDs\nImproved error reporting\nIf there are features you would like in v3, please get in touch in the issue tracker.\n"
-                        },
-                        "highlight": {
-                            "sections.content": [
-                                "Note. A newer <em>API</em> v3 is in early development stages."
-                            ],
-                            "sections.title": ["<em>API</em> v2"]
-                        }
-                    },
-                    {
-                        "_source": {
-                            "id": "authentication-and-authorization",
-                            "title": "Authentication and authorization",
-                            "content": "Requests to the Read the Docs public API are for public information only and do not require any authentication."
-                        },
-                        "highlight": {
-                            "sections.content": [
-                                "Requests to the Read the Docs public <em>API</em> are for public information only and do not require any authentication"
-                            ]
-                        }
-                    },
-                    {
-                        "_source": {
-                            "id": "resources",
-                            "title": "Resources",
-                            "content": "Projects\nProjects are the main building block of Read the Docs. Projects are built when there are changes to the code and the resulting documentation is hosted and served by Read the Docs.\nAs an example, this documentation is part of the Docs project which has documentation at https://docs.readthedocs.io.\nYou can always view your Read the Docs projects in your project dashboard.\nProject list\nGET /api/v2/project/\nRetrieve a list of all Read the Docs projects.\nExample request:\nspan.prompt1:before { content: \"$ \"; }\ncurl https://readthedocs.org/api/v2/project/?slug=pip\nExample response:\n{ \"count\": 1, \"next\": null, \"previous\": null, \"results\": [PROJECTS] }\nResponse JSON Object:\nnext (string) – URI for next set of Projects.\nprevious (string) – URI for previous set of Projects.\ncount (integer) – Total number of Projects.\nresults (array) – Array of Project objects.\nQuery Parameters:\nslug (string) – Narrow the results by matching the exact project slug\nProject details\nGET /api/v2/project/(int: id)/\nRetrieve details of a single project.\n{ \"id\": 6, \"name\": \"Pip\", \"slug\": \"pip\", \"programming_language\": \"py\", \"default_version\": \"stable\", \"default_branch\": \"master\", \"repo_type\": \"git\", \"repo\": \"https://github.com/pypa/pip\", \"description\": \"Pip Installs Packages.\", \"language\": \"en\", \"documentation_type\": \"sphinx_htmldir\", \"canonical_url\": \"http://pip.pypa.io/en/stable/\", \"users\": [USERS] }\nResponse JSON Object:\nid (integer) – The ID of the project\nname (string) – The name of the project.\nslug (string) – The project slug (used in the URL).\nprogramming_language (string) – The programming language of the project (eg. “py”, “js”)\ndefault_version (string) – The default version of the project (eg. “latest”, “stable”, “v3”)\ndefault_branch (string) – The default version control branch\nrepo_type (string) – Version control repository of the project\nrepo (string) – The repository URL for the project\ndescription (string) – An RST description of the project\nlanguage (string) – The language code of this project\ndocumentation_type (string) – An RST description of the project\ncanonical_url (string) – The canonical URL of the default docs\nusers (array) – Array of User IDs who are maintainers of the project.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Project with this ID\nProject versions\nGET /api/v2/project/(int: id)/active_versions/\nRetrieve a list of active versions (eg. “latest”, “stable”, “v1.x”) for a single project.\n{ \"versions\": [VERSION, VERSION, ...] }\nResponse JSON Object:\nversions (array) – Version objects for the given Project\nSee the Version detail call for the format of the Version object.\nVersions\nVersions are different versions of the same project documentation\nThe versions for a given project can be viewed in a project’s version screen. For example, here is the Pip project’s version screen.\nVersion list\nGET /api/v2/version/\nRetrieve a list of all Versions for all projects\n{ \"count\": 1000, \"previous\": null, \"results\": [VERSIONS], \"next\": \"https://readthedocs.org/api/v2/version/?limit=10&offset=10\" }\nResponse JSON Object:\nnext (string) – URI for next set of Versions.\nprevious (string) – URI for previous set of Versions.\ncount (integer) – Total number of Versions.\nresults (array) – Array of Version objects.\nQuery Parameters:\nproject__slug (string) – Narrow to the versions for a specific Project\nactive (boolean) – Pass true or false to show only active or inactive versions. By default, the API returns all versions.\nVersion detail\nGET /api/v2/version/(int: id)/\nRetrieve details of a single version.\n{ \"id\": 1437428, \"slug\": \"stable\", \"verbose_name\": \"stable\", \"built\": true, \"active\": true, \"type\": \"tag\", \"identifier\": \"3a6b3995c141c0888af6591a59240ba5db7d9914\", \"downloads\": { \"pdf\": \"//readthedocs.org/projects/pip/downloads/pdf/stable/\", \"htmlzip\": \"//readthedocs.org/projects/pip/downloads/htmlzip/stable/\", \"epub\": \"//readthedocs.org/projects/pip/downloads/epub/stable/\" }, \"project\": {PROJECT}, }\nResponse JSON Object:\nid (integer) – The ID of the version\nverbose_name (string) – The name of the version.\nslug (string) – The version slug.\nbuilt (string) – Whether this version has been built\nactive (string) – Whether this version is still active\ntype (string) – The type of this version (typically “tag” or “branch”)\nidentifier (string) – A version control identifier for this version (eg. the commit hash of the tag)\ndownloads (array) – URLs to downloads of this version’s documentation\nproject (object) – Details of the Project for this version.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Version with this ID\nBuilds\nBuilds are created by Read the Docs whenever a Project has its documentation built. Frequently this happens automatically via a web hook but can be triggered manually.\nBuilds can be viewed in the build screen for a project. For example, here is Pip’s build screen.\nBuild list\nGET /api/v2/build/\nRetrieve details of builds ordered by most recent first\nExample request:\ncurl https://readthedocs.org/api/v2/build/?project__slug=pip\nExample response:\n{ \"count\": 100, \"next\": null, \"previous\": null, \"results\": [BUILDS] }\nResponse JSON Object:\nnext (string) – URI for next set of Builds.\nprevious (string) – URI for previous set of Builds.\ncount (integer) – Total number of Builds.\nresults (array) – Array of Build objects.\nQuery Parameters:\nproject__slug (string) – Narrow to builds for a specific Project\ncommit (string) – Narrow to builds for a specific commit\nBuild detail\nGET /api/v2/build/(int: id)/\nRetrieve details of a single build.\n{ \"id\": 7367364, \"date\": \"2018-06-19T15:15:59.135894\", \"length\": 59, \"type\": \"html\", \"state\": \"finished\", \"success\": true, \"error\": \"\", \"commit\": \"6f808d743fd6f6907ad3e2e969c88a549e76db30\", \"docs_url\": \"http://pip.pypa.io/en/latest/\", \"project\": 13, \"project_slug\": \"pip\", \"version\": 3681, \"version_slug\": \"latest\", \"commands\": [ { \"description\": \"\", \"start_time\": \"2018-06-19T20:16:00.951959\", \"exit_code\": 0, \"build\": 7367364, \"command\": \"git remote set-url origin git://github.com/pypa/pip.git\", \"run_time\": 0, \"output\": \"\", \"id\": 42852216, \"end_time\": \"2018-06-19T20:16:00.969170\" }, ... ], ... }\nResponse JSON Object:\nid (integer) – The ID of the build\ndate (string) – The ISO-8601 datetime of the build.\nlength (integer) – The length of the build in seconds.\ntype (string) – The type of the build (one of “html”, “pdf”, “epub”)\nstate (string) – The state of the build (one of “triggered”, “building”, “installing”, “cloning”, or “finished”)\nsuccess (boolean) – Whether the build was successful\nerror (string) – An error message if the build was unsuccessful\ncommit (string) – A version control identifier for this build (eg. the commit hash)\ndocs_url (string) – The canonical URL of the build docs\nproject (integer) – The ID of the project being built\nproject_slug (string) – The slug for the project being built\nversion (integer) – The ID of the version of the project being built\nversion_slug (string) – The slug for the version of the project being built\ncommands (array) – Array of commands for the build with details including output.\nStatus Codes:\n200 OK – no error\n404 Not Found – There is no Build with this ID\nSome fields primarily used for UI elements in Read the Docs are omitted.\nUndocumented resources and endpoints\nThere are some undocumented endpoints in the API. These should not be used and could change at any time. These include:\nThe search API (/api/v2/search/)\nEndpoints for returning footer and version data to be injected into docs. (/api/v2/footer_html)\nEndpoints used for advertising (/api/v2/sustainability/)\nAny other endpoints not detailed above."
-                        },
-                        "highlight": {
-                            "sections.content": [
-                                "These include:. The search <em>API</em> (/<em>api</em>/v2/search/). Endpoints for returning footer and version data to be"
-                            ]
-                        }
-                    }
-                ],
-                "domains": [
-                    {
-                        "_source": {
-                            "role_name": "http:get",
-                            "doc_name": "api/v2.html",
-                            "anchor": "get--api-v2-version-",
-                            "type_display": "",
-                            "doc_display": "",
-                            "name": "/api/v2/version/",
-                            "display_name": "-"
-                        },
-                        "highlight": {
-                            "domains.name": ["/<em>api</em>/v2/version/"]
-                        }
-                    },
-                    {
-                        "_source": {
-                            "role_name": "http:get",
-                            "doc_name": "api/v2.html",
-                            "anchor": "get--api-v2-project-",
-                            "type_display": "",
-                            "doc_display": "",
-                            "name": "/api/v2/project/",
-                            "display_name": "-"
-                        },
-                        "highlight": {
-                            "domains.name": ["/<em>api</em>/v2/project/"]
-                        }
-                    },
-                    {
-                        "_source": {
-                            "role_name": "http:get",
-                            "doc_name": "api/v2.html",
-                            "anchor": "get--api-v2-build-",
-                            "type_display": "",
-                            "doc_display": "",
-                            "name": "/api/v2/build/",
-                            "display_name": "-"
-                        },
-                        "highlight": {
-                            "domains.name": ["/<em>api</em>/v2/build/"]
-                        }
-                    }
+            "title": "Developing a “Hello world” extension",
+            "path": "development/tutorials/helloworld",
+            "link": "http://localhost:8000/docs/template/projects/sphinx/en/latest/development/tutorials/helloworld",
+            "highlight": {
+                "title": [
+                    "Developing a “<em>Hello</em> <em>world</em>” extension"
                 ]
-            }
+            },
+            "inner_hits": [
+                {
+                    "type": "sections",
+                    "_source": {
+                        "id": "overview",
+                        "title": "Overview",
+                        "content": "We want the extension to add the following to Sphinx:\nA helloworld directive, that will simply output the text “hello world”."
+                    },
+                    "highlight": {
+                        "sections.content": ["<em>world</em>”."]
+                    }
+                },
+                {
+                    "type": "sections",
+                    "_source": {
+                        "id": "developing-a-hello-world-extension",
+                        "title": "Developing a “Hello world” extension",
+                        "content": "Only basic information is provided in this tutorial. For more information, refer to the other tutorials that go into more details.\n\nWarning\nFor this extension, you will need some basic understanding of docutils and Python.\n"
+                    },
+                    "highlight": {
+                        "sections.title": [
+                            "Developing a “<em>Hello</em> <em>world</em>” extension"
+                        ]
+                    }
+                },
+                {
+                    "type": "sections",
+                    "_source": {
+                        "id": "using-the-extension",
+                        "title": "Using the extension",
+                        "content": "The extension has to be declared in your conf.py file to make Sphinx aware of it. There are two steps necessary here:\nAdd the _ext directory to the Python path using sys.path.append. This should be placed at the top of the file.\nUpdate or create the extensions list and add the extension file name to the list\nFor example:\nimport os import sys sys.path.append(os.path.abspath(\"./_ext\")) extensions = ['helloworld']\nTip\nWe’re not distributing this extension as a Python package, we need to modify the Python path so Sphinx can find our extension. This is why we need the call to sys.path.append.\nYou can now use the extension in a file. For example:\nSome intro text here... .. helloworld:: Some more text here...\nThe sample above would generate:\nSome intro text here... Hello World! Some more text here..."
+                    },
+                    "highlight": {
+                        "sections.content": [
+                            "<em>Hello</em> <em>World</em>! Some more text here..."
+                        ]
+                    }
+                }
+            ]
         }
     ]
 }
