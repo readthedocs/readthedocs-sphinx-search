@@ -75,6 +75,13 @@ const createDomNode = (nodeName, attributes) => {
     return node;
 };
 
+/**
+ * Generate and return html structure
+ * for a page section result.
+ * 
+ * @param {Object} sectionData object containing the result data 
+ * @param {String} page_link link of the main page. It is used to construct the section link 
+ */
 const get_section_html = (sectionData, page_link) => {
     let section_template =
         '<a href="{{ section_link }}"> \
@@ -123,6 +130,13 @@ const get_section_html = (sectionData, page_link) => {
     return section_html;
 };
 
+/**
+ * Generate and return html structure
+ * for a sphinx domain result.
+ * 
+ * @param {Object} domainData object containing the result data 
+ * @param {String} page_link link of the main page. It is used to construct the section link 
+ */
 const get_domain_html = (domainData, page_link) => {
     let domain_template =
         '<a href="{{ domain_link }}"> \
