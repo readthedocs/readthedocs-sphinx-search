@@ -78,9 +78,9 @@ const createDomNode = (nodeName, attributes) => {
 /**
  * Generate and return html structure
  * for a page section result.
- * 
- * @param {Object} sectionData object containing the result data 
- * @param {String} page_link link of the main page. It is used to construct the section link 
+ *
+ * @param {Object} sectionData object containing the result data
+ * @param {String} page_link link of the main page. It is used to construct the section link
  */
 const get_section_html = (sectionData, page_link) => {
     let section_template =
@@ -133,26 +133,30 @@ const get_section_html = (sectionData, page_link) => {
 /**
  * Generate and return html structure
  * for a sphinx domain result.
- * 
- * @param {Object} domainData object containing the result data 
- * @param {String} page_link link of the main page. It is used to construct the section link 
+ *
+ * @param {Object} domainData object containing the result data
+ * @param {String} page_link link of the main page. It is used to construct the section link
  */
 const get_domain_html = (domainData, page_link) => {
     let domain_template =
         '<a href="{{ domain_link }}"> \
             <div class="outer_div_page_results" id="{{ domain_id }}"> \
                 <span class="search__result__subheading"> \
-                    {{ domain_role_name|safe }} \
+                    {{ domain_subheading|safe }} \
                 </span> \
-                <p class="search__result__content">{{ domain_name|safe }}</p> \
+                <p class="search__result__content">{{ domain_content|safe }}</p> \
             </div> \
         </a> \
         <br class="br-for-hits">';
 
     let domain_link = `${page_link.href}#${domainData._source.anchor}`;
     let domain_role_name = domainData._source.role_name;
-    let domain_name = domainData._source.name.substring(0, 100) + " ...";
+    let domain_type_display = domainData._source.type_display;
+    let domain_doc_display = domainData._source.doc_display;
+    let domain_display_name = domainData._source.display_name;
+    let domain_name = domainData._source.name;
 
+    // take values from highlighted fields (if present)
     if (domainData.highlight !== undefined && domainData.highlight !== null) {
         if (
             domainData.highlight["domains.name"] !== undefined &&
@@ -160,14 +164,63 @@ const get_domain_html = (domainData, page_link) => {
         ) {
             domain_name = domainData.highlight["domains.name"][0];
         }
+
+        if (
+            domainData.highlight["domains.display_name"] !== undefined &&
+            domainData.highlight["domains.display_name"].length >= 1
+        ) {
+            domain_display_name =
+                domainData.highlight["domains.display_name"][0];
+        }
+
+        if (
+            domainData.highlight["domains.type_display"] !== undefined &&
+            domainData.highlight["domains.type_display"].length >= 1
+        ) {
+            domain_type_display =
+                domainData.highlight["domains.type_display"][0];
+        }
+    }
+
+    // preparing domain_content
+    let domain_content = "";
+    if (
+        typeof domain_type_display === "string" &&
+        domain_type_display.length > 0
+    ) {
+        // domain_content = type_display --
+        domain_content += domain_type_display + " -- ";
+    }
+    if (typeof domain_name === "string" && domain_name.length > 0) {
+        // domain_content = type_display -- name
+        domain_content += domain_name + " ";
+    }
+    if (
+        typeof domain_doc_display === "string" &&
+        domain_doc_display.length > 0
+    ) {
+        // domain_content = type_display -- name -- in doc_display
+        domain_content += "-- in " + domain_doc_display;
+    }
+
+    let domain_subheading = "";
+    if (
+        typeof domain_display_name === "string" &&
+        domain_display_name.length >= 2 // >= 2 because many display_names have values "-"
+    ) {
+        // domain_subheading = (role_name) display_name
+        domain_subheading = "(" + domain_role_name + ") " + domain_display_name;
+    } else {
+        // domain_subheading = role_name
+        domain_subheading = domain_role_name;
     }
 
     let domain_id = "hit__" + COUNT;
     let domain_html = Sqrl.Render(domain_template, {
         domain_link: domain_link,
         domain_id: domain_id,
-        domain_role_name: domain_role_name,
-        domain_name: domain_name
+        domain_content: domain_content,
+        domain_subheading: domain_subheading
     });
 
     return domain_html;
