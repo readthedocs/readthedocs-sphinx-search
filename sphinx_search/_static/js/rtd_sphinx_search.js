@@ -84,13 +84,13 @@ const createDomNode = (nodeName, attributes) => {
  */
 const get_section_html = (sectionData, page_link) => {
     let section_template =
-        '<a href="{{ section_link }}"> \
-            <div class="outer_div_page_results" id="{{ section_id }}"> \
+        '<a href="<%= section_link %>"> \
+            <div class="outer_div_page_results" id="<%= section_id %>"> \
                 <span class="search__result__subheading"> \
-                    {{ section_subheading|safe}} \
+                    <%= section_subheading %> \
                 </span> \
                 <p class="search__result__content"> \
-                    {{ section_content|safe }} \
+                    <%= section_content %> \
                 </p> \
             </div> \
         </a> \
@@ -120,7 +120,7 @@ const get_section_html = (sectionData, page_link) => {
 
     let section_id = "hit__" + COUNT;
 
-    let section_html = Sqrl.Render(section_template, {
+    let section_html = $u.template(section_template, {
         section_link: section_link,
         section_id: section_id,
         section_subheading: section_subheading,
@@ -139,12 +139,12 @@ const get_section_html = (sectionData, page_link) => {
  */
 const get_domain_html = (domainData, page_link) => {
     let domain_template =
-        '<a href="{{ domain_link }}"> \
-            <div class="outer_div_page_results" id="{{ domain_id }}"> \
+        '<a href="<%= domain_link %>"> \
+            <div class="outer_div_page_results" id="<%= domain_id %>"> \
                 <span class="search__result__subheading"> \
-                    {{ domain_subheading|safe }} \
+                    <%= domain_subheading %> \
                 </span> \
-                <p class="search__result__content">{{ domain_content|safe }}</p> \
+                <p class="search__result__content"><%= domain_content %></p> \
             </div> \
         </a> \
         <br class="br-for-hits">';
@@ -216,7 +216,7 @@ const get_domain_html = (domainData, page_link) => {
     }
 
     let domain_id = "hit__" + COUNT;
-    let domain_html = Sqrl.Render(domain_template, {
+    let domain_html = $u.template(domain_template, {
         domain_link: domain_link,
         domain_id: domain_id,
         domain_content: domain_content,
