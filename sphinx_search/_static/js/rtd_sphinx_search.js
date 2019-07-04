@@ -446,7 +446,21 @@ const addActive = current_focus => {
  * @return {Object} Input field node
  */
 const getInputField = () => {
-    const inputField = document.querySelector("div[role='search'] input");
+    let inputField;
+
+    // on search some pages (like search.html),
+    // no div is present with role="search",
+    // in that case, use the other query to select
+    // the input field
+    try {
+        inputField = document.querySelector("div[role='search'] input");
+        if (inputField === undefined || inputField === null) {
+            throw "'div[role='search'] input' not found";
+        }
+    } catch (err) {
+        inputField = document.querySelector("input[name='q']");
+    }
+
     return inputField;
 };
 
@@ -743,9 +757,9 @@ window.addEventListener("DOMContentLoaded", evt => {
                 } else {
                     // submit search form if there
                     // is no active item.
-                    const form = document.querySelector(
-                        "div[role='search'] form"
-                    );
+                    const input_field = getInputField();
+                    const form = input_field.parentElement;
+
                     search_bar.value = SEARCH_QUERY || "";
                     form.submit();
                 }
