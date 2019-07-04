@@ -324,7 +324,7 @@ const generateSingleResult = (resultData, projectName) => {
         title.innerHTML +=
             " " +
             $u.template(
-                '<small class="rtd_search_subtitle"> \
+                '<small class="rtd_ui_search_subtitle"> \
                     (from project <%= project %>) \
                 </small>',
                 {
