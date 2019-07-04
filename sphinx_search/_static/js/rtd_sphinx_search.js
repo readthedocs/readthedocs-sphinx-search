@@ -116,7 +116,7 @@ const get_section_html = (sectionData, page_link) => {
             "... " + sectionData.highlight["sections.content"][0] + " ...";
     }
 
-    let section_link = `${page_link.href}#${sectionData._source.id}`;
+    let section_link = `${page_link}#${sectionData._source.id}`;
 
     let section_id = "hit__" + COUNT;
 
@@ -149,7 +149,7 @@ const get_domain_html = (domainData, page_link) => {
         </a> \
         <br class="br-for-hits">';
 
-    let domain_link = `${page_link.href}#${domainData._source.anchor}`;
+    let domain_link = `${page_link}#${domainData._source.anchor}`;
     let domain_role_name = domainData._source.role_name;
     let domain_type_display = domainData._source.type_display;
     let domain_doc_display = domainData._source.doc_display;
@@ -297,12 +297,19 @@ const get_domain_html = (domainData, page_link) => {
  */
 const generateSingleResult = (resultData, projectName) => {
     let content = createDomNode("div");
-    let page_link = createDomNode("a", {
-        href: `${resultData.link}${
-            DOCUMENTATION_OPTIONS.FILE_SUFFIX
-        }?highlight=${SEARCH_QUERY}`
-    });
-    let title = createDomNode("h2", { class: "search__result__title" });
+
+    let page_link_template =
+        '<a href="<%= page_link %>"> \
+            <h2 class="search__result__title"> \
+                <%= page_title %> \
+            </h2> \
+        </a>';
+
+    let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
+    let page_link_highlight =
+        page_link + "?highlight=" + encodeURIComponent(SEARCH_QUERY);
+
+    let page_title = resultData.title;
 
     // if title is present in highlighted field, use that.
     if (resultData.highlight !== undefined && resultData.highlight !== null) {
@@ -310,18 +317,14 @@ const generateSingleResult = (resultData, projectName) => {
             resultData.highlight.title !== undefined &&
             resultData.highlight.title !== null
         ) {
-            title.innerHTML = resultData.highlight.title;
-        } else {
-            title.innerHTML = resultData.title;
+            page_title = resultData.highlight.title;
         }
-    } else {
-        title.innerHTML = resultData.title;
     }
 
     // if result is not from the same project,
     // then it must be from subproject.
     if (projectName !== resultData.project) {
-        title.innerHTML +=
+        page_title +=
             " " +
             $u.template(
                 '<small class="rtd_ui_search_subtitle"> \
@@ -333,9 +336,12 @@ const generateSingleResult = (resultData, projectName) => {
             );
     }
 
-    page_link.appendChild(title);
-    content.appendChild(page_link);
-    content.appendChild(createDomNode("br"));
+    page_title += "<br>";
+
+    content.innerHTML += $u.template(page_link_template, {
+        page_link: page_link_highlight,
+        page_title: page_title
+    });
 
     for (let i = 0; i < resultData.inner_hits.length; ++i) {
         const type = resultData.inner_hits[i].type;
