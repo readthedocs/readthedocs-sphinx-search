@@ -194,6 +194,7 @@
     width: 20%;
     font-size: 15px;
     margin-right: 10px;
+    overflow-x: hidden;
 }
 
 .search__result__content {
@@ -237,6 +238,12 @@
     display: block;
     content: "";
     margin-top: 10px;
+}
+
+.rtd_search_subtitle {
+    all: unset;
+    color: inherit;
+    font-size: 85%;
 }
 
 @media (max-width: 630px) {

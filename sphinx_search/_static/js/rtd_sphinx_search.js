@@ -298,7 +298,9 @@ const get_domain_html = (domainData, page_link) => {
 const generateSingleResult = (resultData, projectName) => {
     let content = createDomNode("div");
     let page_link = createDomNode("a", {
-        href: `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`
+        href: `${resultData.link}${
+            DOCUMENTATION_OPTIONS.FILE_SUFFIX
+        }?highlight=${SEARCH_QUERY}`
     });
     let title = createDomNode("h2", { class: "search__result__title" });
 
@@ -319,7 +321,16 @@ const generateSingleResult = (resultData, projectName) => {
     // if result is not from the same project,
     // then it must be from subproject.
     if (projectName !== resultData.project) {
-        title.innerHTML += " (" + resultData.project + ")";
+        title.innerHTML +=
+            " " +
+            $u.template(
+                '<small class="rtd_search_subtitle"> \
+                    (from project <%= project %>) \
+                </small>',
+                {
+                    project: resultData.project
+                }
+            );
     }
 
     page_link.appendChild(title);
