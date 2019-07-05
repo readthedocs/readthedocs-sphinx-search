@@ -11,7 +11,7 @@ setuptools.setup(
     author='Vaibhav Gupta',
     author_email='vaibhgupt199@gmail.com',
     description='Sphinx extension to enable `search as you type` for docs hosted by Read the Docs.',
-    url='https://github.com/rtfd/readthedocs-sphinx-search',
+    url='https://github.com/readthedocs/readthedocs-sphinx-search',
     license='MIT',
     packages=setuptools.find_packages(),
     long_description=long_description,
