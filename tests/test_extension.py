@@ -14,8 +14,8 @@ def test_static_files_exists(app, status, warning):
     app.build()
     path = app.outdir
 
-    js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.min.js')
-    css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.min.css')
+    js_file = os.path.join(path, '_static', 'js', 'rtd_sphinx_search.js')
+    css_file = os.path.join(path, '_static', 'css', 'rtd_sphinx_search.css')
 
     assert (
         os.path.exists(js_file) is True
@@ -36,9 +36,9 @@ def test_static_files_injected_in_html(selenium, app, status, warning):
     page_source = selenium.page_source
 
     assert (
-        page_source.count('rtd_sphinx_search.min.js') == 1
+        page_source.count('rtd_sphinx_search.js') == 1
     ), 'js file should be injected only once'
 
     assert (
-        page_source.count('rtd_sphinx_search.min.css') == 1
+        page_source.count('rtd_sphinx_search.css') == 1
     ), 'css file should be injected only once'

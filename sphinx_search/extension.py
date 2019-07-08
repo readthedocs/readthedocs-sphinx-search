@@ -3,8 +3,10 @@ from sphinx.util.fileutil import copy_asset
 
 
 CUSTOM_ASSETS_FILES = [
-    os.path.join('js', 'rtd_sphinx_search.min.js'),
-    os.path.join('css', 'rtd_sphinx_search.min.css'),
+    os.path.join('js', 'rtd_sphinx_search.js'),
+    # os.path.join('js', 'rtd_sphinx_search.min.js'),
+    os.path.join('css', 'rtd_sphinx_search.css'),
+    # os.path.join('css', 'rtd_sphinx_search.min.css'),
 ]
 
 
@@ -20,7 +22,7 @@ def setup(app):
     app.connect('build-finished', copy_asset_files)
 
     for file in CUSTOM_ASSETS_FILES:
-        if file.endswith('.min.js'):
+        if file.endswith('.js'):
             app.add_js_file(file)
-        if file.endswith('.min.css'):
+        if file.endswith('.css'):
             app.add_css_file(file)
