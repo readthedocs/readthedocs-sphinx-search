@@ -21,6 +21,6 @@ def setup(app):
 
     for file in CUSTOM_ASSETS_FILES:
         if file.endswith('.min.js'):
-            app.add_javascript(file)
+            app.add_js_file(file)
         if file.endswith('.min.css'):
-            app.add_stylesheet(file)
+            app.add_css_file(file)
