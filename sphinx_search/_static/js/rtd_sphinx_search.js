@@ -77,6 +77,20 @@ const createDomNode = (nodeName, attributes) => {
 };
 
 /**
+ * Checks if data type is "string" or not
+ *
+ * @param {*} data
+ * @return {Boolean} 'true' if type is "string" and length is > 0
+ */
+const _is_string = str => {
+    if (typeof str === "string" && str.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+/**
  * Generate and return html structure
  * for a page section result.
  *
@@ -142,6 +156,22 @@ const get_section_html = (sectionData, page_link) => {
 };
 
 /**
+ * Returns value of the corresponding key (if present),
+ * else returns false.
+ *
+ * @param {Object} data object containing the data used for highlighting
+ * @param {String} key key whose values is to be returned
+ * @return {Array|Boolean} if key is present, it will return its value. Otherwise, return false
+ */
+const getHighlightListData = (data, key) => {
+    if (Array.isArray(data[key]) && data[key].length > 0) {
+        return data[key][0];
+    } else {
+        return false;
+    }
+};
+
+/**
  * Generate and return html structure
  * for a sphinx domain result.
  *
@@ -169,56 +199,48 @@ const get_domain_html = (domainData, page_link) => {
 
     // take values from highlighted fields (if present)
     if (domainData.highlight !== undefined && domainData.highlight !== null) {
-        if (
-            domainData.highlight["domains.name"] !== undefined &&
-            domainData.highlight["domains.name"].length >= 1
-        ) {
-            domain_name = domainData.highlight["domains.name"][0];
+        var highlight = domainData.highlight;
+
+        var name = getHighlightListData(highlight, "domains.name");
+        var display_name = getHighlightListData(
+            highlight,
+            "domains.display_name"
+        );
+        var type_display = getHighlightListData(
+            highlight,
+            "domains.type_display"
+        );
+
+        if (name) {
+            domain_name = name;
         }
 
-        if (
-            domainData.highlight["domains.display_name"] !== undefined &&
-            domainData.highlight["domains.display_name"].length >= 1
-        ) {
-            domain_display_name =
-                domainData.highlight["domains.display_name"][0];
+        if (display_name) {
+            domain_display_name = display_name;
         }
 
-        if (
-            domainData.highlight["domains.type_display"] !== undefined &&
-            domainData.highlight["domains.type_display"].length >= 1
-        ) {
-            domain_type_display =
-                domainData.highlight["domains.type_display"][0];
+        if (type_display) {
+            domain_type_display = type_display;
         }
     }
 
     // preparing domain_content
     let domain_content = "";
-    if (
-        typeof domain_type_display === "string" &&
-        domain_type_display.length > 0
-    ) {
+    if (_is_string(domain_type_display)) {
         // domain_content = type_display --
         domain_content += domain_type_display + " -- ";
     }
-    if (typeof domain_name === "string" && domain_name.length > 0) {
+    if (_is_string(domain_name)) {
         // domain_content = type_display -- name
         domain_content += domain_name + " ";
     }
-    if (
-        typeof domain_doc_display === "string" &&
-        domain_doc_display.length > 0
-    ) {
+    if (_is_string(domain_doc_display)) {
         // domain_content = type_display -- name -- in doc_display
         domain_content += "-- in " + domain_doc_display;
     }
 
     let domain_subheading = "";
-    if (
-        typeof domain_display_name === "string" &&
-        domain_display_name.length >= 2 // >= 2 because many display_names have values "-"
-    ) {
+    if (_is_string(domain_display_name)) {
         // domain_subheading = (role_name) display_name
         domain_subheading = "(" + domain_role_name + ") " + domain_display_name;
     } else {
@@ -301,13 +323,11 @@ const generateSingleResult = (resultData, projectName) => {
                 resultData.inner_hits[i],
                 page_link
             );
-        } else {
-            if (type === "domains") {
-                html_structure = get_domain_html(
-                    resultData.inner_hits[i],
-                    page_link
-                );
-            }
+        } else if (type === "domains") {
+            html_structure = get_domain_html(
+                resultData.inner_hits[i],
+                page_link
+            );
         }
         content.innerHTML += html_structure;
     }
