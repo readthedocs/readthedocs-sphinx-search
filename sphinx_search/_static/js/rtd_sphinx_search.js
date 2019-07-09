@@ -1,4 +1,5 @@
 const MAX_SUGGESTIONS = 50;
+const MAX_SECTION_RESULTS = 3;
 let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
 
@@ -89,9 +90,11 @@ const get_section_html = (sectionData, page_link) => {
                 <span class="search__result__subheading"> \
                     <%= section_subheading %> \
                 </span> \
-                <p class="search__result__content"> \
-                    <%= section_content %> \
-                </p> \
+                <% for (var i = 0; i < section_content.length; ++i) { %> \
+                    <p class="search__result__content"> \
+                        <%= section_content[i] %> \
+                    </p> \
+                <% } %>\
             </div> \
         </a> \
         <br class="br-for-hits">';
@@ -105,15 +108,23 @@ const get_section_html = (sectionData, page_link) => {
         section_subheading = sectionData.highlight["sections.title"][0];
     }
 
-    let section_content =
-        sectionData._source.content.substring(0, 100) + " ...";
+    let section_content = [
+        sectionData._source.content.substring(0, 100) + " ..."
+    ];
 
     if (
         sectionData.highlight["sections.content"] !== undefined &&
         sectionData.highlight["sections.content"].length >= 1
     ) {
-        section_content =
-            "... " + sectionData.highlight["sections.content"][0] + " ...";
+        var highlight_content = sectionData.highlight["sections.content"];
+        section_content = [];
+        for (
+            var j = 0;
+            j < highlight_content.length && j < MAX_SECTION_RESULTS;
+            ++j
+        ) {
+            section_content.push("... " + highlight_content[j] + " ...");
+        }
     }
 
     let section_link = `${page_link}#${sectionData._source.id}`;
