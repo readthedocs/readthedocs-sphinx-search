@@ -11,7 +11,7 @@ let COUNT = 0;
  * Debounce the function.
  * Usage:
  *
- *      var func = debounce(() => console.log("Hello World"), 3000);
+ *      let func = debounce(() => console.log("Hello World"), 3000);
  *
  *      // calling the func
  *      func();
@@ -91,6 +91,19 @@ const _is_string = str => {
 };
 
 /**
+ * Checks if data type is a non-empty array
+ * @param {*} data data whose type is to be checked
+ * @return {Boolean} returns true if data is non-empty array, else returns false
+ */
+const _is_array = arr => {
+    if (Array.isArray(arr) && arr.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+/**
  * Generate and return html structure
  * for a page section result.
  *
@@ -114,26 +127,26 @@ const get_section_html = (sectionData, page_link) => {
         <br class="br-for-hits">';
 
     let section_subheading = sectionData._source.title;
-
-    if (
-        sectionData.highlight["sections.title"] !== undefined &&
-        sectionData.highlight["sections.title"].length >= 1
-    ) {
-        section_subheading = sectionData.highlight["sections.title"][0];
+    let highlight = sectionData.highlight;
+    if (getHighlightListData(highlight, "sections.title")) {
+        section_subheading = getHighlightListData(
+            highlight,
+            "sections.title"
+        )[0];
     }
 
     let section_content = [
         sectionData._source.content.substring(0, 100) + " ..."
     ];
 
-    if (
-        sectionData.highlight["sections.content"] !== undefined &&
-        sectionData.highlight["sections.content"].length >= 1
-    ) {
-        var highlight_content = sectionData.highlight["sections.content"];
+    if (getHighlightListData(highlight, "sections.content")) {
+        let highlight_content = getHighlightListData(
+            highlight,
+            "sections.content"
+        );
         section_content = [];
         for (
-            var j = 0;
+            let j = 0;
             j < highlight_content.length && j < MAX_SECTION_RESULTS;
             ++j
         ) {
@@ -164,8 +177,8 @@ const get_section_html = (sectionData, page_link) => {
  * @return {Array|Boolean} if key is present, it will return its value. Otherwise, return false
  */
 const getHighlightListData = (data, key) => {
-    if (Array.isArray(data[key]) && data[key].length > 0) {
-        return data[key][0];
+    if (_is_array(data[key])) {
+        return data[key];
     } else {
         return false;
     }
@@ -199,28 +212,28 @@ const get_domain_html = (domainData, page_link) => {
 
     // take values from highlighted fields (if present)
     if (domainData.highlight !== undefined && domainData.highlight !== null) {
-        var highlight = domainData.highlight;
+        let highlight = domainData.highlight;
 
-        var name = getHighlightListData(highlight, "domains.name");
-        var display_name = getHighlightListData(
+        let name = getHighlightListData(highlight, "domains.name");
+        let display_name = getHighlightListData(
             highlight,
             "domains.display_name"
         );
-        var type_display = getHighlightListData(
+        let type_display = getHighlightListData(
             highlight,
             "domains.type_display"
         );
 
         if (name) {
-            domain_name = name;
+            domain_name = name[0];
         }
 
         if (display_name) {
-            domain_display_name = display_name;
+            domain_display_name = display_name[0];
         }
 
         if (type_display) {
-            domain_type_display = type_display;
+            domain_type_display = type_display[0];
         }
     }
 
@@ -493,14 +506,14 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                         });
                     } else {
                         removeResults();
-                        var err_div = getErrorDiv("No Results Found");
+                        let err_div = getErrorDiv("No Results Found");
                         search_outer.appendChild(err_div);
                     }
                 }
             },
             error: (resp, status_code, error) => {
                 removeResults();
-                var err_div = getErrorDiv("Error Occurred. Please try again.");
+                let err_div = getErrorDiv("Error Occurred. Please try again.");
                 search_outer.appendChild(err_div);
             }
         });
