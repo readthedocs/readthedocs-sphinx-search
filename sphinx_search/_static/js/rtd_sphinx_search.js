@@ -228,69 +228,6 @@ const get_domain_html = (domainData, page_link) => {
 
 /**
  * Generate search results for a single page.
- * It generates the following html structure:
- *
- *  <div>
- *      <a href="https://example.readthedocs.io">
- *          <h2 class="search__result__title">
- *              Title of the page
- *          </h2>
- *      </a>
- *      <br>
- *
- *      <!-- Page Sections -->
- *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-1">
- *          <div class="outer_div_page_results" id="hit__1">...</div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-2">
- *          <div class="outer_div_page_results" id="hit__2">
- *              <span class="search__result__subheading">
- *                  Dummy <em>Section</em> 2
- *              </span>
- *              <p class="search__result__content">
- *                  ... this is sample <em>section</em> text ...
- *              </p>
- *          </div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-3">
- *          <div class="outer_div_page_results" id="hit__3">...</div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *      <a href="https://example.readthedocs.io/page/dummy.html#dummy-section-4">
- *          <div class="outer_div_page_results" id="hit__4">...</div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *
- *      <!-- Sphinx Domains -->
- *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-1">
- *          <div class="outer_div_page_results" id="hit__5">...</div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-2">
- *          <div class="outer_div_page_results" id="hit__6">...</div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *      <a href="https://example.readthedocs.io/page/dummy.html#sphinx-domain-3">
- *          <div class="outer_div_page_results" id="hit__7">
- *              <div class="search__result__subheading">
- *                  http:get
- *              </div>
- *              <p class="search__result__content">
- *                  api/v3/<em>section</em>/4
- *              </p>
- *          </div>
- *      </a>
- *      <br class="br-for-hits">
- *
- *  </div>
  *
  * @param {Object} resultData search results of a page
  * @return {Object} a <div> node with the results of a single page
@@ -368,22 +305,6 @@ const generateSingleResult = (resultData, projectName) => {
 
 /**
  * Generate search suggestions list.
- * Structure of the generated html which is
- * returned from this function is :-
- *
- *      <div class="search__result__box">
- *          ...
- *          <div class="search__result__single">
- *              <div>...</div>
- *          </div>
- *          <div class="search__result__single">
- *              <div>...</div>
- *          </div>
- *          <div class="search__result__single">
- *              <div>...</div>
- *          </div>
- *          ...
- *      </div>
  *
  * @param {Object} data response data from the search backend
  * @param {String} projectName name (slug) of the project
@@ -562,22 +483,8 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  * appended to the <body> as soon as the page loads.
  * This html structure will serve as the boilerplate
  * to show our search results.
- * It generates the following html structure :-
  *
- *  <div class="search__outer__wrapper search__backdrop">
- *      <div class="search__outer">
- *          <div class="search__cross" title="Close">
- *              <!--?xml version='1.0' encoding='UTF-8'?-->
- *              <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
- *                  <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
- *              </svg>
- *          </div>
- *          <input class="search__outer__input" placeholder="Search ...">
- *          <span class="bar"></span>
- *      </div>
- *  </div>
- *
- * @return {Object} object containing the nodes with classes "search__outer__wrapper", "search__outer__input" and "search__outer"
+ * @return {Object} object containing the nodes with classes "search__outer__wrapper", "search__outer__input", "search__outer" and "search__cross"
  */
 const generateAndReturnInitialHtml = () => {
     let search_outer_wrapper = createDomNode("div", {
