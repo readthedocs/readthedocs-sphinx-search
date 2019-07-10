@@ -530,41 +530,24 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  * This html structure will serve as the boilerplate
  * to show our search results.
  *
- * @return {Object} object containing the nodes with classes "search__outer__wrapper", "search__outer__input", "search__outer" and "search__cross"
+ * @return {String} initial html structure
  */
 const generateAndReturnInitialHtml = () => {
-    let search_outer_wrapper = createDomNode("div", {
-        class: "search__outer__wrapper search__backdrop"
-    });
+    let initialHtml =
+        '<div class="search__outer__wrapper search__backdrop"> \
+            <div class="search__outer"> \
+                <div class="search__cross" title="Close"> \
+                    <!--?xml version="1.0" encoding="UTF-8"?--> \
+                    <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
+                        <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
+                    </svg> \
+                </div> \
+                <input class="search__outer__input" placeholder="Search ..."> \
+                <span class="bar"></span> \
+            </div> \
+        </div>';
 
-    let search_outer = createDomNode("div", { class: "search__outer" });
-
-    let cross_icon = createDomNode("div", {
-        class: "search__cross",
-        title: "Close"
-    });
-    cross_icon.innerHTML =
-        "<?xml version='1.0' encoding='UTF-8'?><svg class='search__cross__img' width='15px' height='15px' enable-background='new 0 0 612 612' version='1.1' viewBox='0 0 612 612' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><polygon points='612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01'/></svg>";
-    search_outer.appendChild(cross_icon);
-
-    let search_outer_input = createDomNode("input", {
-        class: "search__outer__input",
-        placeholder: "Search ..."
-    });
-
-    // for material ui design input field
-    let horizontal_bar = createDomNode("span", { class: "bar" });
-
-    search_outer.appendChild(search_outer_input);
-    search_outer.appendChild(horizontal_bar);
-    search_outer_wrapper.appendChild(search_outer);
-
-    return {
-        search_outer_wrapper,
-        search_outer_input,
-        search_outer,
-        cross_icon
-    };
+    return initialHtml;
 };
 
 /**
@@ -622,12 +605,12 @@ window.addEventListener("DOMContentLoaded", evt => {
         const language = READTHEDOCS_DATA.language || "en";
         const api_host = READTHEDOCS_DATA.api_host;
 
-        const initialHtml = generateAndReturnInitialHtml();
-        let search_outer_wrapper = initialHtml.search_outer_wrapper;
-        let search_outer_input = initialHtml.search_outer_input;
-        let cross_icon = initialHtml.cross_icon;
+        let initialHtml = generateAndReturnInitialHtml();
+        document.body.innerHTML += initialHtml;
 
-        document.body.appendChild(search_outer_wrapper);
+        let search_outer_wrapper = document.querySelector('.search__outer__wrapper');
+        let search_outer_input = document.querySelector('.search__outer__input');
+        let cross_icon = document.querySelector('.search__cross');
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.
