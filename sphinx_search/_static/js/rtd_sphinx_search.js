@@ -1,5 +1,7 @@
 const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
+const MAX_SUBSTRING_LIMIT = 100;
+
 let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
 
@@ -136,7 +138,7 @@ const get_section_html = (sectionData, page_link) => {
     }
 
     let section_content = [
-        sectionData._source.content.substring(0, 100) + " ..."
+        sectionData._source.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
     ];
 
     if (getHighlightListData(highlight, "sections.content")) {
