@@ -555,30 +555,15 @@ const generateAndReturnInitialHtml = () => {
     // for material ui design input field
     let horizontal_bar = createDomNode("span", { class: "bar" });
 
-    // for checkbox
-    let search_checkbox = createDomNode("input", {
-        id: "search__checkbox_id",
-        type: "checkbox",
-        name: "current_section",
-        class: "search__checkbox"
-    });
-    let search_checkbox_label = createDomNode("label", {
-        for: "search__checkbox_id"
-    });
-    search_checkbox_label.innerHTML = "Search in current section";
-
     search_outer.appendChild(search_outer_input);
     search_outer.appendChild(horizontal_bar);
-    search_outer.appendChild(search_checkbox);
-    search_outer.appendChild(search_checkbox_label);
     search_outer_wrapper.appendChild(search_outer);
 
     return {
         search_outer_wrapper,
         search_outer_input,
         search_outer,
-        cross_icon,
-        search_checkbox
+        cross_icon
     };
 };
 
@@ -641,7 +626,6 @@ window.addEventListener("DOMContentLoaded", evt => {
         let search_outer_wrapper = initialHtml.search_outer_wrapper;
         let search_outer_input = initialHtml.search_outer_input;
         let cross_icon = initialHtml.cross_icon;
-        let search_checkbox = initialHtml.search_checkbox;
 
         document.body.appendChild(search_outer_wrapper);
 
@@ -667,11 +651,6 @@ window.addEventListener("DOMContentLoaded", evt => {
                 version: version,
                 language: language
             };
-            // if checkbox is clicked, add "current_page" parameter
-            // to the URL to filter the search results
-            if (search_checkbox.checked) {
-                search_params.current_page = encodeURIComponent(READTHEDOCS_DATA.page);
-            }
 
             const search_url =
                 api_host +
@@ -753,14 +732,6 @@ window.addEventListener("DOMContentLoaded", evt => {
         // close the search modal if clicked on cross icon.
         cross_icon.addEventListener("click", e => {
             removeSearchModal();
-        });
-
-        // if the checkbox is clicked,
-        // re-fetch the updated search results
-        search_checkbox.addEventListener("change", e => {
-            let event = document.createEvent("Event");
-            event.initEvent("input", true, true);
-            search_outer_input.dispatchEvent(event);
         });
 
         // close the search modal if the user pressed

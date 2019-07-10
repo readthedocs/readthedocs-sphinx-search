@@ -246,57 +246,6 @@
     font-size: 85%;
 }
 
-/* Checkbox */
-
-.search__checkbox + label {
-    display: block;
-    margin: 0.2em;
-    cursor: pointer;
-    padding: 0.2em;
-    line-height: 18px;
-}
-
-.search__checkbox {
-    display: none;
-}
-
-.search__checkbox + label:before {
-    content: "\2714";
-    border: 0.1em solid #000;
-    border-radius: 0.2em;
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    margin-right: 8px;
-    vertical-align: bottom;
-    color: transparent;
-    vertical-align: baseline;
-    padding-left: 4px;
-    padding-bottom: 1px;
-    transition: 0.2s;
-}
-
-.search__checkbox + label:active:before {
-    transform: scale(0);
-}
-
-.search__checkbox:checked + label:before {
-    background-color: #6ea0ec;
-    border-color: #6ea0ec;
-    color: #fff;
-}
-
-.search__checkbox:disabled + label:before {
-    transform: scale(1);
-    border-color: #aaa;
-}
-
-.search__checkbox:checked:disabled + label:before {
-    transform: scale(1);
-    background-color: rgb(187, 253, 255);
-    border-color: rgb(187, 253, 255);
-}
-
 @media (max-width: 630px) {
     .search__result__subheading {
         float: none;
