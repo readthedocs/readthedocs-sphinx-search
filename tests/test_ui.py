@@ -98,7 +98,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
             <div class="search__outer__wrapper search__backdrop">
                 <div class="search__outer">
                     <div class="search__cross" title="Close">
-                        <!--?xml version='1.0' encoding='UTF-8'?-->
+                        <!--?xml version="1.0" encoding="UTF-8"?-->
                         <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
                             <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
                         </svg>
@@ -108,12 +108,15 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                 </div>
             </div>
         '''
-        # removing all whitespaces and newlines between html tags
+
         initial_html = [ele.strip() for ele in initial_html.split('\n') if ele]
 
-        assert (
-            ''.join(initial_html) in selenium.page_source
-        ), 'initial html must be present when the page finished loading.'
+        for line in initial_html:
+            if line:
+                assert (
+                    line in selenium.page_source
+                ), f'{line} -- must be present in page source'
+
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_opening_of_search_modal(selenium, app, status, warning):
@@ -376,9 +379,6 @@ def test_searching_msg(selenium, app, status, warning):
         assert (
             search_result_box.text == 'Searching ....'
         ), 'user should be notified that search is in progress'
-        assert (
-            len(search_result_box.find_elements_by_css_selector('*')) == 0
-        ), 'search result box should not have any child elements because there are no results'
 
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
@@ -387,11 +387,14 @@ def test_searching_msg(selenium, app, status, warning):
             )
         )
 
-        # fetching search_result_box again to update its content
+        # fetching it again from the DOM to update its status
         search_result_box = selenium.find_element_by_class_name(
             'search__result__box'
         )
 
+        assert (
+            len(search_result_box.find_elements_by_css_selector('*')) == 0
+        ), 'search result box should not have any child elements because there are no results'
         assert (
             search_result_box.text == 'No Results Found'
         ), 'user should be notified that there are no results'
