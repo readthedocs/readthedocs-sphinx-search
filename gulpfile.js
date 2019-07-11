@@ -11,7 +11,7 @@ var autoprefixer = require("gulp-autoprefixer"),
 
 gulp.task("styles", function() {
     return gulp
-        .src("sphinx_search/_static/css/*.css")
+        .src("sphinx_search/_static/css/rtd_sphinx_search.css")
         .pipe(autoprefixer())
         .pipe(csso())
         .pipe(rename({ extname: ".min.css" }))
@@ -20,7 +20,7 @@ gulp.task("styles", function() {
 
 gulp.task("scripts", function() {
     return gulp
-        .src("sphinx_search/_static/js/*.js")
+        .src("sphinx_search/_static/js/rtd_sphinx_search.js")
         .pipe(babel({ presets: ["@babel/env"] }))
         .pipe(uglify())
         .pipe(rename({ extname: ".min.js" }))
@@ -28,7 +28,7 @@ gulp.task("scripts", function() {
 });
 
 gulp.task("clean", function() {
-    return del(["sphinx_search/**/*.min.*"]);
+    return del(["sphinx_search/**/rtd_sphinx_search.min.*"]);
 });
 
 gulp.task("default", ["clean"], function() {
