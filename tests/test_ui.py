@@ -15,14 +15,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from tests.utils import InjectJsManager, set_viewport_size
+from tests.utils import InjectJsManager, set_viewport_size, get_ajax_overwrite_func
 from tests import TEST_DOCS_SRC
 
-
-DUMMY_RESULTS = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    'dummy_results.json'
-)
 
 READTHEDOCS_DATA = {
     'project': 'docs',
@@ -244,21 +239,7 @@ def test_no_results_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.complete(
-                    {
-                        responseJSON: {
-                            results: []
-                        }
-                    },
-                    'success'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('zero_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -295,18 +276,7 @@ def test_error_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -343,24 +313,7 @@ def test_searching_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    # setTimeout is used here to give a real feel of the API call
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return setTimeout(function(params){
-                    return params.complete(
-                        {
-                            responseJSON: {
-                                results: []
-                           }
-                        },
-                        'success'
-                    )
-                }, 2000, params);
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('timeout__zero_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -407,22 +360,8 @@ def test_results_displayed_to_user(selenium, app, status, warning):
     app.build()
     path = app.outdir / 'index.html'
 
-    with open(DUMMY_RESULTS, 'r') as f:
-        dummy_res = f.read()
-
     # to test this, we need to override the $.ajax function
-    ajax_func = f'''
-        <script>
-            $.ajax = function(params) {{
-                return params.complete(
-                    {{
-                        responseJSON: { dummy_res }
-                    }}
-                )
-            }}
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('dummy_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -471,22 +410,8 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
     app.build()
     path = app.outdir / 'index.html'
 
-    with open(DUMMY_RESULTS, 'r') as f:
-        dummy_res = f.read()
-
     # to test this, we need to override the $.ajax function
-    ajax_func = f'''
-        <script>
-            $.ajax = function(params) {{
-                return params.complete(
-                    {{
-                        responseJSON: { dummy_res }
-                    }}
-                )
-            }}
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('dummy_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -549,18 +474,7 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -644,18 +558,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -704,18 +607,7 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
