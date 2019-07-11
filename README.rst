@@ -11,7 +11,7 @@ Installation
 
 ::
 
-   pip install git+https://github.com/rtfd/readthedocs-sphinx-search@master
+   pip install git+https://github.com/readthedocs/readthedocs-sphinx-search@master
 
 
 Configuration
@@ -38,10 +38,10 @@ Check out the full documentation at https://readthedocs-sphinx-search.readthedoc
     :scale: 100%
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
-.. |license| image:: https://img.shields.io/github/license/rtfd/readthedocs-sphinx-search.svg
+.. |license| image:: https://img.shields.io/github/license/readthedocs/readthedocs-sphinx-search.svg
    :target: LICENSE
    :alt: Repository license
 
-.. |build-status| image:: https://travis-ci.org/rtfd/readthedocs-sphinx-search.svg?branch=master
+.. |build-status| image:: https://travis-ci.org/readthedocs/readthedocs-sphinx-search.svg?branch=master
    :alt: Build Status
-   :target: https://travis-ci.org/rtfd/readthedocs-sphinx-search
+   :target: https://travis-ci.org/readthedocs/readthedocs-sphinx-search
