@@ -80,8 +80,14 @@ const updateUrl = () => {
 
     let window_location_search = convertObjToUrlParams(url_params);
 
-    // new url
-    const url = origin + path + "?" + window_location_search;
+    // this happens during the tests,
+    // when window.location.origin is "null" in Firefox
+    // then correct URL is contained by window.location.pathname
+    // which starts with "file://"
+    let url = path + "?" + window_location_search
+    if (origin.substring(0, 4) === 'http'){
+        url = origin + url;
+    }
 
     // update url
     window.history.pushState({}, null, url);
