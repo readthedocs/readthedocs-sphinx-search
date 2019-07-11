@@ -562,17 +562,16 @@ const showSearchModal = () => {
     let search_bar = getInputField();
     search_bar.blur();
 
-    let search_outer_wrapper = document.querySelector(
-        ".search__outer__wrapper"
-    );
-    search_outer_wrapper.classList.add("display-block");
-
-    // sets the value of the input field to empty string and focus it.
-    let search_outer_input = document.querySelector(".search__outer__input");
-    if (search_outer_input !== null) {
-        search_outer_input.value = "";
-        search_outer_input.focus();
-    }
+    $(".search__outer__wrapper").fadeIn(400, () => {
+        // sets the value of the input field to empty string and focus it.
+        let search_outer_input = document.querySelector(
+            ".search__outer__input"
+        );
+        if (search_outer_input !== null) {
+            search_outer_input.value = "";
+            search_outer_input.focus();
+        }
+    });
 };
 
 /**
@@ -589,11 +588,7 @@ const removeSearchModal = () => {
         search_outer_input.blur();
     }
 
-    // sets display="none" to fianlly hide the modal.
-    let search_outer_wrapper = document.querySelector(
-        ".search__outer__wrapper"
-    );
-    search_outer_wrapper.classList.remove("display-block");
+    $(".search__outer__wrapper").fadeOut(400);
 };
 
 window.addEventListener("DOMContentLoaded", evt => {

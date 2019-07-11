@@ -122,6 +122,7 @@
     width: 90%;
     margin-bottom: 15px;
 }
+
 .search__outer .bar:before,
 .search__outer .bar:after {
     content: "";
@@ -132,9 +133,11 @@
     background: #5264ae;
     transition: 0.2s ease all;
 }
+
 .search__outer .bar:before {
     left: 50%;
 }
+
 .search__outer .bar:after {
     right: 50%;
 }
@@ -167,12 +170,7 @@
     cursor: pointer;
 }
 
-/* Helper class */
-
-.display-block {
-    display: block;
-    animation: fade-in 0.4s;
-}
+/* Title of each search result */
 
 .search__result__title {
     /* Display and box model */
@@ -210,6 +208,8 @@
     width: calc(80% - 15px);
     text-align: left;
 }
+
+/* Highlighting of matched results */
 
 .search__outer em {
     font-style: normal;
