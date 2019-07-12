@@ -6,7 +6,7 @@ import os
 import pytest
 
 from tests import TEST_DOCS_SRC
-from sphinx_search.extension import CUSTOM_ASSETS_FILES
+from sphinx_search.extension import ASSETS_FILES
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
@@ -15,7 +15,7 @@ def test_static_files_exists(app, status, warning):
     app.build()
     path = app.outdir
 
-    static_files = CUSTOM_ASSETS_FILES['MINIFIED'] + CUSTOM_ASSETS_FILES['UN_MINIFIED']
+    static_files = ASSETS_FILES['minified'] + ASSETS_FILES['un-minified']
 
     for file in static_files:
         file_path = os.path.join(path, '_static', file)
@@ -27,7 +27,7 @@ def test_static_files_exists(app, status, warning):
 @pytest.mark.sphinx(
     srcdir=TEST_DOCS_SRC,
     confoverrides={
-        'RTD_SPHINX_SEARCH_FILE_TYPE': 'MINIFIED'
+        'rtd_sphinx_search_file_type': 'minified'
     }
 )
 def test_minified_static_files_injected_in_html(selenium, app, status, warning):
@@ -38,10 +38,10 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
     selenium.get(f'file://{path}')
     page_source = selenium.page_source
 
-    assert app.config.RTD_SPHINX_SEARCH_FILE_TYPE == 'MINIFIED'
+    assert app.config.rtd_sphinx_search_file_type == 'minified'
 
-    file_type = app.config.RTD_SPHINX_SEARCH_FILE_TYPE
-    files = CUSTOM_ASSETS_FILES[file_type]
+    file_type = app.config.rtd_sphinx_search_file_type
+    files = ASSETS_FILES[file_type]
 
     for file in files:
         file_name = file.split('/')[-1]
@@ -53,7 +53,7 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
 @pytest.mark.sphinx(
     srcdir=TEST_DOCS_SRC,
     confoverrides={
-        'RTD_SPHINX_SEARCH_FILE_TYPE': 'UN_MINIFIED'
+        'rtd_sphinx_search_file_type': 'un-minified'
     }
 )
 def test_un_minified_static_files_injected_in_html(selenium, app, status, warning):
@@ -64,10 +64,10 @@ def test_un_minified_static_files_injected_in_html(selenium, app, status, warnin
     selenium.get(f'file://{path}')
     page_source = selenium.page_source
 
-    assert app.config.RTD_SPHINX_SEARCH_FILE_TYPE == 'UN_MINIFIED'
+    assert app.config.rtd_sphinx_search_file_type == 'un-minified'
 
-    file_type = app.config.RTD_SPHINX_SEARCH_FILE_TYPE
-    files = CUSTOM_ASSETS_FILES[file_type]
+    file_type = app.config.rtd_sphinx_search_file_type
+    files = ASSETS_FILES[file_type]
 
     for file in files:
         file_name = file.split('/')[-1]
