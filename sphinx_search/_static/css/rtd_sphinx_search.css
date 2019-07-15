@@ -61,6 +61,7 @@
 
 .search__outer::-webkit-scrollbar {
     width: 7px;
+    height: 7px;
     background-color: #fcfcfc;
 }
 
@@ -149,7 +150,8 @@
 /* Search result */
 
 .search__result__single {
-    padding: 10px;
+    margin-top: 10px;
+    padding: 0px 10px;
     border-bottom: 1px solid #e6e6e6;
 }
 
@@ -157,8 +159,10 @@
     background-color: rgb(245, 245, 245);
 }
 
-.search__result__single:hover {
-    background-color: rgb(245, 245, 245);
+.outer_div_page_results {
+    margin: 5px 0px;
+    overflow: auto;
+    padding: 3px 5px;
 }
 
 .search__result__single a {
@@ -172,30 +176,37 @@
     /* Display and box model */
     display: inline-block;
     font-weight: 500;
-    margin-bottom: 0;
+    margin-bottom: 15px;
     margin-top: 0;
-    font-size: 14px;
+    font-size: 15px;
 
     /* Other */
     color: #6ea0ec;
     border-bottom: 1px solid #6ea0ec;
 }
 
-/* Path of each search result */
-
-.search__result__path {
-    color: #b3b3b3;
+.search__result__subheading {
+    color: black;
+    font-weight: 700;
+    float: left;
+    width: 20%;
+    font-size: 15px;
+    margin-right: 10px;
+    overflow-x: hidden;
 }
 
-/* Content of each search result */
-
 .search__result__content {
+    margin: 0;
     text-decoration: none;
     color: black;
-    font-size: 14px;
+    font-size: 15px;
     display: block;
-    margin-top: 3px;
     margin-bottom: 5px;
+    margin-bottom: 0;
+    line-height: inherit;
+    float: right;
+    width: calc(80% - 15px);
+    text-align: left;
 }
 
 /* Highlighting of matched results */
@@ -206,13 +217,45 @@
 
 .search__outer .search__result__title em {
     background-color: #e5f6ff;
-    padding-bottom: 4px;
+    padding-bottom: 3px;
     border-bottom-color: black;
 }
 
 .search__outer .search__result__content em {
     background-color: #e5f6ff;
     border-bottom: 1px solid black;
+}
+
+.search__result__subheading em {
+    border-bottom: 1px solid black;
+}
+
+.outer_div_page_results:hover {
+    background-color: rgb(245, 245, 245);
+}
+
+.br-for-hits {
+    display: block;
+    content: "";
+    margin-top: 10px;
+}
+
+.rtd_ui_search_subtitle {
+    all: unset;
+    color: inherit;
+    font-size: 85%;
+}
+
+@media (max-width: 630px) {
+    .search__result__subheading {
+        float: none;
+        width: 90%;
+    }
+
+    .search__result__content {
+        float: none;
+        width: 90%;
+    }
 }
 
 @keyframes fade-in {

@@ -1,12 +1,19 @@
-const MAX_SUGGESTIONS = 10;
-let TOTAL_RESULTS = 0;
+const MAX_SUGGESTIONS = 50;
+const MAX_SECTION_RESULTS = 3;
+const MAX_SUBSTRING_LIMIT = 100;
+
+let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
+
+// this is used to store the total result counts,
+// which includes all the sections and domains of all the pages.
+let COUNT = 0;
 
 /**
  * Debounce the function.
  * Usage:
  *
- *      var func = debounce(() => console.log("Hello World"), 3000);
+ *      let func = debounce(() => console.log("Hello World"), 3000);
  *
  *      // calling the func
  *      func();
@@ -72,96 +79,296 @@ const createDomNode = (nodeName, attributes) => {
 };
 
 /**
- * Generate search suggestions list.
- * Structure of the generated html which is
- * returned from this function is :-
+ * Checks if data type is "string" or not
  *
- *  <div class="search__result__box">
- *      <div class="search__result__single" id="hit__1">...</div>
- *      <div class="search__result__single" id="hit__2">...</div>
- *      <div class="search__result__single" id="hit__3">
- *          <a href="http://link-to-the-result.com/">
- *              <div class="content">
- *                  <h2 class="search__result__title">Title of the result</h2>
- *                  <br>
- *                  <small class="search__result__path">
- *                      path/to/result (from <strong>subproject</strong>)
- *                  </small>
- *                  <p class="search__result__content">
- *                      ... this is the description ...
- *                  </p>
- *              </div>
- *          </a>
- *      </div>
- *      <div class="search__result__single" id="hit__4">...</div>
- *      <div class="search__result__single" id="hit__5">...</div>
- *  </div>
+ * @param {*} data
+ * @return {Boolean} 'true' if type is "string" and length is > 0
+ */
+const _is_string = str => {
+    if (typeof str === "string" && str.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Checks if data type is a non-empty array
+ * @param {*} data data whose type is to be checked
+ * @return {Boolean} returns true if data is non-empty array, else returns false
+ */
+const _is_array = arr => {
+    if (Array.isArray(arr) && arr.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Generate and return html structure
+ * for a page section result.
+ *
+ * @param {Object} sectionData object containing the result data
+ * @param {String} page_link link of the main page. It is used to construct the section link
+ */
+const get_section_html = (sectionData, page_link) => {
+    let section_template =
+        '<a href="<%= section_link %>"> \
+            <div class="outer_div_page_results" id="<%= section_id %>"> \
+                <span class="search__result__subheading"> \
+                    <%= section_subheading %> \
+                </span> \
+                <% for (var i = 0; i < section_content.length; ++i) { %> \
+                    <p class="search__result__content"> \
+                        <%= section_content[i] %> \
+                    </p> \
+                <% } %>\
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
+    let section_subheading = sectionData._source.title;
+    let highlight = sectionData.highlight;
+    if (getHighlightListData(highlight, "sections.title")) {
+        section_subheading = getHighlightListData(
+            highlight,
+            "sections.title"
+        )[0];
+    }
+
+    let section_content = [
+        sectionData._source.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
+    ];
+
+    if (getHighlightListData(highlight, "sections.content")) {
+        let highlight_content = getHighlightListData(
+            highlight,
+            "sections.content"
+        );
+        section_content = [];
+        for (
+            let j = 0;
+            j < highlight_content.length && j < MAX_SECTION_RESULTS;
+            ++j
+        ) {
+            section_content.push("... " + highlight_content[j] + " ...");
+        }
+    }
+
+    let section_link = `${page_link}#${sectionData._source.id}`;
+
+    let section_id = "hit__" + COUNT;
+
+    let section_html = $u.template(section_template, {
+        section_link: section_link,
+        section_id: section_id,
+        section_subheading: section_subheading,
+        section_content: section_content
+    });
+
+    return section_html;
+};
+
+/**
+ * Returns value of the corresponding key (if present),
+ * else returns false.
+ *
+ * @param {Object} data object containing the data used for highlighting
+ * @param {String} key key whose values is to be returned
+ * @return {Array|Boolean} if key is present, it will return its value. Otherwise, return false
+ */
+const getHighlightListData = (data, key) => {
+    if (_is_array(data[key])) {
+        return data[key];
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Generate and return html structure
+ * for a sphinx domain result.
+ *
+ * @param {Object} domainData object containing the result data
+ * @param {String} page_link link of the main page. It is used to construct the section link
+ */
+const get_domain_html = (domainData, page_link) => {
+    let domain_template =
+        '<a href="<%= domain_link %>"> \
+            <div class="outer_div_page_results" id="<%= domain_id %>"> \
+                <span class="search__result__subheading"> \
+                    <%= domain_subheading %> \
+                </span> \
+                <p class="search__result__content"><%= domain_content %></p> \
+            </div> \
+        </a> \
+        <br class="br-for-hits">';
+
+    let domain_link = `${page_link}#${domainData._source.anchor}`;
+    let domain_role_name = domainData._source.role_name;
+    let domain_type_display = domainData._source.type_display;
+    let domain_doc_display = domainData._source.doc_display;
+    let domain_display_name = domainData._source.display_name;
+    let domain_name = domainData._source.name;
+
+    // take values from highlighted fields (if present)
+    if (domainData.highlight !== undefined && domainData.highlight !== null) {
+        let highlight = domainData.highlight;
+
+        let name = getHighlightListData(highlight, "domains.name");
+        let display_name = getHighlightListData(
+            highlight,
+            "domains.display_name"
+        );
+        let type_display = getHighlightListData(
+            highlight,
+            "domains.type_display"
+        );
+
+        if (name) {
+            domain_name = name[0];
+        }
+
+        if (display_name) {
+            domain_display_name = display_name[0];
+        }
+
+        if (type_display) {
+            domain_type_display = type_display[0];
+        }
+    }
+
+    // preparing domain_content
+    let domain_content = "";
+    if (_is_string(domain_type_display)) {
+        // domain_content = type_display --
+        domain_content += domain_type_display + " -- ";
+    }
+    if (_is_string(domain_name)) {
+        // domain_content = type_display -- name
+        domain_content += domain_name + " ";
+    }
+    if (_is_string(domain_doc_display)) {
+        // domain_content = type_display -- name -- in doc_display
+        domain_content += "-- in " + domain_doc_display;
+    }
+
+    let domain_subheading = "";
+    if (_is_string(domain_display_name)) {
+        // domain_subheading = (role_name) display_name
+        domain_subheading = "(" + domain_role_name + ") " + domain_display_name;
+    } else {
+        // domain_subheading = role_name
+        domain_subheading = domain_role_name;
+    }
+
+    let domain_id = "hit__" + COUNT;
+    let domain_html = $u.template(domain_template, {
+        domain_link: domain_link,
+        domain_id: domain_id,
+        domain_content: domain_content,
+        domain_subheading: domain_subheading
+    });
+
+    return domain_html;
+};
+
+/**
+ * Generate search results for a single page.
+ *
+ * @param {Object} resultData search results of a page
+ * @return {Object} a <div> node with the results of a single page
+ */
+const generateSingleResult = (resultData, projectName) => {
+    let content = createDomNode("div");
+
+    let page_link_template =
+        '<a href="<%= page_link %>"> \
+            <h2 class="search__result__title"> \
+                <%= page_title %> \
+            </h2> \
+        </a>';
+
+    let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
+    let page_link_highlight =
+        page_link + "?highlight=" + encodeURIComponent(SEARCH_QUERY);
+
+    let page_title = resultData.title;
+
+    // if title is present in highlighted field, use that.
+    if (resultData.highlight !== undefined && resultData.highlight !== null) {
+        if (
+            resultData.highlight.title !== undefined &&
+            resultData.highlight.title !== null
+        ) {
+            page_title = resultData.highlight.title;
+        }
+    }
+
+    // if result is not from the same project,
+    // then it must be from subproject.
+    if (projectName !== resultData.project) {
+        page_title +=
+            " " +
+            $u.template(
+                '<small class="rtd_ui_search_subtitle"> \
+                    (from project <%= project %>) \
+                </small>',
+                {
+                    project: resultData.project
+                }
+            );
+    }
+
+    page_title += "<br>";
+
+    content.innerHTML += $u.template(page_link_template, {
+        page_link: page_link_highlight,
+        page_title: page_title
+    });
+
+    for (let i = 0; i < resultData.inner_hits.length; ++i) {
+        const type = resultData.inner_hits[i].type;
+        COUNT += 1;
+        let html_structure = "";
+
+        if (type === "sections") {
+            html_structure = get_section_html(
+                resultData.inner_hits[i],
+                page_link
+            );
+        } else if (type === "domains") {
+            html_structure = get_domain_html(
+                resultData.inner_hits[i],
+                page_link
+            );
+        }
+        content.innerHTML += html_structure;
+    }
+    return content;
+};
+
+/**
+ * Generate search suggestions list.
  *
  * @param {Object} data response data from the search backend
  * @param {String} projectName name (slug) of the project
- * @return {Object} a <div> node with class "search__result__box" and with inner nodes
+ * @return {Object} a <div> node with class "search__result__box" with results
  */
 const generateSuggestionsList = (data, projectName) => {
     let search_result_box = createDomNode("div", {
         class: "search__result__box"
     });
 
-    for (let i = 0; i < TOTAL_RESULTS; ++i) {
+    for (let i = 0; i < TOTAL_PAGE_RESULTS; ++i) {
         let search_result_single = createDomNode("div", {
-            class: "search__result__single",
-            id: "hit__" + (i + 1)
+            class: "search__result__single"
         });
 
-        let link = createDomNode("a", {
-            href: data.results[i].link + DOCUMENTATION_OPTIONS.FILE_SUFFIX
-        });
+        let content = generateSingleResult(data.results[i], projectName);
 
-        let content = createDomNode("div", { class: "content" });
-
-        let search_result_title = createDomNode("h2", {
-            class: "search__result__title"
-        });
-        // use highlighted title (if present)
-        if (data.results[i].highlight.title !== undefined) {
-            search_result_title.innerHTML = data.results[i].highlight.title[0];
-        } else {
-            search_result_title.innerHTML = data.results[i].title;
-        }
-
-        content.appendChild(search_result_title);
-        content.appendChild(createDomNode("br"));
-
-        let search_result_path = createDomNode("small", {
-            class: "search__result__path"
-        });
-        search_result_path.innerHTML = data.results[i].path;
-
-        // check if the corresponding result is from same project or not.
-        // if it is not from same project, then it must be from a subproject.
-        // display the subproject.
-        if (data.results[i].project !== projectName) {
-            search_result_path.innerHTML =
-                data.results[i].path +
-                " (from <strong>" +
-                data.results[i].project +
-                "</strong>)";
-        }
-
-        content.appendChild(search_result_path);
-
-        let search_result_content = createDomNode("p", {
-            class: "search__result__content"
-        });
-        if (data.results[i].highlight.content !== undefined) {
-            search_result_content.innerHTML =
-                "... " + data.results[i].highlight.content + " ...";
-        } else {
-            search_result_content.innerHTML = "";
-        }
-
-        content.appendChild(search_result_content);
-        link.appendChild(content);
-        search_result_single.appendChild(link);
+        search_result_single.appendChild(content);
         search_result_box.appendChild(search_result_single);
     }
     return search_result_box;
@@ -171,7 +378,7 @@ const generateSuggestionsList = (data, projectName) => {
  * Removes .active class from all the suggestions.
  */
 const removeAllActive = () => {
-    const results = document.querySelectorAll(".search__result__single");
+    const results = document.querySelectorAll(".outer_div_page_results");
     const results_arr = Object.keys(results).map(i => results[i]);
     for (let i = 1; i <= results_arr.length; ++i) {
         results_arr[i - 1].classList.remove("active");
@@ -206,7 +413,21 @@ const addActive = current_focus => {
  * @return {Object} Input field node
  */
 const getInputField = () => {
-    const inputField = document.querySelector("div[role='search'] input");
+    let inputField;
+
+    // on search some pages (like search.html),
+    // no div is present with role="search",
+    // in that case, use the other query to select
+    // the input field
+    try {
+        inputField = document.querySelector("div[role='search'] input");
+        if (inputField === undefined || inputField === null) {
+            throw "'div[role='search'] input' not found";
+        }
+    } catch (err) {
+        inputField = document.querySelector("input[name='q']");
+    }
+
     return inputField;
 };
 
@@ -230,7 +451,7 @@ const removeResults = () => {
 const getErrorDiv = err_msg => {
     let err_div = createDomNode("div", {
         class: "search__result__box",
-        style: "color: black; min-width: 300px"
+        style: "color: black; min-width: 300px; font-weight: 700"
     });
     err_div.innerHTML = err_msg;
     return err_div;
@@ -252,7 +473,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     // the user.
     removeResults();
     let search_loding = createDomNode("div", { class: "search__result__box" });
-    search_loding.innerHTML = "Searching ....";
+    search_loding.innerHTML = "<strong>Searching ....</strong>";
     search_outer.appendChild(search_loding);
 
     let ajaxFunc = () => {
@@ -268,7 +489,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                     typeof resp.responseJSON !== "undefined"
                 ) {
                     if (resp.responseJSON.results.length > 0) {
-                        TOTAL_RESULTS =
+                        TOTAL_PAGE_RESULTS =
                             MAX_SUGGESTIONS <= resp.responseJSON.results.length
                                 ? MAX_SUGGESTIONS
                                 : resp.responseJSON.results.length;
@@ -287,14 +508,14 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                         });
                     } else {
                         removeResults();
-                        var err_div = getErrorDiv("No Results Found");
+                        let err_div = getErrorDiv("No Results Found");
                         search_outer.appendChild(err_div);
                     }
                 }
             },
             error: (resp, status_code, error) => {
                 removeResults();
-                var err_div = getErrorDiv("Error Occurred. Please try again.");
+                let err_div = getErrorDiv("Error Occurred. Please try again.");
                 search_outer.appendChild(err_div);
             }
         });
@@ -308,56 +529,25 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  * appended to the <body> as soon as the page loads.
  * This html structure will serve as the boilerplate
  * to show our search results.
- * It generates the following html structure :-
  *
- *  <div class="search__outer__wrapper search__backdrop">
- *      <div class="search__outer">
- *          <div class="search__cross" title="Close">
- *              <!--?xml version='1.0' encoding='UTF-8'?-->
- *              <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
- *                  <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
- *              </svg>
- *          </div>
- *          <input class="search__outer__input" placeholder="Search ...">
- *          <span class="bar"></span>
- *      </div>
- *  </div>
- *
- * @return {Object} object containing the nodes with classes "search__outer__wrapper", "search__outer__input" and "search__outer"
+ * @return {String} initial html structure
  */
 const generateAndReturnInitialHtml = () => {
-    let search_outer_wrapper = createDomNode("div", {
-        class: "search__outer__wrapper search__backdrop"
-    });
+    let initialHtml =
+        '<div class="search__outer__wrapper search__backdrop"> \
+            <div class="search__outer"> \
+                <div class="search__cross" title="Close"> \
+                    <!--?xml version="1.0" encoding="UTF-8"?--> \
+                    <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
+                        <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
+                    </svg> \
+                </div> \
+                <input class="search__outer__input" placeholder="Search ..."> \
+                <span class="bar"></span> \
+            </div> \
+        </div>';
 
-    let search_outer = createDomNode("div", { class: "search__outer" });
-
-    let cross_icon = createDomNode("div", {
-        class: "search__cross",
-        title: "Close"
-    });
-    cross_icon.innerHTML =
-        "<?xml version='1.0' encoding='UTF-8'?><svg class='search__cross__img' width='15px' height='15px' enable-background='new 0 0 612 612' version='1.1' viewBox='0 0 612 612' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'><polygon points='612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01'/></svg>";
-    search_outer.appendChild(cross_icon);
-
-    let search_outer_input = createDomNode("input", {
-        class: "search__outer__input",
-        placeholder: "Search ..."
-    });
-
-    // for material ui design input field
-    let horizontal_bar = createDomNode("span", { class: "bar" });
-
-    search_outer.appendChild(search_outer_input);
-    search_outer.appendChild(horizontal_bar);
-    search_outer_wrapper.appendChild(search_outer);
-
-    return {
-        search_outer_wrapper,
-        search_outer_input,
-        search_outer,
-        cross_icon
-    };
+    return initialHtml;
 };
 
 /**
@@ -410,12 +600,12 @@ window.addEventListener("DOMContentLoaded", evt => {
         const language = READTHEDOCS_DATA.language || "en";
         const api_host = READTHEDOCS_DATA.api_host;
 
-        const initialHtml = generateAndReturnInitialHtml();
-        let search_outer_wrapper = initialHtml.search_outer_wrapper;
-        let search_outer_input = initialHtml.search_outer_input;
-        let cross_icon = initialHtml.cross_icon;
+        let initialHtml = generateAndReturnInitialHtml();
+        document.body.innerHTML += initialHtml;
 
-        document.body.appendChild(search_outer_wrapper);
+        let search_outer_wrapper = document.querySelector('.search__outer__wrapper');
+        let search_outer_input = document.querySelector('.search__outer__input');
+        let cross_icon = document.querySelector('.search__cross');
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.
@@ -431,6 +621,8 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         search_outer_input.addEventListener("input", e => {
             SEARCH_QUERY = e.target.value;
+            COUNT = 0;
+
             let search_params = {
                 q: encodeURIComponent(SEARCH_QUERY),
                 project: project,
@@ -451,7 +643,11 @@ window.addEventListener("DOMContentLoaded", evt => {
                 current_request = fetchAndGenerateResults(search_url, project);
                 current_request();
             } else {
-                removeResults();
+                // if the last request returns the results,
+                // the suggestions list is generated even if there
+                // is no query. To prevent that, this function
+                // is debounced here.
+                debounce(removeResults, 600)();
             }
         });
 
@@ -460,7 +656,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             if (e.keyCode === 40) {
                 e.preventDefault();
                 current_focus += 1;
-                if (current_focus > TOTAL_RESULTS) {
+                if (current_focus > COUNT) {
                     current_focus = 1;
                 }
                 removeAllActive();
@@ -472,7 +668,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 e.preventDefault();
                 current_focus -= 1;
                 if (current_focus < 1) {
-                    current_focus = TOTAL_RESULTS;
+                    current_focus = COUNT;
                 }
                 removeAllActive();
                 addActive(current_focus);
@@ -482,19 +678,19 @@ window.addEventListener("DOMContentLoaded", evt => {
             if (e.keyCode === 13) {
                 e.preventDefault();
                 const current_item = document.querySelector(
-                    ".search__result__single.active"
+                    ".outer_div_page_results.active"
                 );
                 // if an item is selected,
                 // then redirect to its link
                 if (current_item !== null) {
-                    const link = current_item.firstChild["href"];
+                    const link = current_item.parentElement["href"];
                     window.location.href = link;
                 } else {
                     // submit search form if there
                     // is no active item.
-                    const form = document.querySelector(
-                        "div[role='search'] form"
-                    );
+                    const input_field = getInputField();
+                    const form = input_field.parentElement;
+
                     search_bar.value = SEARCH_QUERY || "";
                     form.submit();
                 }
