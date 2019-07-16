@@ -53,15 +53,26 @@ const debounce = (func, wait) => {
  * @return {String|Array} object in url params form
  */
 const convertObjToUrlParams = obj => {
-    const params = Object.keys(obj)
-        .map(function(key) {
-            if (_is_string(key)) {
-                const s = key + "=" + encodeURI(obj[key]);
-                return s;
-            }
-        })
-        .join("&");
-    return params;
+    let params = Object.keys(obj).map(function(key) {
+        if (_is_string(key)) {
+            const s = key + "=" + encodeURI(obj[key]);
+            return s;
+        }
+    });
+
+    // removing empty strings from the 'params' array
+    let final_params = [];
+    for (let i = 0; i < params.length; ++i) {
+        if (_is_string(params[i])) {
+            final_params.push(params[i]);
+        }
+    }
+    if (final_params.length === 1) {
+        return final_params[0];
+    } else {
+        let final_url_params = final_params.join("&");
+        return final_url_params;
+    }
 };
 
 /**
@@ -84,8 +95,8 @@ const updateUrl = () => {
     // when window.location.origin is "null" in Firefox
     // then correct URL is contained by window.location.pathname
     // which starts with "file://"
-    let url = path + "?" + window_location_search
-    if (origin.substring(0, 4) === 'http'){
+    let url = path + "?" + window_location_search;
+    if (origin.substring(0, 4) === "http") {
         url = origin + url;
     }
 
@@ -583,7 +594,7 @@ const generateAndReturnInitialHtml = () => {
 
 /**
  * Opens the search modal.
- * 
+ *
  * @param {String} custom_query if a custom query is provided, initialise the value of input field with it
  */
 const showSearchModal = custom_query => {
@@ -628,6 +639,12 @@ const removeSearchModal = () => {
         search_outer_input.blur();
     }
 
+    // reset SEARCH_QUERY
+    SEARCH_QUERY = "";
+
+    // update url (remove 'rtd_search' param)
+    updateUrl();
+
     $(".search__outer__wrapper").fadeOut(400);
 };
 
@@ -643,9 +660,13 @@ window.addEventListener("DOMContentLoaded", evt => {
         let initialHtml = generateAndReturnInitialHtml();
         document.body.innerHTML += initialHtml;
 
-        let search_outer_wrapper = document.querySelector('.search__outer__wrapper');
-        let search_outer_input = document.querySelector('.search__outer__input');
-        let cross_icon = document.querySelector('.search__cross');
+        let search_outer_wrapper = document.querySelector(
+            ".search__outer__wrapper"
+        );
+        let search_outer_input = document.querySelector(
+            ".search__outer__input"
+        );
+        let cross_icon = document.querySelector(".search__cross");
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.

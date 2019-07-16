@@ -630,3 +630,40 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
         assert (
             len(search_result_box.find_elements_by_css_selector('*')) == 0
         ), 'search result box should not have any child elements because there are no results'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_rtd_search_remove_from_url_when_modal_closed(selenium, app, status, warning):
+    """Test if `rtd_search` query param is removed when the modal is closed."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    # to test this, we need to override the $.ajax function
+    ajax_func = get_ajax_overwrite_func('error')
+    injected_script = SCRIPT_TAG + ajax_func
+
+    with InjectJsManager(path, injected_script) as _:
+        selenium.get(f'file://{path}?rtd_search=i am searching')
+        time.sleep(3)  # give time to open modal and start searching
+
+        # closing modal
+        search_outer = selenium.find_element_by_class_name('search__outer')
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+        actions = webdriver.common.action_chains.ActionChains(selenium)
+        actions.move_to_element_with_offset(
+            search_outer, -10, -10  # -ve offsets to move the mouse away from the search modal
+        )
+        actions.click()
+        actions.perform()
+        WebDriverWait(selenium, 10).until(
+            EC.invisibility_of_element(search_outer_wrapper)
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is False
+        ), 'search modal should disappear after clicking on backdrop'
+        assert (
+            'rtd_search=' not in parse.unquote(selenium.current_url)
+        ), 'rtd_search url param should not be present in the url when the modal is closed.'
