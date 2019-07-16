@@ -82,6 +82,7 @@ const updateUrl = () => {
     let origin = window.location.origin;
     let path = window.location.pathname;
     let url_params = $.getQueryParameters();
+    let hash = window.location.hash;
 
     // SEARCH_QUERY should not be an empty string
     if (_is_string(SEARCH_QUERY)) {
@@ -90,7 +91,7 @@ const updateUrl = () => {
         delete url_params.rtd_search;
     }
 
-    let window_location_search = convertObjToUrlParams(url_params);
+    let window_location_search = convertObjToUrlParams(url_params) + hash;
 
     // this happens during the tests,
     // when window.location.origin is "null" in Firefox
