@@ -336,12 +336,12 @@ const generateSingleResult = (resultData, projectName) => {
         if (type === "sections") {
             html_structure = get_section_html(
                 resultData.inner_hits[i],
-                page_link
+                page_link_highlight
             );
         } else if (type === "domains") {
             html_structure = get_domain_html(
                 resultData.inner_hits[i],
-                page_link
+                page_link_highlight
             );
         }
         content.innerHTML += html_structure;
@@ -603,9 +603,13 @@ window.addEventListener("DOMContentLoaded", evt => {
         let initialHtml = generateAndReturnInitialHtml();
         document.body.innerHTML += initialHtml;
 
-        let search_outer_wrapper = document.querySelector('.search__outer__wrapper');
-        let search_outer_input = document.querySelector('.search__outer__input');
-        let cross_icon = document.querySelector('.search__cross');
+        let search_outer_wrapper = document.querySelector(
+            ".search__outer__wrapper"
+        );
+        let search_outer_input = document.querySelector(
+            ".search__outer__input"
+        );
+        let cross_icon = document.querySelector(".search__cross");
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.
