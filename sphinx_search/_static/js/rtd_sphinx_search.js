@@ -378,12 +378,12 @@ const generateSingleResult = (resultData, projectName) => {
         if (type === "sections") {
             html_structure = get_section_html(
                 resultData.inner_hits[i],
-                page_link
+                page_link_highlight
             );
         } else if (type === "domains") {
             html_structure = get_domain_html(
                 resultData.inner_hits[i],
-                page_link
+                page_link_highlight
             );
         }
         content.innerHTML += html_structure;
