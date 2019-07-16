@@ -83,6 +83,7 @@ const updateUrl = () => {
     let path = window.location.pathname;
     let url_params = $.getQueryParameters();
 
+    // SEARCH_QUERY should not be an empty string
     if (_is_string(SEARCH_QUERY)) {
         url_params.rtd_search = SEARCH_QUERY;
     } else {
