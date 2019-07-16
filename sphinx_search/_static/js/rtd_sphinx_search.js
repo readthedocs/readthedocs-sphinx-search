@@ -643,13 +643,9 @@ window.addEventListener("DOMContentLoaded", evt => {
         let initialHtml = generateAndReturnInitialHtml();
         document.body.innerHTML += initialHtml;
 
-        let search_outer_wrapper = document.querySelector(
-            ".search__outer__wrapper"
-        );
-        let search_outer_input = document.querySelector(
-            ".search__outer__input"
-        );
-        let cross_icon = document.querySelector(".search__cross");
+        let search_outer_wrapper = document.querySelector('.search__outer__wrapper');
+        let search_outer_input = document.querySelector('.search__outer__input');
+        let cross_icon = document.querySelector('.search__cross');
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.

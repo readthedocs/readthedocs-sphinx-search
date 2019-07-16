@@ -39,6 +39,7 @@ The CSS is also autoprefixed to extend the support to most of the browsers.
    :caption: Table of Contents
 
    installation
+   configuration
    custom-design
    development
    testing
