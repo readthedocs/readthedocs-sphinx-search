@@ -5,6 +5,7 @@
 import os
 import json
 import time
+from urllib import parse
 
 import pytest
 import sphinx
@@ -14,14 +15,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from tests.utils import InjectJsManager, set_viewport_size
+from tests.utils import InjectJsManager, set_viewport_size, get_ajax_overwrite_func
 from tests import TEST_DOCS_SRC
 
-
-DUMMY_RESULTS = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    'dummy_results.json'
-)
 
 READTHEDOCS_DATA = {
     'project': 'docs',
@@ -243,21 +239,7 @@ def test_no_results_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.complete(
-                    {
-                        responseJSON: {
-                            results: []
-                        }
-                    },
-                    'success'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('zero_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -294,18 +276,7 @@ def test_error_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -342,24 +313,7 @@ def test_searching_msg(selenium, app, status, warning):
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    # setTimeout is used here to give a real feel of the API call
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return setTimeout(function(params){
-                    return params.complete(
-                        {
-                            responseJSON: {
-                                results: []
-                           }
-                        },
-                        'success'
-                    )
-                }, 2000, params);
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('timeout__zero_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -406,22 +360,8 @@ def test_results_displayed_to_user(selenium, app, status, warning):
     app.build()
     path = app.outdir / 'index.html'
 
-    with open(DUMMY_RESULTS, 'r') as f:
-        dummy_res = f.read()
-
     # to test this, we need to override the $.ajax function
-    ajax_func = f'''
-        <script>
-            $.ajax = function(params) {{
-                return params.complete(
-                    {{
-                        responseJSON: { dummy_res }
-                    }}
-                )
-            }}
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('dummy_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -470,22 +410,8 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
     app.build()
     path = app.outdir / 'index.html'
 
-    with open(DUMMY_RESULTS, 'r') as f:
-        dummy_res = f.read()
-
     # to test this, we need to override the $.ajax function
-    ajax_func = f'''
-        <script>
-            $.ajax = function(params) {{
-                return params.complete(
-                    {{
-                        responseJSON: { dummy_res }
-                    }}
-                )
-            }}
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('dummy_results')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -548,18 +474,7 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
     path = app.outdir / 'index.html'
 
     # to test this, we need to override the $.ajax function
-    ajax_func = '''
-        <script>
-            $.ajax = function(params) {
-                return params.error(
-                    { },
-                    'error',
-                    'Dummy Error.'
-                )
-            }
-        </script>
-    '''
-
+    ajax_func = get_ajax_overwrite_func('error')
     injected_script = SCRIPT_TAG + ajax_func
 
     with InjectJsManager(path, injected_script) as _:
@@ -571,9 +486,8 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
         )
         search_outer_input.send_keys('i am searching')
         search_outer_input.send_keys(Keys.ENTER)
-
         WebDriverWait(selenium, 10).until(
-            EC.url_matches(app.outdir / 'search.html')
+            EC.url_contains(app.outdir / 'search.html')
         )
 
         # enter button should redirect the user to search page
@@ -635,3 +549,121 @@ def test_position_search_modal(selenium, app, status, warning):
             assert (
                 abs(actual_y - calculated_y) < 10
             ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warning):
+    """Test if the `rtd_search` query param is added to the url when user is searching."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    # to test this, we need to override the $.ajax function
+    ajax_func = get_ajax_overwrite_func('error')
+    injected_script = SCRIPT_TAG + ajax_func
+
+    with InjectJsManager(path, injected_script) as _:
+        selenium.get(f'file://{path}')
+        open_search_modal(selenium)
+        query = 'i am searching'
+        query_len = len(query)
+
+        assert (
+            'rtd_search=' not in parse.unquote(selenium.current_url)
+        ), 'rtd_search param must not be present in the url when page loads'
+
+        search_outer_input = selenium.find_element_by_class_name(
+            'search__outer__input'
+        )
+        search_outer_input.send_keys(query)
+        query_param = f'rtd_search={query}'
+
+        assert (
+            query_param in parse.unquote(selenium.current_url)
+        ), 'query param must be present in the url'
+
+        # deleting query from input field
+        for i in range(query_len):
+            search_outer_input.send_keys(Keys.BACK_SPACE)
+
+            if i != query_len -1:
+                
+                current_query = query[:query_len - i - 1]
+                current_url = parse.unquote(selenium.current_url)
+                query_in_url = current_url[current_url.find('rtd_search'):]
+
+                assert (
+                    f'rtd_search={current_query}' == query_in_url
+                )
+
+        assert (
+            'rtd_search=' not in parse.unquote(selenium.current_url)
+        ), 'rtd_search param must not be present in the url if query is empty'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
+    """Test if search modal opens if `rtd_search` query param is present in the URL."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    # to test this, we need to override the $.ajax function
+    ajax_func = get_ajax_overwrite_func('error')
+    injected_script = SCRIPT_TAG + ajax_func
+
+    with InjectJsManager(path, injected_script) as _:
+        selenium.get(f'file://{path}?rtd_search=i am searching')
+        time.sleep(3)  # give time to open modal and start searching
+
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+        search_result_box = selenium.find_element_by_class_name(
+            'search__result__box'
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is True
+        ), 'search modal should displayed when the page loads'
+        assert (
+            search_result_box.text == 'Error Occurred. Please try again.'
+        ), 'user should be notified that there is error while searching'
+        assert (
+            len(search_result_box.find_elements_by_css_selector('*')) == 0
+        ), 'search result box should not have any child elements because there are no results'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_rtd_search_remove_from_url_when_modal_closed(selenium, app, status, warning):
+    """Test if `rtd_search` query param is removed when the modal is closed."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    # to test this, we need to override the $.ajax function
+    ajax_func = get_ajax_overwrite_func('error')
+    injected_script = SCRIPT_TAG + ajax_func
+
+    with InjectJsManager(path, injected_script) as _:
+        selenium.get(f'file://{path}?rtd_search=i am searching')
+        time.sleep(3)  # give time to open modal and start searching
+
+        # closing modal
+        search_outer = selenium.find_element_by_class_name('search__outer')
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+        actions = webdriver.common.action_chains.ActionChains(selenium)
+        actions.move_to_element_with_offset(
+            search_outer, -10, -10  # -ve offsets to move the mouse away from the search modal
+        )
+        actions.click()
+        actions.perform()
+        WebDriverWait(selenium, 10).until(
+            EC.invisibility_of_element(search_outer_wrapper)
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() is False
+        ), 'search modal should disappear after clicking on backdrop'
+        assert (
+            'rtd_search=' not in parse.unquote(selenium.current_url)
+        ), 'rtd_search url param should not be present in the url when the modal is closed.'

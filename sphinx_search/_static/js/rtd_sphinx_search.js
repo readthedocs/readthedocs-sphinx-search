@@ -46,20 +46,64 @@ const debounce = (func, wait) => {
 /**
  * Take an object as parameter and convert it to
  * url params string.
- * Eg. if obj = { 'a': 1, 'b': 2 }, then it will return
- * the string a=1&b=2.
+ * Eg. if obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }, then it will return
+ * the string a=1&b=2&c=hello,world
  *
  * @param {Object} obj the object to be converted
- * @return {String} object in url params form
+ * @return {String|Array} object in url params form
  */
 const convertObjToUrlParams = obj => {
-    const params = Object.keys(obj)
-        .map(function(key) {
-            const s = key + "=" + obj[key];
+    let params = Object.keys(obj).map(function(key) {
+        if (_is_string(key)) {
+            const s = key + "=" + encodeURI(obj[key]);
             return s;
-        })
-        .join("&");
-    return params;
+        }
+    });
+
+    // removing empty strings from the 'params' array
+    let final_params = [];
+    for (let i = 0; i < params.length; ++i) {
+        if (_is_string(params[i])) {
+            final_params.push(params[i]);
+        }
+    }
+    if (final_params.length === 1) {
+        return final_params[0];
+    } else {
+        let final_url_params = final_params.join("&");
+        return final_url_params;
+    }
+};
+
+/**
+ * Adds/removes "rtd_search" url parameter to the url.
+ */
+const updateUrl = () => {
+    let origin = window.location.origin;
+    let path = window.location.pathname;
+    let url_params = $.getQueryParameters();
+    let hash = window.location.hash;
+
+    // SEARCH_QUERY should not be an empty string
+    if (_is_string(SEARCH_QUERY)) {
+        url_params.rtd_search = SEARCH_QUERY;
+    } else {
+        delete url_params.rtd_search;
+    }
+
+    let window_location_search = convertObjToUrlParams(url_params) + hash;
+
+    // this happens during the tests,
+    // when window.location.origin is "null" in Firefox
+    // then correct URL is contained by window.location.pathname
+    // which starts with "file://"
+    let url = path + "?" + window_location_search;
+    if (origin.substring(0, 4) === "http") {
+        url = origin + url;
+    }
+
+    // update url
+    window.history.pushState({}, null, url);
 };
 
 /**
@@ -552,8 +596,10 @@ const generateAndReturnInitialHtml = () => {
 
 /**
  * Opens the search modal.
+ *
+ * @param {String} custom_query if a custom query is provided, initialise the value of input field with it
  */
-const showSearchModal = () => {
+const showSearchModal = custom_query => {
     // removes previous results (if there are any).
     removeResults();
 
@@ -568,7 +614,14 @@ const showSearchModal = () => {
             ".search__outer__input"
         );
         if (search_outer_input !== null) {
-            search_outer_input.value = "";
+            if (
+                typeof custom_query !== "undefined" &&
+                _is_string(custom_query)
+            ) {
+                search_outer_input.value = custom_query;
+            } else {
+                search_outer_input.value = "";
+            }
             search_outer_input.focus();
         }
     });
@@ -587,6 +640,12 @@ const removeSearchModal = () => {
         search_outer_input.value = "";
         search_outer_input.blur();
     }
+
+    // reset SEARCH_QUERY
+    SEARCH_QUERY = "";
+
+    // update url (remove 'rtd_search' param)
+    updateUrl();
 
     $(".search__outer__wrapper").fadeOut(400);
 };
@@ -628,7 +687,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             COUNT = 0;
 
             let search_params = {
-                q: encodeURIComponent(SEARCH_QUERY),
+                q: SEARCH_QUERY,
                 project: project,
                 version: version,
                 language: language
@@ -653,6 +712,9 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // is debounced here.
                 debounce(removeResults, 600)();
             }
+
+            // update URL
+            updateUrl();
         });
 
         search_outer_input.addEventListener("keydown", e => {
@@ -723,5 +785,19 @@ window.addEventListener("DOMContentLoaded", evt => {
                 removeSearchModal();
             }
         });
+
+        // if "rtd_search" is present in URL parameters,
+        // then open the search modal and show the results
+        // for the value of "rtd_search"
+        let url_params = $.getQueryParameters();
+        if (_is_array(url_params.rtd_search)) {
+            let query = decodeURIComponent(url_params.rtd_search);
+            showSearchModal(query);
+            search_outer_input.value = query;
+
+            let event = document.createEvent("Event");
+            event.initEvent("input", true, true);
+            search_outer_input.dispatchEvent(event);
+        }
     }
 });
