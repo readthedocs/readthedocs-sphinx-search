@@ -9,7 +9,7 @@ from tests import TEST_DOCS_SRC
 from sphinx_search.extension import ASSETS_FILES
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
 def test_static_files_exists(app, status, warning):
     """Test if the static files are present in the _build folder."""
     app.build()
@@ -26,6 +26,7 @@ def test_static_files_exists(app, status, warning):
 
 @pytest.mark.sphinx(
     srcdir=TEST_DOCS_SRC,
+    buildername='readthedocs',
     confoverrides={
         'rtd_sphinx_search_file_type': 'minified'
     }
@@ -52,6 +53,7 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
 
 @pytest.mark.sphinx(
     srcdir=TEST_DOCS_SRC,
+    buildername='readthedocs',
     confoverrides={
         'rtd_sphinx_search_file_type': 'un-minified'
     }
