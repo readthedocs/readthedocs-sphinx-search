@@ -43,7 +43,7 @@ def inject_static_files(app):
 
 def setup(app):
 
-    app.add_config_value('rtd_sphinx_search_file_type', 'un-minified', 'html')
+    app.add_config_value('rtd_sphinx_search_file_type', 'minified', 'html')
 
     app.connect('builder-inited', inject_static_files)
     app.connect('build-finished', copy_asset_files)
