@@ -24,21 +24,37 @@ def copy_asset_files(app, exception):
 
 
 def inject_static_files(app):
-    """Inject correct CSS and JS files based on the value of ``RTD_SPHINX_SEARCH_FILE_TYPE``."""
-    file_type = app.config.rtd_sphinx_search_file_type
-    expected_file_type = ASSETS_FILES.keys()
+    """
+    Inject correct CSS and JS files based on the value of ``RTD_SPHINX_SEARCH_FILE_TYPE``.
 
-    assert (
-        file_type in expected_file_type
-    ), f'"{file_type}" file type is not supported.'
+    This only injects file if the docs are build on Read the Docs.
+    """
 
-    files = ASSETS_FILES[file_type]
+    online_builders = [
+        'readthedocs',
+        'readthedocsdirhtml',
+        'readthedocssinglehtml',
+    ]
+    on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
-    for file in files:
-        if file.endswith('.js'):
-            app.add_js_file(file)
-        elif file.endswith('.css'):
-            app.add_css_file(file)
+    # only inject files if the builder is one of the online-builders
+    # and on_rtd is True
+    if app.builder.name in online_builders and on_rtd:
+
+        file_type = app.config.rtd_sphinx_search_file_type
+        expected_file_type = ASSETS_FILES.keys()
+
+        assert (
+            file_type in expected_file_type
+        ), f'"{file_type}" file type is not supported.'
+
+        files = ASSETS_FILES[file_type]
+
+        for file in files:
+            if file.endswith('.js'):
+                app.add_js_file(file)
+            elif file.endswith('.css'):
+                app.add_css_file(file)
 
 
 def setup(app):
