@@ -126,6 +126,31 @@ def test_opening_of_search_modal(selenium, app, status, warning):
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
+def test_open_search_modal_when_forward_slash_button_is_pressed(selenium, app, status, warning):
+    """Test if the search modal is opening correctly."""
+    app.build()
+    path = app.outdir / 'index.html'
+
+    with InjectJsManager(path, SCRIPT_TAG) as _:
+        selenium.get(f'file://{path}')
+
+        search_outer_wrapper = selenium.find_element_by_class_name(
+            'search__outer__wrapper'
+        )
+
+        assert (
+            search_outer_wrapper.is_displayed() == False
+        ), 'search__outer__wrapper should not be displayed on page load'
+
+        body = selenium.find_element_by_css_selector('body')
+        body.send_keys('/')
+
+        assert (
+            search_outer_wrapper.is_displayed() == True
+        ), 'search__outer__wrapper should be displayed when forward slash button is pressed'
+
+
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_focussing_of_input_field(selenium, app, status, warning):
     """Test if the input field in search modal is focussed after opening the modal."""
     app.build()

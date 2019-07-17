@@ -2,6 +2,11 @@ const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
 const MAX_SUBSTRING_LIMIT = 100;
 
+// Possible states of search modal
+const SEARCH_MODAL_OPENED = "opened";
+const SEARCH_MODAL_CLOSED = "closed";
+
+let SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
 let TOTAL_PAGE_RESULTS = 0;
 let SEARCH_QUERY = "";
 
@@ -603,6 +608,8 @@ const showSearchModal = custom_query => {
     // removes previous results (if there are any).
     removeResults();
 
+    SEARCH_MODAL_STATE = SEARCH_MODAL_OPENED;
+
     // removes the focus from the initial input field
     // which as already present in the docs.
     let search_bar = getInputField();
@@ -633,6 +640,8 @@ const showSearchModal = custom_query => {
 const removeSearchModal = () => {
     // removes previous results before closing
     removeResults();
+
+    SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
 
     // sets the value of input field to empty string and remove the focus.
     let search_outer_input = document.querySelector(".search__outer__input");
@@ -783,6 +792,15 @@ window.addEventListener("DOMContentLoaded", evt => {
         document.addEventListener("keydown", e => {
             if (e.keyCode === 27) {
                 removeSearchModal();
+            }
+        });
+
+        // open search modal if "forward slash" button is pressed
+        document.addEventListener("keydown", e => {
+            if (e.keyCode === 191) {
+                if (SEARCH_MODAL_STATE !== SEARCH_MODAL_OPENED) {
+                    showSearchModal();
+                }
             }
         });
 
