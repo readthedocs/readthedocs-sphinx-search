@@ -3,10 +3,9 @@ readthedocs-sphinx-search
 
 |docs| |license| |build-status|
 
-``readthedocs-sphinx-search`` is a `Sphinx`_ extension to enable `Read the Docs`_'s
-in-doc search UI.
-
-This extension is developed to be used on `Read the Docs`_.
+``readthedocs-sphinx-search`` is a `Sphinx`_ extension which adds a
+**full-page search UI** with **search as you type** feature to your documentation.
+This extension is compatible with all the documentations hosted on `Read the Docs`_.
 
 
 In-Doc Search UI
@@ -14,35 +13,22 @@ In-Doc Search UI
 
 Using the existing search backend of `Read the Docs`_,
 this extension is designed to greatly improve the search experience
-of the reader. This adds the full page search UI to the docs
-which supports ``search as you type`` feature.
-
-.. figure:: ./_static/demo.gif
-    :align: center
-    :target: ./_static/demo.gif
-
-    demo
-
-Browser Support
-~~~~~~~~~~~~~~~
-
-The JavaScript for this extension is written with new features and syntax,
-however, we also want to support older browsers upto IE11.
-Therefore, we are using babel to transpile the new and shiny JavaScript code
-to support all browsers.
-
-The CSS is also autoprefixed to extend the support to most of the browsers.
+of the reader.
+To experience it first hand, try searching in this documentation or visit here:
+https://readthedocs-sphinx-search.readthedocs.io/en/latest/?rtd_search=testing
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Table of Contents
 
    installation
+   features
    configuration
    custom-design
    development
    testing
+   js-api-reference
    get-involved
 
 

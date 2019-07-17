@@ -63,13 +63,16 @@ You can target a single environment to limit the test suite:
         Run test suite with Python 3.6 and Sphinx<2.1
 
     py36-sphinx21
-        Run test suite with Python 3.6 and Sphinx 2.1.0
+        Run test suite with Python 3.6 and Sphinx<2.2
+
+    py37-sphinx18
+        Run test suite with Python 3.7 and Sphinx <1.9
 
     py37-sphinx20
         Run test suite with Python 3.7 and Sphinx<2.1
 
     py37-sphinx21
-        Run test suite with Python 3.7 and Sphinx 2.1.0
+        Run test suite with Python 3.7 and Sphinx<2.2
 
     docs
         Test documentation compilation with Sphinx
