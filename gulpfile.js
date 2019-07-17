@@ -11,20 +11,20 @@ var autoprefixer = require("gulp-autoprefixer"),
 
 gulp.task("styles", function() {
     return gulp
-        .src("sphinx_search/_static/css/rtd_sphinx_search.css")
+        .src("sphinx_search/static/css/rtd_sphinx_search.css")
         .pipe(autoprefixer())
         .pipe(csso())
         .pipe(rename({ extname: ".min.css" }))
-        .pipe(gulp.dest("sphinx_search/_static/css"));
+        .pipe(gulp.dest("sphinx_search/static/css"));
 });
 
 gulp.task("scripts", function() {
     return gulp
-        .src("sphinx_search/_static/js/rtd_sphinx_search.js")
+        .src("sphinx_search/static/js/rtd_sphinx_search.js")
         .pipe(babel({ presets: ["@babel/env"] }))
         .pipe(uglify())
         .pipe(rename({ extname: ".min.js" }))
-        .pipe(gulp.dest("sphinx_search/_static/js"));
+        .pipe(gulp.dest("sphinx_search/static/js"));
 });
 
 gulp.task("clean", function() {
