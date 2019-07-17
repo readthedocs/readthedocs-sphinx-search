@@ -11,15 +11,15 @@ let COUNT = 0;
 
 /**
  * Debounce the function.
- * Usage:
+ * Usage::
  *
- *      let func = debounce(() => console.log("Hello World"), 3000);
+ *    let func = debounce(() => console.log("Hello World"), 3000);
  *
- *      // calling the func
- *      func();
+ *    // calling the func
+ *    func();
  *
- *      //cancelling the execution of the func (if not executed)
- *      func.cancel();
+ *    //cancelling the execution of the func (if not executed)
+ *    func.cancel();
  *
  * @param {Function} func function to be debounced
  * @param {Number} wait time to wait before running func (in miliseconds)
@@ -46,8 +46,9 @@ const debounce = (func, wait) => {
 /**
  * Take an object as parameter and convert it to
  * url params string.
- * Eg. if obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }, then it will return
- * the string a=1&b=2&c=hello,world
+ *
+ * Eg. if ``obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }``, then it will return
+ * the string ``a=1&b=2&c=hello,world``
  *
  * @param {Object} obj the object to be converted
  * @return {String|Array} object in url params form
@@ -125,7 +126,7 @@ const createDomNode = (nodeName, attributes) => {
 /**
  * Checks if data type is "string" or not
  *
- * @param {*} data
+ * @param {*} data data whose data-type is to be checked
  * @return {Boolean} 'true' if type is "string" and length is > 0
  */
 const _is_string = str => {
@@ -508,6 +509,7 @@ const getErrorDiv = err_msg => {
  *
  * @param {String} search_url url on which request will be sent
  * @param {String} projectName name (slug) of the project
+ * @return {Function} debounced function with debounce time of 500ms
  */
 const fetchAndGenerateResults = (search_url, projectName) => {
     let search_outer = document.querySelector(".search__outer");
