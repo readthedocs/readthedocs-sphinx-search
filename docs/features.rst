@@ -4,7 +4,7 @@ Features
 Search As You Type
 ------------------
 
-The extension support `search as you type` feature.
+The extension offers a "search as you type" feature.
 This means that results will be shown to the user instantly while typing.
 
 Minimal UI

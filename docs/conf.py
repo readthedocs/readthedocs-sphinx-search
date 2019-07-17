@@ -15,6 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.append(os.path.abspath("./_ext"))
 
 
 # -- Project information -----------------------------------------------------
@@ -44,6 +45,7 @@ extensions = [
     'sphinx-prompt',
     'sphinx_search.extension',
     'sphinx_js',
+    'hidden_code_block',
 ]
 
 # sphinx-js settings
