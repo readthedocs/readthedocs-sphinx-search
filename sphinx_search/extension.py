@@ -1,5 +1,6 @@
 import os
 
+from sphinx.errors import ExtensionError
 from sphinx.util.fileutil import copy_asset
 
 
@@ -36,33 +37,26 @@ def inject_static_files(app):
     This only injects file if the docs are build on Read the Docs.
     """
 
-    # This is done to properly test the extension.
-    # If the tests are being executed, add `html`
-    # as one of the `ONLINE_BUILDERS`, so that
-    # proper CSS and JS files gets injected and can be tested.
-    if os.environ.get('TESTING_ENVIRONMENT') == 'True':
-        ONLINE_BUILDERS.append('html')
-
     on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
     # only inject files if the builder is one of the ONLINE_BUILDERS
     # and on_rtd is True
-    if app.builder.name in ONLINE_BUILDERS and on_rtd:
+    if app.builder.name not in ONLINE_BUILDERS and not on_rtd:
+        return
 
-        file_type = app.config.rtd_sphinx_search_file_type
-        expected_file_type = ASSETS_FILES.keys()
+    file_type = app.config.rtd_sphinx_search_file_type
+    expected_file_type = ASSETS_FILES.keys()
 
-        assert (
-            file_type in expected_file_type
-        ), f'"{file_type}" file type is not supported.'
+    if file_type not in expected_file_type:
+        raise ExtensionError(f'"{file_type}" file type is not supported')
 
-        files = ASSETS_FILES[file_type]
+    files = ASSETS_FILES[file_type]
 
-        for file in files:
-            if file.endswith('.js'):
-                app.add_js_file(file)
-            elif file.endswith('.css'):
-                app.add_css_file(file)
+    for file in files:
+        if file.endswith('.js'):
+            app.add_js_file(file)
+        elif file.endswith('.css'):
+            app.add_css_file(file)
 
 
 def setup(app):
