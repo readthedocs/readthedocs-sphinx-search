@@ -13,6 +13,12 @@ from tests import TEST_DOCS_SRC
 pytest_plugins = 'sphinx.testing.fixtures'
 
 
+@pytest.fixture(autouse=True)
+def env_setup(monkeypatch):
+    monkeypatch.setenv('READTHEDOCS', 'True')
+    monkeypatch.setenv('TESTING_ENVIRONMENT', 'True')
+
+
 @pytest.fixture
 def firefox_options(firefox_options):
     firefox_options.add_argument('-headless')

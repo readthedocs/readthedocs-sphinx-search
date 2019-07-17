@@ -15,10 +15,10 @@ ASSETS_FILES = {
 }
 
 ONLINE_BUILDERS = [
-        'readthedocs',
-        'readthedocsdirhtml',
-        'readthedocssinglehtml',
-    ]
+    'readthedocs',
+    'readthedocsdirhtml',
+    'readthedocssinglehtml',
+]
 
 
 def copy_asset_files(app, exception):
@@ -35,6 +35,14 @@ def inject_static_files(app):
 
     This only injects file if the docs are build on Read the Docs.
     """
+
+    # This is done to properly test the extension.
+    # If the tests are being executed, add `html`
+    # as one of the `ONLINE_BUILDERS`, so that
+    # proper CSS and JS files gets injected and can be tested.
+    if os.environ.get('TESTING_ENVIRONMENT') == 'True':
+        ONLINE_BUILDERS.append('html')
+
     on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
     # only inject files if the builder is one of the ONLINE_BUILDERS
