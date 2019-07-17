@@ -14,6 +14,12 @@ ASSETS_FILES = {
     ]
 }
 
+ONLINE_BUILDERS = [
+        'readthedocs',
+        'readthedocsdirhtml',
+        'readthedocssinglehtml',
+    ]
+
 
 def copy_asset_files(app, exception):
     if exception is None:  # build succeeded
@@ -29,17 +35,11 @@ def inject_static_files(app):
 
     This only injects file if the docs are build on Read the Docs.
     """
-
-    online_builders = [
-        'readthedocs',
-        'readthedocsdirhtml',
-        'readthedocssinglehtml',
-    ]
     on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
-    # only inject files if the builder is one of the online-builders
+    # only inject files if the builder is one of the ONLINE_BUILDERS
     # and on_rtd is True
-    if app.builder.name in online_builders and on_rtd:
+    if app.builder.name in ONLINE_BUILDERS and on_rtd:
 
         file_type = app.config.rtd_sphinx_search_file_type
         expected_file_type = ASSETS_FILES.keys()
