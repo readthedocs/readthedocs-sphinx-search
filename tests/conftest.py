@@ -15,7 +15,7 @@ pytest_plugins = 'sphinx.testing.fixtures'
 
 @pytest.fixture
 def firefox_options(firefox_options):
-#     firefox_options.add_argument('-headless')
+    firefox_options.add_argument('-headless')
     return firefox_options
 
 
