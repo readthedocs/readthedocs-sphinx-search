@@ -251,7 +251,6 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
         cross_icon = selenium.find_element_by_class_name(
             'search__cross'
         )
-        time.sleep(30)
         cross_icon.click()
         WebDriverWait(selenium, 10).until(
             EC.invisibility_of_element(search_outer_wrapper)
