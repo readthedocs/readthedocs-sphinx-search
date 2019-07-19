@@ -254,7 +254,8 @@
     bottom: calc(-80% - 20px);
     width: 80%;
     max-width: 1500px;
-    height: fit-content;
+    height: 30px;
+    overflow: hidden;
     background: #eee;
     z-index: 100000;
     border: 1px solid #eee;
