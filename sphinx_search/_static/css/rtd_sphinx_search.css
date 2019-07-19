@@ -251,7 +251,7 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(-80% - 30px);
+    bottom: calc(-80% - 20px);
     width: 80%;
     max-width: 1500px;
     height: fit-content;
