@@ -45,7 +45,6 @@
 
     /* Other */
     border: 1px solid #e0e0e0;
-    border-radius: 5px;
     line-height: 1.875;
     background-color: #fcfcfc;
     box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.09);
@@ -244,6 +243,35 @@
     all: unset;
     color: inherit;
     font-size: 85%;
+}
+
+.rtd__search__credits {
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(-80% - 30px);
+    width: 80%;
+    max-width: 1500px;
+    height: fit-content;
+    background: #fcfcfc;
+    z-index: 100000;
+    border: 1px solid #eee;
+    padding: 2px 10px;
+    text-align: center;
+    color: black;
+}
+
+.rtd__search__credits a {
+    color: black;
+    text-decoration: underline;
+}
+
+@media (min-height: 1250px) {
+    .rtd__search__credits {
+        bottom: calc(-1000px - 30px);
+    }
 }
 
 @media (max-width: 630px) {
