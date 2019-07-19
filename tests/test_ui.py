@@ -102,6 +102,10 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                     <input class="search__outer__input" placeholder="Search ...">
                     <span class="bar"></span>
                 </div>
+                <div class="rtd__search__credits">
+                    Search By <a href="https://readthedocs.org/">Read the Docs</a> |
+                    In-Doc Search By <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+                <div>
             </div>
         '''
 
@@ -247,6 +251,7 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
         cross_icon = selenium.find_element_by_class_name(
             'search__cross'
         )
+        time.sleep(30)
         cross_icon.click()
         WebDriverWait(selenium, 10).until(
             EC.invisibility_of_element(search_outer_wrapper)
