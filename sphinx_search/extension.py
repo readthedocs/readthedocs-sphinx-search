@@ -19,7 +19,7 @@ def copy_asset_files(app, exception):
     if exception is None:  # build succeeded
         files = ASSETS_FILES['minified'] + ASSETS_FILES['un-minified']
         for file in files:
-            path = os.path.join(os.path.dirname(__file__), '_static', file)
+            path = os.path.join(os.path.dirname(__file__), 'static', file)
             copy_asset(path, os.path.join(app.outdir, '_static', file.split('.')[-1]))
 
 

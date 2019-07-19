@@ -10,7 +10,8 @@ matrix:
     - python: 3.6
       env: TOXENV=docs
 install:
-  pip install tox-travis
+  - pip install tox-travis
+  - npm install -g jsdoc
 before_script:
   - sudo bash ./scripts/setup_chromedriver.sh
   - sudo bash ./scripts/setup_geckodriver.sh
