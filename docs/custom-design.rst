@@ -34,7 +34,7 @@ is given below for the reference:
                 <input class="search__outer__input" placeholder="Search ..." />
                 <span class="bar"></span>
                 <div class="rtd__search__credits">
-                    Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+                    Search by <a href="https://readthedocs.org/">Read the Docs</a> &amp; <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
                 <div>
                 <div class="search__result__box">
 
