@@ -15,12 +15,6 @@ ASSETS_FILES = {
     ]
 }
 
-ONLINE_BUILDERS = [
-    'readthedocs',
-    'readthedocsdirhtml',
-    'readthedocssinglehtml',
-]
-
 
 def copy_asset_files(app, exception):
     if exception is None:  # build succeeded
@@ -31,18 +25,7 @@ def copy_asset_files(app, exception):
 
 
 def inject_static_files(app):
-    """
-    Inject correct CSS and JS files based on the value of ``RTD_SPHINX_SEARCH_FILE_TYPE``.
-
-    This only injects file if the docs are build on Read the Docs.
-    """
-
-    on_rtd = os.environ.get('READTHEDOCS') == 'True'
-
-    # only inject files if the builder is one of the ONLINE_BUILDERS
-    # and on_rtd is True
-    if app.builder.name not in ONLINE_BUILDERS and not on_rtd:
-        return
+    """Inject correct CSS and JS files based on the value of ``rtd_sphinx_search_file_type``."""
 
     file_type = app.config.rtd_sphinx_search_file_type
     expected_file_type = ASSETS_FILES.keys()

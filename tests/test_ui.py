@@ -57,7 +57,7 @@ def open_search_modal(driver):
     ), 'search modal should open after clicking on input field'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_index_page_opening(selenium, app, status, warning):
     """Test if `index.html` is generated/opening correctly."""
     app.build()
@@ -68,7 +68,7 @@ def test_index_page_opening(selenium, app, status, warning):
     ), 'title of the documentation must contains "readthedocs-sphinx-search"'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_appending_of_initial_html(selenium, app, status, warning):
     """Test if initial html is correctly appended to the body after the DOM is loaded."""
     app.build()
@@ -118,7 +118,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                 ), f'{line} -- must be present in page source'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_opening_of_search_modal(selenium, app, status, warning):
     """Test if the search modal is opening correctly."""
     app.build()
@@ -129,7 +129,7 @@ def test_opening_of_search_modal(selenium, app, status, warning):
         open_search_modal(selenium)
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_open_search_modal_when_forward_slash_button_is_pressed(selenium, app, status, warning):
     """Test if the search modal is opening correctly."""
     app.build()
@@ -180,7 +180,7 @@ def test_focussing_of_input_field(selenium, app, status, warning):
         ), 'active element should be search input field of the modal'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warning):
     """Test if the search modal is closed when user clicks on backdrop."""
     app.build()
@@ -209,7 +209,7 @@ def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warnin
         ), 'search modal should disappear after clicking on backdrop'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
     """Test if the search modal is closed when escape button is pressed."""
     app.build()
@@ -234,7 +234,7 @@ def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
         ), 'search modal should disappear after pressing Escape button'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
     """Test if the search modal is closed when cross icon is clicked."""
     app.build()
@@ -261,7 +261,7 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
         ), 'search modal should disappear after clicking on cross icon'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_no_results_msg(selenium, app, status, warning):
     """Test if the user is notified that there are no search results."""
     app.build()
@@ -298,7 +298,7 @@ def test_no_results_msg(selenium, app, status, warning):
         ), 'search result box should not have any child elements because there are no results'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_error_msg(selenium, app, status, warning):
     """Test if the user is notified that there is an error while performing search"""
     app.build()
@@ -335,7 +335,7 @@ def test_error_msg(selenium, app, status, warning):
         ), 'search result box should not have any child elements because there are no results'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_searching_msg(selenium, app, status, warning):
     """Test if the user is notified that search is in progress."""
     app.build()
@@ -383,7 +383,7 @@ def test_searching_msg(selenium, app, status, warning):
         ), 'user should be notified that there are no results'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_results_displayed_to_user(selenium, app, status, warning):
     """Test if the results are displayed correctly to the user."""
     app.build()
@@ -433,7 +433,7 @@ def test_results_displayed_to_user(selenium, app, status, warning):
         ), 'total 3 results should be shown to the user (as per the dummy_results.json)'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning):
     """Test if user is able to navigate through search results via keyboard."""
     app.build()
@@ -490,7 +490,7 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
         ), 'first result should be active'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_enter_button_on_input_field_when_no_result_active(selenium, app, status, warning):
     """
     Test if pressing Enter on search field takes the user to search page.
@@ -529,7 +529,7 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
         ), '"Search" must be in the title of the page'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_position_search_modal(selenium, app, status, warning):
     """Test if the search modal is in the middle of the page."""
     app.build()
@@ -580,7 +580,7 @@ def test_position_search_modal(selenium, app, status, warning):
             ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warning):
     """Test if the `rtd_search` query param is added to the url when user is searching."""
     app.build()
@@ -629,7 +629,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
         ), 'rtd_search param must not be present in the url if query is empty'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
     """Test if search modal opens if `rtd_search` query param is present in the URL."""
     app.build()
@@ -661,7 +661,7 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
         ), 'search result box should not have any child elements because there are no results'
 
 
-@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC, buildername='readthedocs')
+@pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
 def test_rtd_search_remove_from_url_when_modal_closed(selenium, app, status, warning):
     """Test if `rtd_search` query param is removed when the modal is closed."""
     app.build()
