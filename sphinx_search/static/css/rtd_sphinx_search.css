@@ -269,7 +269,7 @@
     text-decoration: underline;
 }
 
-@media (max-width: 670px) {
+@media (max-width: 520px) {
     .rtd__search__credits {
         height: 50px;
         bottom: calc(-80% - 40px);
