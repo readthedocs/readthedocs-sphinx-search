@@ -259,7 +259,7 @@
     background: #eee;
     z-index: 100000;
     border: 1px solid #eee;
-    padding: 2px 10px;
+    padding: 5px 10px;
     text-align: center;
     color: black;
 }
@@ -267,6 +267,14 @@
 .rtd__search__credits a {
     color: black;
     text-decoration: underline;
+}
+
+@media (max-width: 670px) {
+    .rtd__search__credits {
+        height: 50px;
+        bottom: calc(-80% - 40px);
+        overflow: hidden;
+    }
 }
 
 @media (min-height: 1250px) {
