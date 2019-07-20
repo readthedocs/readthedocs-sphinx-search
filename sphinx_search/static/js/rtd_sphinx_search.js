@@ -823,6 +823,6 @@ window.addEventListener("DOMContentLoaded", evt => {
             search_outer_input.dispatchEvent(event);
         }
     } else {
-        console.log("[INFO] Docs are not built on Read the Docs, readthedocs-sphinx-search will not work.")
+        console.log("[INFO] Docs are not being served on Read the Docs, readthedocs-sphinx-search will not work.")
     }
 });
