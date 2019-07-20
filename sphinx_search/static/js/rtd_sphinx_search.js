@@ -597,8 +597,7 @@ const generateAndReturnInitialHtml = () => {
                 <span class="bar"></span> \
             </div> \
             <div class="rtd__search__credits"> \
-                Search By <a href="https://readthedocs.org/">Read the Docs</a> | \
-                In-Doc Search By <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
+                Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
             <div> \
         </div>';
 
