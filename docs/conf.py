@@ -15,6 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.append(os.path.abspath("./_ext"))
 
 
 # -- Project information -----------------------------------------------------
@@ -43,7 +44,12 @@ extensions = [
     'sphinx_tabs.tabs',
     'sphinx-prompt',
     'sphinx_search.extension',
+    'sphinx_js',
+    'hidden_code_block',
 ]
+
+# sphinx-js settings
+js_source_path = '../sphinx_search/static/js/'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

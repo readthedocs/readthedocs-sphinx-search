@@ -26,7 +26,7 @@ def copy_asset_files(app, exception):
     if exception is None:  # build succeeded
         files = ASSETS_FILES['minified'] + ASSETS_FILES['un-minified']
         for file in files:
-            path = os.path.join(os.path.dirname(__file__), '_static', file)
+            path = os.path.join(os.path.dirname(__file__), 'static', file)
             copy_asset(path, os.path.join(app.outdir, '_static', file.split('.')[-1]))
 
 
@@ -61,7 +61,7 @@ def inject_static_files(app):
 
 def setup(app):
 
-    app.add_config_value('rtd_sphinx_search_file_type', 'un-minified', 'html')
+    app.add_config_value('rtd_sphinx_search_file_type', 'minified', 'html')
 
     app.connect('builder-inited', inject_static_files)
     app.connect('build-finished', copy_asset_files)
