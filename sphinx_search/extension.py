@@ -1,5 +1,6 @@
 import os
 
+from sphinx.errors import ExtensionError
 from sphinx.util.fileutil import copy_asset
 
 
@@ -24,13 +25,13 @@ def copy_asset_files(app, exception):
 
 
 def inject_static_files(app):
-    """Inject correct CSS and JS files based on the value of ``RTD_SPHINX_SEARCH_FILE_TYPE``."""
+    """Inject correct CSS and JS files based on the value of ``rtd_sphinx_search_file_type``."""
+
     file_type = app.config.rtd_sphinx_search_file_type
     expected_file_type = ASSETS_FILES.keys()
 
-    assert (
-        file_type in expected_file_type
-    ), f'"{file_type}" file type is not supported.'
+    if file_type not in expected_file_type:
+        raise ExtensionError(f'"{file_type}" file type is not supported')
 
     files = ASSETS_FILES[file_type]
 

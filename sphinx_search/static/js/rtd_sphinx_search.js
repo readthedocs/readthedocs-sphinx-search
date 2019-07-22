@@ -667,7 +667,7 @@ const removeSearchModal = () => {
 window.addEventListener("DOMContentLoaded", evt => {
     // only add event listeners if READTHEDOCS_DATA global
     // variable is found.
-    if (READTHEDOCS_DATA !== undefined) {
+    if (window.hasOwnProperty("READTHEDOCS_DATA")) {
         const project = READTHEDOCS_DATA.project;
         const version = READTHEDOCS_DATA.version;
         const language = READTHEDOCS_DATA.language || "en";
@@ -822,5 +822,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             event.initEvent("input", true, true);
             search_outer_input.dispatchEvent(event);
         }
+    } else {
+        console.log("[INFO] Docs are not being served on Read the Docs, readthedocs-sphinx-search will not work.")
     }
 });
