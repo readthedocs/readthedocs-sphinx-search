@@ -210,22 +210,22 @@
 
 /* Highlighting of matched results */
 
-.search__outer em {
+.search__outer span {
     font-style: normal;
 }
 
-.search__outer .search__result__title em {
+.search__outer .search__result__title span {
     background-color: #e5f6ff;
     padding-bottom: 3px;
     border-bottom-color: black;
 }
 
-.search__outer .search__result__content em {
+.search__outer .search__result__content span {
     background-color: #e5f6ff;
     border-bottom: 1px solid black;
 }
 
-.search__result__subheading em {
+.search__result__subheading span {
     border-bottom: 1px solid black;
 }
 
