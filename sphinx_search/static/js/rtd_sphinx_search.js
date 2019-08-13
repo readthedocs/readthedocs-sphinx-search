@@ -312,7 +312,7 @@ const generateSingleResult = (resultData, projectName) => {
             </h2> \
         </a>';
 
-    let page_link = READTHEDOCS_DATA.canonical_url + resultData.full_path;
+    let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
     let page_link_highlight =
         page_link + "?highlight=" + encodeURIComponent(SEARCH_QUERY);
 
