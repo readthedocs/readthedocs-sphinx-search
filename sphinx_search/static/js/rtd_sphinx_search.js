@@ -313,9 +313,6 @@ const generateSingleResult = (resultData, projectName) => {
         </a>';
 
     let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
-    let page_link_highlight =
-        page_link + "?highlight=" + encodeURIComponent(SEARCH_QUERY);
-
     let page_title = resultData.title;
 
     // if title is present in highlighted field, use that.
@@ -346,7 +343,7 @@ const generateSingleResult = (resultData, projectName) => {
     page_title += "<br>";
 
     content.innerHTML += $u.template(page_link_template, {
-        page_link: page_link_highlight,
+        page_link: page_link,
         page_title: page_title
     });
 
@@ -358,12 +355,12 @@ const generateSingleResult = (resultData, projectName) => {
         if (type === "sections") {
             html_structure = get_section_html(
                 resultData.inner_hits[i],
-                page_link_highlight
+                page_link
             );
         } else if (type === "domains") {
             html_structure = get_domain_html(
                 resultData.inner_hits[i],
-                page_link_highlight
+                page_link
             );
         }
         content.innerHTML += html_structure;
