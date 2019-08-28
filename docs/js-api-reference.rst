@@ -4,12 +4,7 @@ JavaScript API Reference
 Following are the functions that are defined in ``READTHEDOCS`` object in `rtd_sphinx_search.js`_.
 You can override any of the following functions to make this extension work in your way.
 
-.. js:autofunction:: debounce
-.. js:autofunction:: convertObjToUrlParams
 .. js:autofunction:: updateUrl
-.. js:autofunction:: createDomNode
-.. js:autofunction:: _is_string
-.. js:autofunction:: _is_array
 .. js:autofunction:: get_section_html
 .. js:autofunction:: getHighlightListData
 .. js:autofunction:: get_domain_html

@@ -20,75 +20,71 @@ if (!window.hasOwnProperty("READTHEDOCS")) {
     window.READTHEDOCS = {};
 }
 
-if (!READTHEDOCS.hasOwnProperty("debounce")) {
-    /**
-     * Debounce the function.
-     * Usage::
-     *
-     *    let func = debounce(() => console.log("Hello World"), 3000);
-     *
-     *    // calling the func
-     *    func();
-     *
-     *    //cancelling the execution of the func (if not executed)
-     *    func.cancel();
-     *
-     * @param {Function} func function to be debounced
-     * @param {Number} wait time to wait before running func (in miliseconds)
-     * @return {Function} debounced function
-     */
-    READTHEDOCS.debounce = function(func, wait) {
-        let timeout;
+/**
+ * Debounce the function.
+ * Usage::
+ *
+ *    let func = debounce(() => console.log("Hello World"), 3000);
+ *
+ *    // calling the func
+ *    func();
+ *
+ *    //cancelling the execution of the func (if not executed)
+ *    func.cancel();
+ *
+ * @param {Function} func function to be debounced
+ * @param {Number} wait time to wait before running func (in miliseconds)
+ * @return {Function} debounced function
+ */
+function debounce(func, wait) {
+    let timeout;
 
-        let debounced = function() {
-            let context = this;
-            let args = arguments;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(context, args), wait);
-        };
-
-        debounced.cancel = () => {
-            clearTimeout(timeout);
-            timeout = null;
-        };
-
-        return debounced;
+    let debounced = function() {
+        let context = this;
+        let args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
     };
+
+    debounced.cancel = () => {
+        clearTimeout(timeout);
+        timeout = null;
+    };
+
+    return debounced;
 }
 
-if (!READTHEDOCS.hasOwnProperty("convertObjToUrlParams")) {
-    /**
-     * Take an object as parameter and convert it to
-     * url params string.
-     *
-     * Eg. if ``obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }``, then it will return
-     * the string ``a=1&b=2&c=hello,world``
-     *
-     * @param {Object} obj the object to be converted
-     * @return {String|Array} object in url params form
-     */
-    READTHEDOCS.convertObjToUrlParams = function(obj) {
-        let params = Object.keys(obj).map(function(key) {
-            if (READTHEDOCS._is_string(key)) {
-                const s = key + "=" + encodeURI(obj[key]);
-                return s;
-            }
-        });
+/**
+ * Take an object as parameter and convert it to
+ * url params string.
+ *
+ * Eg. if ``obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }``, then it will return
+ * the string ``a=1&b=2&c=hello,world``
+ *
+ * @param {Object} obj the object to be converted
+ * @return {String|Array} object in url params form
+ */
+function convertObjToUrlParams(obj) {
+    let params = Object.keys(obj).map(function(key) {
+        if (_is_string(key)) {
+            const s = key + "=" + encodeURI(obj[key]);
+            return s;
+        }
+    });
 
-        // removing empty strings from the 'params' array
-        let final_params = [];
-        for (let i = 0; i < params.length; ++i) {
-            if (READTHEDOCS._is_string(params[i])) {
-                final_params.push(params[i]);
-            }
+    // removing empty strings from the 'params' array
+    let final_params = [];
+    for (let i = 0; i < params.length; ++i) {
+        if (_is_string(params[i])) {
+            final_params.push(params[i]);
         }
-        if (final_params.length === 1) {
-            return final_params[0];
-        } else {
-            let final_url_params = final_params.join("&");
-            return final_url_params;
-        }
-    };
+    }
+    if (final_params.length === 1) {
+        return final_params[0];
+    } else {
+        let final_url_params = final_params.join("&");
+        return final_url_params;
+    }
 }
 
 if (!READTHEDOCS.hasOwnProperty("updateUrl")) {
@@ -102,14 +98,13 @@ if (!READTHEDOCS.hasOwnProperty("updateUrl")) {
         let hash = window.location.hash;
 
         // SEARCH_QUERY should not be an empty string
-        if (READTHEDOCS._is_string(SEARCH_QUERY)) {
+        if (_is_string(SEARCH_QUERY)) {
             url_params.rtd_search = SEARCH_QUERY;
         } else {
             delete url_params.rtd_search;
         }
 
-        let window_location_search =
-            READTHEDOCS.convertObjToUrlParams(url_params) + hash;
+        let window_location_search = convertObjToUrlParams(url_params) + hash;
 
         // this happens during the tests,
         // when window.location.origin is "null" in Firefox
@@ -125,53 +120,47 @@ if (!READTHEDOCS.hasOwnProperty("updateUrl")) {
     };
 }
 
-if (!READTHEDOCS.hasOwnProperty("createDomNode")) {
-    /**
-     * Create and return DOM nodes
-     * with passed attributes.
-     *
-     * @param {String} nodeName name of the node
-     * @param {Object} attributes obj of attributes to be assigned to the node
-     * @return {Object} dom node with attributes
-     */
-    READTHEDOCS.createDomNode = function(nodeName, attributes) {
-        let node = document.createElement(nodeName);
-        for (let attr in attributes) {
-            node.setAttribute(attr, attributes[attr]);
-        }
-        return node;
-    };
+/**
+ * Create and return DOM nodes
+ * with passed attributes.
+ *
+ * @param {String} nodeName name of the node
+ * @param {Object} attributes obj of attributes to be assigned to the node
+ * @return {Object} dom node with attributes
+ */
+function createDomNode(nodeName, attributes) {
+    let node = document.createElement(nodeName);
+    for (let attr in attributes) {
+        node.setAttribute(attr, attributes[attr]);
+    }
+    return node;
 }
 
-if (!READTHEDOCS.hasOwnProperty("_is_string")) {
-    /**
-     * Checks if data type is "string" or not
-     *
-     * @param {*} data data whose data-type is to be checked
-     * @return {Boolean} 'true' if type is "string" and length is > 0
-     */
-    READTHEDOCS._is_string = function(data) {
-        if (typeof data === "string" && data.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    };
+/**
+ * Checks if data type is "string" or not
+ *
+ * @param {*} data data whose data-type is to be checked
+ * @return {Boolean} 'true' if type is "string" and length is > 0
+ */
+function _is_string(data) {
+    if (typeof data === "string" && data.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
-if (!READTHEDOCS.hasOwnProperty("_is_array")) {
-    /**
-     * Checks if data type is a non-empty array
-     * @param {*} data data whose type is to be checked
-     * @return {Boolean} returns true if data is non-empty array, else returns false
-     */
-    READTHEDOCS._is_array = function(data) {
-        if (Array.isArray(data) && data.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    };
+/**
+ * Checks if data type is a non-empty array
+ * @param {*} data data whose type is to be checked
+ * @return {Boolean} returns true if data is non-empty array, else returns false
+ */
+function _is_array(data) {
+    if (Array.isArray(data) && data.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 if (!READTHEDOCS.hasOwnProperty("get_section_html")) {
@@ -252,7 +241,7 @@ if (!READTHEDOCS.hasOwnProperty("getHighlightListData")) {
      * @return {Array|Boolean} if key is present, it will return its value. Otherwise, return false
      */
     READTHEDOCS.getHighlightListData = function(data, key) {
-        if (READTHEDOCS._is_array(data[key])) {
+        if (_is_array(data[key])) {
             return data[key];
         } else {
             return false;
@@ -340,7 +329,7 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
      * @return {Object} a <div> node with the results of a single page
      */
     READTHEDOCS.generateSingleResult = function(resultData, projectName) {
-        let content = READTHEDOCS.createDomNode("div");
+        let content = createDomNode("div");
 
         let page_link_template =
             '<a href="<%= page_link %>"> \
@@ -418,12 +407,12 @@ if (!READTHEDOCS.hasOwnProperty("generateSuggestionsList")) {
      * @return {Object} a <div> node with class "search__result__box" with results
      */
     READTHEDOCS.generateSuggestionsList = function(data, projectName) {
-        let search_result_box = READTHEDOCS.createDomNode("div", {
+        let search_result_box = createDomNode("div", {
             class: "search__result__box"
         });
 
         for (let i = 0; i < TOTAL_PAGE_RESULTS; ++i) {
-            let search_result_single = READTHEDOCS.createDomNode("div", {
+            let search_result_single = createDomNode("div", {
                 class: "search__result__single"
             });
 
@@ -523,7 +512,7 @@ if (!READTHEDOCS.hasOwnProperty("getErrorDiv")) {
      * @param {String} err_msg error message to be displayed
      */
     READTHEDOCS.getErrorDiv = function(err_msg) {
-        let err_div = READTHEDOCS.createDomNode("div", {
+        let err_div = createDomNode("div", {
             class: "search__result__box",
             style: "color: black; min-width: 300px; font-weight: 700"
         });
@@ -549,7 +538,7 @@ if (!READTHEDOCS.hasOwnProperty("fetchAndGenerateResults")) {
         // and show the "Searching ...." text to
         // the user.
         READTHEDOCS.removeResults();
-        let search_loding = READTHEDOCS.createDomNode("div", {
+        let search_loding = createDomNode("div", {
             class: "search__result__box"
         });
         search_loding.innerHTML = "<strong>Searching ....</strong>";
@@ -604,7 +593,7 @@ if (!READTHEDOCS.hasOwnProperty("fetchAndGenerateResults")) {
                 }
             });
         };
-        ajaxFunc = READTHEDOCS.debounce(ajaxFunc, 500);
+        ajaxFunc = debounce(ajaxFunc, 500);
         return ajaxFunc;
     };
 }
@@ -665,7 +654,7 @@ if (!READTHEDOCS.hasOwnProperty("showSearchModal")) {
             if (search_outer_input !== null) {
                 if (
                     typeof custom_query !== "undefined" &&
-                    READTHEDOCS._is_string(custom_query)
+                    _is_string(custom_query)
                 ) {
                     search_outer_input.value = custom_query;
                 } else {
@@ -752,7 +741,7 @@ window.addEventListener("DOMContentLoaded", evt => {
             const search_url =
                 api_host +
                 "/api/v2/docsearch/?" +
-                READTHEDOCS.convertObjToUrlParams(search_params);
+                convertObjToUrlParams(search_params);
 
             if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
                 if (current_request !== null) {
@@ -769,7 +758,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // the suggestions list is generated even if there
                 // is no query. To prevent that, this function
                 // is debounced here.
-                READTHEDOCS.debounce(READTHEDOCS.removeResults, 600)();
+                debounce(READTHEDOCS.removeResults, 600)();
             }
 
             // update URL
@@ -858,7 +847,7 @@ window.addEventListener("DOMContentLoaded", evt => {
         // then open the search modal and show the results
         // for the value of "rtd_search"
         let url_params = $.getQueryParameters();
-        if (READTHEDOCS._is_array(url_params.rtd_search)) {
+        if (_is_array(url_params.rtd_search)) {
             let query = decodeURIComponent(url_params.rtd_search);
             READTHEDOCS.showSearchModal(query);
             search_outer_input.value = query;
