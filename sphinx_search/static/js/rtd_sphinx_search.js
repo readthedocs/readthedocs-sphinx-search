@@ -340,7 +340,7 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
      * @return {Object} a <div> node with the results of a single page
      */
     READTHEDOCS.generateSingleResult = function(resultData, projectName) {
-        let content = createDomNode("div");
+        let content = READTHEDOCS.createDomNode("div");
 
         let page_link_template =
             '<a href="<%= page_link %>"> \
@@ -393,12 +393,12 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
             let html_structure = "";
 
             if (type === "sections") {
-                html_structure = get_section_html(
+                html_structure = READTHEDOCS.get_section_html(
                     resultData.inner_hits[i],
                     page_link
                 );
             } else if (type === "domains") {
-                html_structure = get_domain_html(
+                html_structure = READTHEDOCS.get_domain_html(
                     resultData.inner_hits[i],
                     page_link
                 );
