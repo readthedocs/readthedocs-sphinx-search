@@ -95,6 +95,7 @@
     height: 30px;
     font-size: 19px;
     outline: none;
+    box-sizing: border-box;
 
     /* Other */
     background-color: #fcfcfc;
@@ -191,6 +192,7 @@
     width: 20%;
     font-size: 15px;
     margin-right: 10px;
+    word-break: break-all;
     overflow-x: hidden;
 }
 
@@ -267,6 +269,11 @@
 .rtd__search__credits a {
     color: black;
     text-decoration: underline;
+}
+
+.search__domain_role_name {
+    font-size: 80%;
+    letter-spacing: 1px;
 }
 
 @media (max-width: 670px) {

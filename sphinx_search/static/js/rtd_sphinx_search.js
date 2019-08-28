@@ -249,6 +249,9 @@ const get_domain_html = (domainData, page_link) => {
             <div class="outer_div_page_results" id="<%= domain_id %>"> \
                 <span class="search__result__subheading"> \
                     <%= domain_subheading %> \
+                    <div class="search__domain_role_name"> \
+                        <%= domain_role_name %> \
+                    </div> \
                 </span> \
                 <p class="search__result__content"><%= domain_content %></p> \
             </div> \
@@ -257,68 +260,37 @@ const get_domain_html = (domainData, page_link) => {
 
     let domain_link = `${page_link}#${domainData._source.anchor}`;
     let domain_role_name = domainData._source.role_name;
-    let domain_type_display = domainData._source.type_display;
-    let domain_doc_display = domainData._source.doc_display;
-    let domain_display_name = domainData._source.display_name;
     let domain_name = domainData._source.name;
+    let domain_docstrings =
+        domainData._source.docstrings.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
 
     // take values from highlighted fields (if present)
     if (domainData.highlight !== undefined && domainData.highlight !== null) {
         let highlight = domainData.highlight;
 
         let name = getHighlightListData(highlight, "domains.name");
-        let display_name = getHighlightListData(
-            highlight,
-            "domains.display_name"
-        );
-        let type_display = getHighlightListData(
-            highlight,
-            "domains.type_display"
-        );
+        let docstrings = getHighlightListData(highlight, "domains.docstrings");
 
         if (name) {
             domain_name = name[0];
         }
 
-        if (display_name) {
-            domain_display_name = display_name[0];
-        }
-
-        if (type_display) {
-            domain_type_display = type_display[0];
+        if (docstrings) {
+            domain_docstrings = docstrings[0];
         }
     }
 
-    // preparing domain_content
-    let domain_content = "";
-    if (_is_string(domain_type_display)) {
-        // domain_content = type_display --
-        domain_content += domain_type_display + " -- ";
-    }
-    if (_is_string(domain_name)) {
-        // domain_content = type_display -- name
-        domain_content += domain_name + " ";
-    }
-    if (_is_string(domain_doc_display)) {
-        // domain_content = type_display -- name -- in doc_display
-        domain_content += "-- in " + domain_doc_display;
-    }
-
-    let domain_subheading = "";
-    if (_is_string(domain_display_name)) {
-        // domain_subheading = (role_name) display_name
-        domain_subheading = "(" + domain_role_name + ") " + domain_display_name;
-    } else {
-        // domain_subheading = role_name
-        domain_subheading = domain_role_name;
-    }
-
+    let domain_subheading = domain_name;
+    let domain_content = domain_docstrings;
     let domain_id = "hit__" + COUNT;
+    domain_role_name = "[" + domain_role_name + "]";
+
     let domain_html = $u.template(domain_template, {
         domain_link: domain_link,
         domain_id: domain_id,
         domain_content: domain_content,
-        domain_subheading: domain_subheading
+        domain_subheading: domain_subheading,
+        domain_role_name: domain_role_name
     });
 
     return domain_html;
