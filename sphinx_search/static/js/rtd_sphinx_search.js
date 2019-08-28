@@ -274,6 +274,9 @@ if (!READTHEDOCS.hasOwnProperty("get_domain_html")) {
             <div class="outer_div_page_results" id="<%= domain_id %>"> \
                 <span class="search__result__subheading"> \
                     <%= domain_subheading %> \
+                    <div class="search__domain_role_name"> \
+                        <%= domain_role_name %> \
+                    </div> \
                 </span> \
                 <p class="search__result__content"><%= domain_content %></p> \
             </div> \
@@ -282,10 +285,10 @@ if (!READTHEDOCS.hasOwnProperty("get_domain_html")) {
 
         let domain_link = `${page_link}#${domainData._source.anchor}`;
         let domain_role_name = domainData._source.role_name;
-        let domain_type_display = domainData._source.type_display;
-        let domain_doc_display = domainData._source.doc_display;
-        let domain_display_name = domainData._source.display_name;
         let domain_name = domainData._source.name;
+        let domain_docstrings =
+            domainData._source.docstrings.substr(0, MAX_SUBSTRING_LIMIT) +
+            " ...";
 
         // take values from highlighted fields (if present)
         if (
@@ -298,59 +301,31 @@ if (!READTHEDOCS.hasOwnProperty("get_domain_html")) {
                 highlight,
                 "domains.name"
             );
-            let display_name = READTHEDOCS.getHighlightListData(
+            let docstrings = READTHEDOCS.getHighlightListData(
                 highlight,
-                "domains.display_name"
-            );
-            let type_display = READTHEDOCS.getHighlightListData(
-                highlight,
-                "domains.type_display"
+                "domains.docstrings"
             );
 
             if (name) {
                 domain_name = name[0];
             }
 
-            if (display_name) {
-                domain_display_name = display_name[0];
-            }
-
-            if (type_display) {
-                domain_type_display = type_display[0];
+            if (docstrings) {
+                domain_docstrings = docstrings[0];
             }
         }
 
-        // preparing domain_content
-        let domain_content = "";
-        if (READTHEDOCS._is_string(domain_type_display)) {
-            // domain_content = type_display --
-            domain_content += domain_type_display + " -- ";
-        }
-        if (READTHEDOCS._is_string(domain_name)) {
-            // domain_content = type_display -- name
-            domain_content += domain_name + " ";
-        }
-        if (READTHEDOCS._is_string(domain_doc_display)) {
-            // domain_content = type_display -- name -- in doc_display
-            domain_content += "-- in " + domain_doc_display;
-        }
-
-        let domain_subheading = "";
-        if (READTHEDOCS._is_string(domain_display_name)) {
-            // domain_subheading = (role_name) display_name
-            domain_subheading =
-                "(" + domain_role_name + ") " + domain_display_name;
-        } else {
-            // domain_subheading = role_name
-            domain_subheading = domain_role_name;
-        }
-
+        let domain_subheading = domain_name;
+        let domain_content = domain_docstrings;
         let domain_id = "hit__" + COUNT;
+        domain_role_name = "[" + domain_role_name + "]";
+
         let domain_html = $u.template(domain_template, {
             domain_link: domain_link,
             domain_id: domain_id,
             domain_content: domain_content,
-            domain_subheading: domain_subheading
+            domain_subheading: domain_subheading,
+            domain_role_name: domain_role_name
         });
 
         return domain_html;
@@ -365,7 +340,7 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
      * @return {Object} a <div> node with the results of a single page
      */
     READTHEDOCS.generateSingleResult = function(resultData, projectName) {
-        let content = READTHEDOCS.createDomNode("div");
+        let content = createDomNode("div");
 
         let page_link_template =
             '<a href="<%= page_link %>"> \
@@ -374,12 +349,7 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
                 </h2> \
             </a>';
 
-        let page_link = `${resultData.link}${
-            DOCUMENTATION_OPTIONS.FILE_SUFFIX
-        }`;
-        let page_link_highlight =
-            page_link + "?highlight=" + encodeURIComponent(SEARCH_QUERY);
-
+        let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
         let page_title = resultData.title;
 
         // if title is present in highlighted field, use that.
@@ -413,7 +383,7 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
         page_title += "<br>";
 
         content.innerHTML += $u.template(page_link_template, {
-            page_link: page_link_highlight,
+            page_link: page_link,
             page_title: page_title
         });
 
@@ -423,14 +393,14 @@ if (!READTHEDOCS.hasOwnProperty("generateSingleResult")) {
             let html_structure = "";
 
             if (type === "sections") {
-                html_structure = READTHEDOCS.get_section_html(
+                html_structure = get_section_html(
                     resultData.inner_hits[i],
-                    page_link_highlight
+                    page_link
                 );
             } else if (type === "domains") {
-                html_structure = READTHEDOCS.get_domain_html(
+                html_structure = get_domain_html(
                     resultData.inner_hits[i],
-                    page_link_highlight
+                    page_link
                 );
             }
             content.innerHTML += html_structure;
@@ -898,6 +868,8 @@ window.addEventListener("DOMContentLoaded", evt => {
             search_outer_input.dispatchEvent(event);
         }
     } else {
-        console.log("[INFO] Docs are not being served on Read the Docs, readthedocs-sphinx-search will not work.")
+        console.log(
+            "[INFO] Docs are not being served on Read the Docs, readthedocs-sphinx-search will not work."
+        );
     }
 });
