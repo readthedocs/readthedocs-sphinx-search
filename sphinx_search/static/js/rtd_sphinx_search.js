@@ -178,7 +178,7 @@ const get_section_html = (sectionData, page_link) => {
         </a> \
         <br class="br-for-hits">';
 
-    let section_subheading = sectionData._source.title;
+    let section_subheading = sectionData.source.title;
     let highlight = sectionData.highlight;
     if (getHighlightListData(highlight, "sections.title")) {
         section_subheading = getHighlightListData(
@@ -188,7 +188,7 @@ const get_section_html = (sectionData, page_link) => {
     }
 
     let section_content = [
-        sectionData._source.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
+        sectionData.source.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
     ];
 
     if (getHighlightListData(highlight, "sections.content")) {
@@ -206,7 +206,7 @@ const get_section_html = (sectionData, page_link) => {
         }
     }
 
-    let section_link = `${page_link}#${sectionData._source.id}`;
+    let section_link = `${page_link}#${sectionData.source.id}`;
 
     let section_id = "hit__" + COUNT;
 
@@ -258,11 +258,11 @@ const get_domain_html = (domainData, page_link) => {
         </a> \
         <br class="br-for-hits">';
 
-    let domain_link = `${page_link}#${domainData._source.anchor}`;
-    let domain_role_name = domainData._source.role_name;
-    let domain_name = domainData._source.name;
+    let domain_link = `${page_link}#${domainData.source.anchor}`;
+    let domain_role_name = domainData.source.role_name;
+    let domain_name = domainData.source.name;
     let domain_docstrings =
-        domainData._source.docstrings.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
+        domainData.source.docstrings.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
 
     // take values from highlighted fields (if present)
     if (domainData.highlight !== undefined && domainData.highlight !== null) {
