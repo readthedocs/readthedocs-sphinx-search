@@ -771,11 +771,11 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         // open search modal if "forward slash" button is pressed
         document.addEventListener("keydown", e => {
-
-            // prevent opening "Quick Find" in Firefox
-            e.preventDefault();
-
             if (e.keyCode === 191) {
+
+                // prevent opening "Quick Find" in Firefox
+                e.preventDefault();
+
                 if (SEARCH_MODAL_STATE !== SEARCH_MODAL_OPENED) {
                     showSearchModal();
                 }
