@@ -640,7 +640,7 @@ window.addEventListener("DOMContentLoaded", evt => {
         const project = READTHEDOCS_DATA.project;
         const version = READTHEDOCS_DATA.version;
         const language = READTHEDOCS_DATA.language || "en";
-        const api_host = READTHEDOCS_DATA.api_host;
+        const api_host = '/_';
 
         let initialHtml = generateAndReturnInitialHtml();
         document.body.innerHTML += initialHtml;

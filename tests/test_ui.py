@@ -23,7 +23,6 @@ READTHEDOCS_DATA = {
     'project': 'docs',
     'version': 'latest',
     'language': 'en',
-    'api_host': 'https://readthedocs.org/',
 }
 
 # This will be inserted in the html page
