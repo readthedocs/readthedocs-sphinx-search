@@ -312,7 +312,7 @@ const generateSingleResult = (resultData, projectName) => {
             </h2> \
         </a>';
 
-    let page_link = `${resultData.link}${DOCUMENTATION_OPTIONS.FILE_SUFFIX}`;
+    let page_link = resultData.link;
     let page_title = resultData.title;
 
     // if title is present in highlighted field, use that.
