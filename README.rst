@@ -32,7 +32,6 @@ Add this extension in your ``conf.py`` file as:
 
 .. |docs| image:: https://readthedocs.org/projects/readthedocs-sphinx-search/badge/?version=latest
     :alt: Documentation Status
-    :scale: 100%
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
 .. |license| image:: https://img.shields.io/github/license/readthedocs/readthedocs-sphinx-search.svg
