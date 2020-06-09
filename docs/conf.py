@@ -27,7 +27,7 @@ author = 'Vaibhav Gupta'
 # The short X.Y version
 # The full version, including alpha/beta/rc tags
 import sphinx_search
-version = release = sphinx_search.version
+version = release = sphinx_search.__version__
 
 
 # -- General configuration ---------------------------------------------------

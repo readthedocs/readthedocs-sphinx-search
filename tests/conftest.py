@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Pytest fixtures and other things."""
 
 import os

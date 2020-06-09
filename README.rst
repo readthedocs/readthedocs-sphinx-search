@@ -1,17 +1,20 @@
 readthedocs-sphinx-search
 =========================
 
-|docs| |license| |build-status|
+|pypi| |docs| |license| |build-status|
 
-Sphinx extension to enable `search as you type` feature for docs hosted by Read the Docs.
+`Sphinx`_ extension to enable *search as you type* within a full-page search UI for docs hosted on `Read the Docs`_.
+Try it at https://readthedocs-sphinx-search.readthedocs.io/en/latest/?rtd_search=testing.
 
+.. _Sphinx: https://www.sphinx-doc.org/
+.. _Read the Docs: https://readthedocs.org/
 
 Installation
 ------------
 
 ::
 
-   pip install git+https://github.com/readthedocs/readthedocs-sphinx-search@master
+   pip install readthedocs-sphinx-search
 
 
 Configuration
@@ -27,15 +30,8 @@ Add this extension in your ``conf.py`` file as:
    ]
 
 
-Documentation
--------------
-
-Check out the full documentation at https://readthedocs-sphinx-search.readthedocs.io/
-
-
 .. |docs| image:: https://readthedocs.org/projects/readthedocs-sphinx-search/badge/?version=latest
     :alt: Documentation Status
-    :scale: 100%
     :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
 .. |license| image:: https://img.shields.io/github/license/readthedocs/readthedocs-sphinx-search.svg
@@ -45,3 +41,8 @@ Check out the full documentation at https://readthedocs-sphinx-search.readthedoc
 .. |build-status| image:: https://travis-ci.org/readthedocs/readthedocs-sphinx-search.svg?branch=master
    :alt: Build Status
    :target: https://travis-ci.org/readthedocs/readthedocs-sphinx-search
+
+
+.. |pypi| image:: https://img.shields.io/pypi/v/readthedocs-sphinx-search.svg
+   :target: https://pypi.python.org/pypi/readthedocs-sphinx-search
+   :alt: PyPI Version
