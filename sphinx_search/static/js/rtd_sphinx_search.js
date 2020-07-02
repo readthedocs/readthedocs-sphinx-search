@@ -469,8 +469,7 @@ const removeResults = () => {
  */
 const getErrorDiv = err_msg => {
     let err_div = createDomNode("div", {
-        class: "search__result__box",
-        style: "color: black; min-width: 300px; font-weight: 700"
+        class: "search__result__box search__error__box"
     });
     err_div.innerHTML = err_msg;
     return err_div;
