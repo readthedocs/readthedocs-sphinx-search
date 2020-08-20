@@ -10,7 +10,6 @@ Following are the functions that are defined in `rtd_sphinx_search.js`_,
 .. js:autofunction:: _is_string
 .. js:autofunction:: _is_array
 .. js:autofunction:: get_section_html
-.. js:autofunction:: getHighlightListData
 .. js:autofunction:: get_domain_html
 .. js:autofunction:: generateSingleResult
 .. js:autofunction:: generateSuggestionsList

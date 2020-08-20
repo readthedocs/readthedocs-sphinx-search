@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Enable search-as-you-type feature.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp"
   },
   "repository": {
     "type": "git",

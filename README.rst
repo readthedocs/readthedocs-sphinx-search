@@ -12,7 +12,7 @@ Try it at https://readthedocs-sphinx-search.readthedocs.io/en/latest/?rtd_search
 Installation
 ------------
 
-::
+.. code-block:: bash
 
    pip install readthedocs-sphinx-search
 
