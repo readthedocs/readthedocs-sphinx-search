@@ -62,7 +62,7 @@ is given below for the reference:
                                     <span class="search__result__subheading">
                                         <em>Section</em> One
                                     </span>
-                                    
+
                                     <!-- Section Content -->
                                     <p class="search__result__content">
                                         ... This is sample text for <em>section</em> one.
@@ -79,7 +79,7 @@ is given below for the reference:
                                     <span class="search__result__subheading">
                                         <em>Section</em> Two
                                     </span>
-                                    
+
                                     <!-- Section Content -->
                                     <p class="search__result__content">
                                         ... This is sample text for <em>section</em> two.
@@ -108,7 +108,7 @@ is given below for the reference:
                             <!-- Other Results From Same Page -->
                         </div>
                     </div>
-                    
+
                     <!-- Other Results From Different Pages -->
                     <div class="search__result__single"><div>...</div></div>
                     <div class="search__result__single"><div>...</div></div>
