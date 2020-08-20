@@ -30,7 +30,7 @@ class InjectJsManager:
                 )
                 f.seek(0)
                 f.write(new_content)
-        
+
         return self._file
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -129,7 +129,7 @@ def get_ajax_overwrite_func(type_, **kwargs):
     elif type_ == 'dummy_results':
         with open(DUMMY_RESULTS, 'r') as f:
             dummy_res = f.read()
-        
+
         ajax_func = f'''
             <script>
                 $.ajax = function(params) {{

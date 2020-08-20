@@ -214,7 +214,7 @@ def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
     with InjectJsManager(path, SCRIPT_TAG) as _:
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
-        
+
         search_outer_wrapper = selenium.find_element_by_class_name(
             'search__outer__wrapper'
         )
@@ -611,7 +611,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
             search_outer_input.send_keys(Keys.BACK_SPACE)
 
             if i != query_len -1:
-                
+
                 current_query = query[:query_len - i - 1]
                 current_url = parse.unquote(selenium.current_url)
                 query_in_url = current_url[current_url.find('rtd_search'):]
