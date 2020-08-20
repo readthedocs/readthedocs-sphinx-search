@@ -178,24 +178,18 @@ const get_section_html = (sectionData, page_link) => {
         </a> \
         <br class="br-for-hits">';
 
-    let section_subheading = sectionData._source.title;
-    let highlight = sectionData.highlight;
-    if (getHighlightListData(highlight, "sections.title")) {
-        section_subheading = getHighlightListData(
-            highlight,
-            "sections.title"
-        )[0];
+    let section_subheading = sectionData.title;
+    let highlights = sectionData.highlights;
+    if (highlights.title.length) {
+        section_subheading = highlights.title[0];
     }
 
     let section_content = [
-        sectionData._source.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
+        sectionData.content.substring(0, MAX_SUBSTRING_LIMIT) + " ..."
     ];
 
-    if (getHighlightListData(highlight, "sections.content")) {
-        let highlight_content = getHighlightListData(
-            highlight,
-            "sections.content"
-        );
+    if (highlights.content.length) {
+        let highlight_content = highlights.content;
         section_content = [];
         for (
             let j = 0;
@@ -206,7 +200,7 @@ const get_section_html = (sectionData, page_link) => {
         }
     }
 
-    let section_link = `${page_link}#${sectionData._source.id}`;
+    let section_link = `${page_link}#${sectionData.id}`;
 
     let section_id = "hit__" + COUNT;
 
@@ -218,22 +212,6 @@ const get_section_html = (sectionData, page_link) => {
     });
 
     return section_html;
-};
-
-/**
- * Returns value of the corresponding key (if present),
- * else returns false.
- *
- * @param {Object} data object containing the data used for highlighting
- * @param {String} key key whose values is to be returned
- * @return {Array|Boolean} if key is present, it will return its value. Otherwise, return false
- */
-const getHighlightListData = (data, key) => {
-    if (_is_array(data[key])) {
-        return data[key];
-    } else {
-        return false;
-    }
 };
 
 /**
@@ -258,30 +236,20 @@ const get_domain_html = (domainData, page_link) => {
         </a> \
         <br class="br-for-hits">';
 
-    let domain_link = `${page_link}#${domainData._source.anchor}`;
-    let domain_role_name = domainData._source.role_name;
-    let domain_name = domainData._source.name;
-    let domain_docstrings =
-        domainData._source.docstrings.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
+    let domain_link = `${page_link}#${domainData.id}`;
+    let domain_role_name = domainData.role;
+    let domain_name = domainData.name;
+    let domain_content =
+        domainData.content.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
 
-    // take values from highlighted fields (if present)
-    if (domainData.highlight !== undefined && domainData.highlight !== null) {
-        let highlight = domainData.highlight;
-
-        let name = getHighlightListData(highlight, "domains.name");
-        let docstrings = getHighlightListData(highlight, "domains.docstrings");
-
-        if (name) {
-            domain_name = name[0];
-        }
-
-        if (docstrings) {
-            domain_docstrings = docstrings[0];
-        }
+    let highlights = domainData.highlights;
+    if (highlights.name.length) {
+        domain_name = highlights.name[0];
+    }
+    if (highlights.content.length) {
+        domain_content = highlights.content[0];
     }
 
-    let domain_subheading = domain_name;
-    let domain_content = domain_docstrings;
     let domain_id = "hit__" + COUNT;
     domain_role_name = "[" + domain_role_name + "]";
 
@@ -289,7 +257,7 @@ const get_domain_html = (domainData, page_link) => {
         domain_link: domain_link,
         domain_id: domain_id,
         domain_content: domain_content,
-        domain_subheading: domain_subheading,
+        domain_subheading: domain_name,
         domain_role_name: domain_role_name
     });
 
@@ -312,17 +280,12 @@ const generateSingleResult = (resultData, projectName) => {
             </h2> \
         </a>';
 
-    let page_link = resultData.link;
+    let page_link = resultData.path;
     let page_title = resultData.title;
+    let highlights = resultData.highlights;
 
-    // if title is present in highlighted field, use that.
-    if (resultData.highlight !== undefined && resultData.highlight !== null) {
-        if (
-            resultData.highlight.title !== undefined &&
-            resultData.highlight.title !== null
-        ) {
-            page_title = resultData.highlight.title;
-        }
+    if (highlights.title.length) {
+        page_title = highlights.title[0];
     }
 
     // if result is not from the same project,
@@ -347,19 +310,19 @@ const generateSingleResult = (resultData, projectName) => {
         page_title: page_title
     });
 
-    for (let i = 0; i < resultData.inner_hits.length; ++i) {
-        const type = resultData.inner_hits[i].type;
+    for (let i = 0; i < resultData.blocks.length; ++i) {
+        let block = resultData.blocks[i];
         COUNT += 1;
         let html_structure = "";
 
-        if (type === "sections") {
+        if (block.type === "section") {
             html_structure = get_section_html(
-                resultData.inner_hits[i],
+                block,
                 page_link
             );
-        } else if (type === "domains") {
+        } else if (block.type === "domain") {
             html_structure = get_domain_html(
-                resultData.inner_hits[i],
+                block,
                 page_link
             );
         }
@@ -672,12 +635,12 @@ window.addEventListener("DOMContentLoaded", evt => {
                 q: SEARCH_QUERY,
                 project: project,
                 version: version,
-                language: language
+                language: language,
             };
 
             const search_url =
                 api_host +
-                "/api/v2/docsearch/?" +
+                "/api/v2/search/?" +
                 convertObjToUrlParams(search_params);
 
             if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {

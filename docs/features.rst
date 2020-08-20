@@ -42,9 +42,9 @@ Link To The Search UI
 ---------------------
 
 If you want to share your search results,
-you can do so by passing a URL param: ``rtd_search``.
-Eg. ``rtd_search=testing``.
-The search UI open when the page finished loading,
+you can do so by passing an URL param: ``rtd_search``,
+e.g. ``rtd_search=testing``.
+The search UI will open when the page finishes loading,
 and the query specified will be searched. Example::
 
     https://readthedocs-sphinx-search.readthedocs.io/en/latest?rtd_search=testing
@@ -53,7 +53,7 @@ Browser Support
 ---------------
 
 The JavaScript for this extension is written with new features and syntax,
-however, we also want to support older browsers upto IE11.
+however, we also want to support older browsers up to IE11.
 Therefore, we are using babel to transpile the new and shiny JavaScript code
 to support all browsers.
 
