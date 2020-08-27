@@ -4,8 +4,8 @@ Customization
 Custom search input
 -------------------
 
-This extension will attach some events to an ``input`` element within a ``search`` role.
-If you have a custom search bar, make sure it has the ``search`` role.
+This extension will attach events to an ``input`` element with a ``search`` role.
+If you have a custom search bar, make sure it has the ``search`` role:
 
 .. code-block:: html
 
