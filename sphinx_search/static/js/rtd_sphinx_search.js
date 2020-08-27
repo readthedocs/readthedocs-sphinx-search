@@ -472,6 +472,9 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_outer.appendChild(search_loding);
 
     let ajaxFunc = () => {
+        // Update URL just before fetching the results
+        updateUrl();
+
         $.ajax({
             url: search_url,
             crossDomain: true,
@@ -499,14 +502,14 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                         });
                     } else {
                         removeResults();
-                        let err_div = getErrorDiv("No Results Found");
+                        let err_div = getErrorDiv("No results found");
                         search_outer.appendChild(err_div);
                     }
                 }
             },
             error: (resp, status_code, error) => {
                 removeResults();
-                let err_div = getErrorDiv("Error Occurred. Please try again.");
+                let err_div = getErrorDiv("There was an error. Please try again.");
                 search_outer.appendChild(err_div);
             }
         });
@@ -661,11 +664,13 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // the suggestions list is generated even if there
                 // is no query. To prevent that, this function
                 // is debounced here.
-                debounce(removeResults, CLEAR_RESULTS_DELAY)();
+                let func = () => {
+                  removeResults();
+                  updateUrl();
+                };
+                debounce(func, CLEAR_RESULTS_DELAY)();
+                updateUrl();
             }
-
-            // update URL
-            updateUrl();
         });
 
         search_outer_input.addEventListener("keydown", e => {

@@ -46,8 +46,8 @@ def open_search_modal(driver):
 
     sphinx_search_input.click()
 
-    # sleep for 1 second so that the fadeIn animation gets completed
-    time.sleep(1)
+    # wait for the fadeIn animation to get completed
+    time.sleep(0.5)
 
     assert (
         search_outer_wrapper.is_displayed() is True
@@ -278,7 +278,7 @@ def test_no_results_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'No Results Found'
+                'No results found'
             )
         )
         search_result_box = selenium.find_element_by_class_name(
@@ -286,7 +286,7 @@ def test_no_results_msg(selenium, app, status, warning):
         )
 
         assert (
-            search_result_box.text == 'No Results Found'
+            search_result_box.text == 'No results found'
         ), 'user should be notified that there are no results'
 
         assert (
@@ -315,7 +315,7 @@ def test_error_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'Error Occurred. Please try again.'
+                'There was an error. Please try again.'
             )
         )
         search_result_box = selenium.find_element_by_class_name(
@@ -323,7 +323,7 @@ def test_error_msg(selenium, app, status, warning):
         )
 
         assert (
-            search_result_box.text == 'Error Occurred. Please try again.'
+            search_result_box.text == 'There was an error. Please try again.'
         ), 'user should be notified that there is an error'
 
         assert (
@@ -362,7 +362,7 @@ def test_searching_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'No Results Found'
+                'No results found'
             )
         )
 
@@ -375,7 +375,7 @@ def test_searching_msg(selenium, app, status, warning):
             len(search_result_box.find_elements_by_css_selector('*')) == 0
         ), 'search result box should not have any child elements because there are no results'
         assert (
-            search_result_box.text == 'No Results Found'
+            search_result_box.text == 'No results found'
         ), 'user should be notified that there are no results'
 
 
@@ -589,7 +589,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
     with InjectJsManager(path, injected_script) as _:
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
-        query = 'i am searching'
+        query = 'searching'
         query_len = len(query)
 
         assert (
@@ -602,6 +602,9 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
         search_outer_input.send_keys(query)
         query_param = f'rtd_search={query}'
 
+        # Wait till it updates the URL
+        time.sleep(0.5)
+
         assert (
             query_param in parse.unquote(selenium.current_url)
         ), 'query param must be present in the url'
@@ -609,6 +612,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
         # deleting query from input field
         for i in range(query_len):
             search_outer_input.send_keys(Keys.BACK_SPACE)
+            time.sleep(0.5)
 
             if i != query_len -1:
 
@@ -650,7 +654,7 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
             search_outer_wrapper.is_displayed() is True
         ), 'search modal should displayed when the page loads'
         assert (
-            search_result_box.text == 'Error Occurred. Please try again.'
+            search_result_box.text == 'There was an error. Please try again.'
         ), 'user should be notified that there is error while searching'
         assert (
             len(search_result_box.find_elements_by_css_selector('*')) == 0
