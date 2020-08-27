@@ -7,7 +7,7 @@
    installation
    features
    configuration
-   custom-design
+   customization
    development
    testing
    js-api-reference

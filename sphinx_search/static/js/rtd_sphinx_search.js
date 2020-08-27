@@ -401,9 +401,9 @@ const getInputField = () => {
     // in that case, use the other query to select
     // the input field
     try {
-        inputField = document.querySelector("div[role='search'] input");
+        inputField = document.querySelector("[role='search'] input");
         if (inputField === undefined || inputField === null) {
-            throw "'div[role='search'] input' not found";
+            throw "'[role='search'] input' not found";
         }
     } catch (err) {
         inputField = document.querySelector("input[name='q']");
