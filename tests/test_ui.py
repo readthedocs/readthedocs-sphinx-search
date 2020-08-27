@@ -278,7 +278,7 @@ def test_no_results_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'No Results Found'
+                'No results found'
             )
         )
         search_result_box = selenium.find_element_by_class_name(
@@ -286,7 +286,7 @@ def test_no_results_msg(selenium, app, status, warning):
         )
 
         assert (
-            search_result_box.text == 'No Results Found'
+            search_result_box.text == 'No results found'
         ), 'user should be notified that there are no results'
 
         assert (
@@ -315,7 +315,7 @@ def test_error_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'Error Occurred. Please try again.'
+                'There was an error. Please try again.'
             )
         )
         search_result_box = selenium.find_element_by_class_name(
@@ -323,7 +323,7 @@ def test_error_msg(selenium, app, status, warning):
         )
 
         assert (
-            search_result_box.text == 'Error Occurred. Please try again.'
+            search_result_box.text == 'There was an error. Please try again.'
         ), 'user should be notified that there is an error'
 
         assert (
@@ -362,7 +362,7 @@ def test_searching_msg(selenium, app, status, warning):
         WebDriverWait(selenium, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CLASS_NAME, 'search__result__box'),
-                'No Results Found'
+                'No results found'
             )
         )
 
@@ -375,7 +375,7 @@ def test_searching_msg(selenium, app, status, warning):
             len(search_result_box.find_elements_by_css_selector('*')) == 0
         ), 'search result box should not have any child elements because there are no results'
         assert (
-            search_result_box.text == 'No Results Found'
+            search_result_box.text == 'No results found'
         ), 'user should be notified that there are no results'
 
 
@@ -650,7 +650,7 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
             search_outer_wrapper.is_displayed() is True
         ), 'search modal should displayed when the page loads'
         assert (
-            search_result_box.text == 'Error Occurred. Please try again.'
+            search_result_box.text == 'There was an error. Please try again.'
         ), 'user should be notified that there is error while searching'
         assert (
             len(search_result_box.find_elements_by_css_selector('*')) == 0
