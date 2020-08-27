@@ -1,6 +1,9 @@
 const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
 const MAX_SUBSTRING_LIMIT = 100;
+const ANIMATION_TIME = 200;
+const FETCH_RESULTS_DELAY = 250;
+const CLEAR_RESULTS_DELAY = 300;
 
 // Possible states of search modal
 const SEARCH_MODAL_OPENED = "opened";
@@ -508,7 +511,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
             }
         });
     };
-    ajaxFunc = debounce(ajaxFunc, 500);
+    ajaxFunc = debounce(ajaxFunc, FETCH_RESULTS_DELAY);
     return ajaxFunc;
 };
 
@@ -557,7 +560,7 @@ const showSearchModal = custom_query => {
     let search_bar = getInputField();
     search_bar.blur();
 
-    $(".search__outer__wrapper").fadeIn(400, () => {
+    $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, () => {
         // sets the value of the input field to empty string and focus it.
         let search_outer_input = document.querySelector(
             ".search__outer__input"
@@ -595,7 +598,7 @@ const removeSearchModal = () => {
     // update url (remove 'rtd_search' param)
     updateUrl();
 
-    $(".search__outer__wrapper").fadeOut(400);
+    $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
 };
 
 window.addEventListener("DOMContentLoaded", evt => {
@@ -658,7 +661,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // the suggestions list is generated even if there
                 // is no query. To prevent that, this function
                 // is debounced here.
-                debounce(removeResults, 600)();
+                debounce(removeResults, CLEAR_RESULTS_DELAY)();
             }
 
             // update URL
