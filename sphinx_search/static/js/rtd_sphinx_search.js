@@ -7,8 +7,6 @@ const SEARCH_MODAL_OPENED = "opened";
 const SEARCH_MODAL_CLOSED = "closed";
 
 let SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
-let TOTAL_PAGE_RESULTS = 0;
-let SEARCH_QUERY = "";
 
 // this is used to store the total result counts,
 // which includes all the sections and domains of all the pages.
@@ -89,10 +87,10 @@ const updateUrl = () => {
     let path = window.location.pathname;
     let url_params = $.getQueryParameters();
     let hash = window.location.hash;
-
-    // SEARCH_QUERY should not be an empty string
-    if (_is_string(SEARCH_QUERY)) {
-        url_params.rtd_search = SEARCH_QUERY;
+    let search_query = getSearchTerm();
+    // search_query should not be an empty string
+    if (search_query.length > 0) {
+        url_params.rtd_search = search_query;
     } else {
         delete url_params.rtd_search;
     }
@@ -343,7 +341,8 @@ const generateSuggestionsList = (data, projectName) => {
         class: "search__result__box"
     });
 
-    for (let i = 0; i < TOTAL_PAGE_RESULTS; ++i) {
+    let max_results = Math.min(MAX_SUGGESTIONS, data.results.length);
+    for (let i = 0; i < max_results; ++i) {
         let search_result_single = createDomNode("div", {
             class: "search__result__single"
         });
@@ -413,6 +412,17 @@ const getInputField = () => {
     return inputField;
 };
 
+/*
+ * Returns the current search term from the modal.
+ */
+const getSearchTerm = () => {
+  let search_outer_input = document.querySelector(".search__outer__input");
+  if (search_outer_input !== null) {
+      return search_outer_input.value || "";
+  }
+  return "";
+}
+
 /**
  * Removes all results from the search modal.
  * It doesn't close the search box.
@@ -471,10 +481,6 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                     typeof resp.responseJSON !== "undefined"
                 ) {
                     if (resp.responseJSON.results.length > 0) {
-                        TOTAL_PAGE_RESULTS =
-                            MAX_SUGGESTIONS <= resp.responseJSON.results.length
-                                ? MAX_SUGGESTIONS
-                                : resp.responseJSON.results.length;
                         let search_result_box = generateSuggestionsList(
                             resp.responseJSON,
                             projectName
@@ -586,9 +592,6 @@ const removeSearchModal = () => {
         search_outer_input.blur();
     }
 
-    // reset SEARCH_QUERY
-    SEARCH_QUERY = "";
-
     // update url (remove 'rtd_search' param)
     updateUrl();
 
@@ -628,11 +631,11 @@ window.addEventListener("DOMContentLoaded", evt => {
         });
 
         search_outer_input.addEventListener("input", e => {
-            SEARCH_QUERY = e.target.value;
+            let search_query = getSearchTerm();
             COUNT = 0;
 
             let search_params = {
-                q: SEARCH_QUERY,
+                q: search_query,
                 project: project,
                 version: version,
                 language: language,
@@ -643,7 +646,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                 "/api/v2/search/?" +
                 convertObjToUrlParams(search_params);
 
-            if (typeof SEARCH_QUERY === "string" && SEARCH_QUERY.length > 0) {
+            if (search_query.length > 0) {
                 if (current_request !== null) {
                     // cancel previous ajax request.
                     current_request.cancel();
@@ -702,7 +705,7 @@ window.addEventListener("DOMContentLoaded", evt => {
                     const input_field = getInputField();
                     const form = input_field.parentElement;
 
-                    search_bar.value = SEARCH_QUERY || "";
+                    search_bar.value = getSearchTerm();
                     form.submit();
                 }
             }
