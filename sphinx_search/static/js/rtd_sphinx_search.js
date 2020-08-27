@@ -483,7 +483,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
             },
             complete: (resp, status_code) => {
                 if (
-                    status_code === "success" &&
+                    status_code === "success" ||
                     typeof resp.responseJSON !== "undefined"
                 ) {
                     if (resp.responseJSON.results.length > 0) {
@@ -664,7 +664,12 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // the suggestions list is generated even if there
                 // is no query. To prevent that, this function
                 // is debounced here.
-                debounce(removeResults, CLEAR_RESULTS_DELAY)();
+                let func = () => {
+                  removeResults();
+                  updateUrl();
+                };
+                debounce(func, CLEAR_RESULTS_DELAY)();
+                updateUrl();
             }
         });
 
