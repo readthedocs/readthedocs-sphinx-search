@@ -469,6 +469,9 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_outer.appendChild(search_loding);
 
     let ajaxFunc = () => {
+        // Update URL just before fetching the results
+        updateUrl();
+
         $.ajax({
             url: search_url,
             crossDomain: true,
@@ -477,7 +480,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
             },
             complete: (resp, status_code) => {
                 if (
-                    status_code === "success" ||
+                    status_code === "success" &&
                     typeof resp.responseJSON !== "undefined"
                 ) {
                     if (resp.responseJSON.results.length > 0) {
@@ -496,14 +499,14 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                         });
                     } else {
                         removeResults();
-                        let err_div = getErrorDiv("No Results Found");
+                        let err_div = getErrorDiv("No results found");
                         search_outer.appendChild(err_div);
                     }
                 }
             },
             error: (resp, status_code, error) => {
                 removeResults();
-                let err_div = getErrorDiv("Error Occurred. Please try again.");
+                let err_div = getErrorDiv("There was an error. Please try again.");
                 search_outer.appendChild(err_div);
             }
         });
@@ -660,9 +663,6 @@ window.addEventListener("DOMContentLoaded", evt => {
                 // is debounced here.
                 debounce(removeResults, 600)();
             }
-
-            // update URL
-            updateUrl();
         });
 
         search_outer_input.addEventListener("keydown", e => {
