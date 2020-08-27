@@ -46,8 +46,8 @@ def open_search_modal(driver):
 
     sphinx_search_input.click()
 
-    # sleep for 1 second so that the fadeIn animation gets completed
-    time.sleep(1)
+    # wait for the fadeIn animation to get completed
+    time.sleep(0.5)
 
     assert (
         search_outer_wrapper.is_displayed() is True
@@ -589,7 +589,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
     with InjectJsManager(path, injected_script) as _:
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
-        query = 'i am searching'
+        query = 'searching'
         query_len = len(query)
 
         assert (
@@ -602,6 +602,9 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
         search_outer_input.send_keys(query)
         query_param = f'rtd_search={query}'
 
+        # Wait till it updates the URL
+        time.sleep(0.5)
+
         assert (
             query_param in parse.unquote(selenium.current_url)
         ), 'query param must be present in the url'
@@ -609,6 +612,7 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
         # deleting query from input field
         for i in range(query_len):
             search_outer_input.send_keys(Keys.BACK_SPACE)
+            time.sleep(0.5)
 
             if i != query_len -1:
 
