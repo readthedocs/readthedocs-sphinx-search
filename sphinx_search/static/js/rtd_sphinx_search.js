@@ -82,6 +82,7 @@ const convertObjToUrlParams = obj => {
     }
 };
 
+
 /**
  * Adds/removes "rtd_search" url parameter to the url.
  */
@@ -112,6 +113,16 @@ const updateUrl = () => {
     // update url
     window.history.pushState({}, null, url);
 };
+
+
+/*
+ * Keeps in sync the original search bar with the input from the modal.
+ */
+const updateSearchBar = () => {
+  let search_bar = getInputField();
+  search_bar.value = getSearchTerm();
+};
+
 
 /**
  * Create and return DOM nodes
@@ -474,6 +485,7 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     let ajaxFunc = () => {
         // Update URL just before fetching the results
         updateUrl();
+        updateSearchBar();
 
         $.ajax({
             url: search_url,
@@ -550,7 +562,9 @@ const generateAndReturnInitialHtml = () => {
 /**
  * Opens the search modal.
  *
- * @param {String} custom_query if a custom query is provided, initialise the value of input field with it
+ * @param {String} custom_query if a custom query is provided,
+ * initialize the value of input field with it, or fallback to the
+ * value from the original search bar.
  */
 const showSearchModal = custom_query => {
     // removes previous results (if there are any).
@@ -574,8 +588,9 @@ const showSearchModal = custom_query => {
                 _is_string(custom_query)
             ) {
                 search_outer_input.value = custom_query;
+                search_bar.value = custom_query;
             } else {
-                search_outer_input.value = "";
+                search_outer_input.value = search_bar.value;
             }
             search_outer_input.focus();
         }
@@ -588,6 +603,8 @@ const showSearchModal = custom_query => {
 const removeSearchModal = () => {
     // removes previous results before closing
     removeResults();
+
+    updateSearchBar();
 
     SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
 
