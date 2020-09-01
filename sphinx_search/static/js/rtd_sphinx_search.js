@@ -5,12 +5,6 @@ const ANIMATION_TIME = 200;
 const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 
-// Possible states of search modal
-const SEARCH_MODAL_OPENED = "opened";
-const SEARCH_MODAL_CLOSED = "closed";
-
-let SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
-
 // this is used to store the total result counts,
 // which includes all the sections and domains of all the pages.
 let COUNT = 0;
@@ -121,6 +115,18 @@ const updateUrl = () => {
 const updateSearchBar = () => {
   let search_bar = getInputField();
   search_bar.value = getSearchTerm();
+};
+
+
+/*
+ * Returns true if the modal window is visible.
+ */
+const isModalVisible = () => {
+  let modal = document.querySelector(".search__outer__wrapper");
+  if (modal !== null && modal.style !== null && modal.style.display !== null) {
+    return style.display === 'block';
+  }
+  return false;
 };
 
 
@@ -570,8 +576,6 @@ const showSearchModal = custom_query => {
     // removes previous results (if there are any).
     removeResults();
 
-    SEARCH_MODAL_STATE = SEARCH_MODAL_OPENED;
-
     // removes the focus from the initial input field
     // which as already present in the docs.
     let search_bar = getInputField();
@@ -605,8 +609,6 @@ const removeSearchModal = () => {
     removeResults();
 
     updateSearchBar();
-
-    SEARCH_MODAL_STATE = SEARCH_MODAL_CLOSED;
 
     // sets the value of input field to empty string and remove the focus.
     let search_outer_input = document.querySelector(".search__outer__input");
@@ -761,8 +763,7 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         // open search modal if "forward slash" button is pressed
         document.addEventListener("keydown", e => {
-            if (e.keyCode === 191 && SEARCH_MODAL_STATE !== SEARCH_MODAL_OPENED) {
-
+            if (e.keyCode === 191 && !isModalVisible()) {
                 // prevent opening "Quick Find" in Firefox
                 e.preventDefault();
                 showSearchModal();
