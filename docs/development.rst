@@ -32,12 +32,16 @@ Make sure you have the latest version of these packages:
 
    python -m pip install --upgrade setuptools wheel twine
 
-Update the version in ``sphinx_search/__init__.py``,
-and run ``make release``, this will:
+- Update the version in ``sphinx_search/__init__.py`` and ``package.json``.
+- Run ``npm run build`` and ``npm run changelog``.
+- Open a pull request with the changes.
+
+After the pull request is merged, run ``make release``, this will:
 
 - Checkout and update your master branch.
 - Generate the distribution archives in ``dist/``.
 - Upload the archives from ``dist/`` to PyPI.
-- Create a tag from ``__version__`` and push it to GitHub.
+
+Now you can tag the release with ``make tag``.
 
 .. note:: Make sure you don't have any uncommitted changes before releasing.

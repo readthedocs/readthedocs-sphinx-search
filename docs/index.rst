@@ -12,3 +12,4 @@
    testing
    js-api-reference
    get-involved
+   changelog
