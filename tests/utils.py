@@ -12,9 +12,9 @@ class InjectJsManager:
     """
     Context manager for injected script tag.
 
-    This will insert ``html_tag`` after the script tag which inserts
-    jquery.js to the file which is passed when entered.
-    And it will remove that line when exiting from it.
+    This will insert ``html_tag`` at the bottom of the <head> tag
+    in the file which is passed when entered.
+    And it will restore its original content when exiting.
     """
     def __init__(self, file, html_tag):
         self._file = file
@@ -25,8 +25,9 @@ class InjectJsManager:
             with open(self._file, 'r+') as f:
                 self.old_content = f.read()
                 new_content = self.old_content.replace(
-                    '<script type="text/javascript" src="_static/jquery.js"></script>',
-                    '<script type="text/javascript" src="_static/jquery.js"></script>' + self._script
+                    '</head>',
+                    self._script + '</head>',
+                    1,
                 )
                 f.seek(0)
                 f.write(new_content)
