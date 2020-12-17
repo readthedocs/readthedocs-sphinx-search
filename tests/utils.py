@@ -44,8 +44,10 @@ def set_viewport_size(driver, width, height):
     """Sets the viewport size to the given width and height."""
     window_size = driver.execute_script(
         """
-        return [window.outerWidth - window.innerWidth + arguments[0],
-            window.outerHeight - window.innerHeight + arguments[1]];
+        return [
+            window.outerWidth - window.innerWidth + arguments[0],
+            window.outerHeight - window.innerHeight + arguments[1]
+        ];
         """,
         width,
         height
