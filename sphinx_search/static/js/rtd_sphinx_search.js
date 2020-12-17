@@ -124,7 +124,7 @@ const updateSearchBar = () => {
 const isModalVisible = () => {
   let modal = document.querySelector(".search__outer__wrapper");
   if (modal !== null && modal.style !== null && modal.style.display !== null) {
-    return style.display === 'block';
+    return modal.style.display === 'block';
   }
   return false;
 };
