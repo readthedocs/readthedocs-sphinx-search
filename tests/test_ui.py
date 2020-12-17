@@ -556,24 +556,24 @@ def test_position_search_modal(selenium, app, status, warning):
             (1920, 1080),
         ]
 
-        for window_size in window_sizes:
-            set_viewport_size(selenium, *window_size)
+        for width, height in window_sizes:
+            set_viewport_size(driver=selenium, width=width, height=height)
             modal_location = search_outer.location
             modal_size = search_outer.size
 
             # checking for horizontal position
-            calculated_x = (window_size[0] - modal_size['width'])/2
+            calculated_x = (width - modal_size['width']) / 2
             actual_x = modal_location['x']
             assert (
                 abs(actual_x - calculated_x) < 10
-            ), f'difference between calculated and actual x coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+            ), f'difference between calculated and actual x coordinate should not be greater than 10 pixels for {width}x{height}.'
 
             # checking for vertical position
-            calculated_y = (window_size[1] - modal_size['height'])/2
+            calculated_y = (height - modal_size['height']) / 2
             actual_y = modal_location['y']
             assert (
                 abs(actual_y - calculated_y) < 10
-            ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+            ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {width}x{height}.'
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
