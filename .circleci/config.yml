@@ -1,0 +1,59 @@
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.1.1
+
+commands:
+  run-tox:
+    description: "Run tox"
+    parameters:
+      version:
+        type: string
+      sphinx-version:
+        type: string
+        default: "1,2,3,latest"
+    steps:
+      - browser-tools/install-browser-tools
+      - checkout
+      - run: pip install --user tox
+      - run:
+          name: Test with Chrome driver
+          command: tox -e "<<parameters.version>>-sphinx{<<parameters.sphinx-version>>}" -- --driver Chrome
+      - run:
+          name: Test with Firefox driver
+          command: tox -e "<<parameters.version>>-sphinx{<<parameters.sphinx-version>>}" -- --driver Firefox
+
+jobs:
+  py36:
+    docker:
+      - image: 'cimg/python:3.6-browsers'
+    steps:
+      - run-tox:
+          version: py36
+  py37:
+    docker:
+      - image: 'cimg/python:3.7-browsers'
+    steps:
+      - run-tox:
+          version: py37
+  py38:
+    docker:
+      - image: 'cimg/python:3.8-browsers'
+    steps:
+      - run-tox:
+          version: py38
+  py39:
+    docker:
+      - image: 'cimg/python:3.9-browsers'
+    steps:
+      - run-tox:
+          version: py39
+
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - py39
+      - py38
+      - py37
+      - py36

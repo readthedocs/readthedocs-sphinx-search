@@ -1,21 +1,21 @@
 """UI tests."""
 
-import os
 import json
+import os
 import time
 from urllib import parse
 
-import pytest
 import sphinx
+
+import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-from tests.utils import InjectJsManager, set_viewport_size, get_ajax_overwrite_func
 from tests import TEST_DOCS_SRC
-
+from tests.utils import (InjectJsManager, get_ajax_overwrite_func,
+                         set_viewport_size)
 
 READTHEDOCS_DATA = {
     'project': 'docs',
@@ -556,24 +556,28 @@ def test_position_search_modal(selenium, app, status, warning):
             (1920, 1080),
         ]
 
-        for window_size in window_sizes:
-            set_viewport_size(selenium, *window_size)
+        for width, height in window_sizes:
+            set_viewport_size(driver=selenium, width=width, height=height)
             modal_location = search_outer.location
             modal_size = search_outer.size
 
+            inner_width, inner_height = selenium.execute_script(
+                "return [window.innerWidth, window.innerHeight];"
+            )
+
             # checking for horizontal position
-            calculated_x = (window_size[0] - modal_size['width'])/2
-            actual_x = modal_location['x']
+            right = inner_width - (modal_size['width'] + modal_location['x'])
+            left =  inner_width - (modal_size['width'] + right)
             assert (
-                abs(actual_x - calculated_x) < 10
-            ), f'difference between calculated and actual x coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+                right == pytest.approx(left, 1)
+            ), f'Vertical margins should be the same size for {width}x{height} ({left} / {right}).'
 
             # checking for vertical position
-            calculated_y = (window_size[1] - modal_size['height'])/2
-            actual_y = modal_location['y']
+            bottom = inner_height - (modal_size['height'] + modal_location['y'])
+            top = inner_height - (modal_size['height'] + bottom)
             assert (
-                abs(actual_y - calculated_y) < 10
-            ), f'difference between calculated and actual y coordinate should not be greater than 10 pixels for {"x".join(map(str, window_size))}'
+                top == pytest.approx(bottom, 1)
+            ), f'Horizontal margins should be the same size for {width}x{height} ({top} / {bottom}).'
 
 
 @pytest.mark.sphinx(srcdir=TEST_DOCS_SRC)
