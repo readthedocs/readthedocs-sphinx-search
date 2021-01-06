@@ -31,16 +31,16 @@ Add this extension in your ``conf.py`` file as:
 
 
 .. |docs| image:: https://readthedocs.org/projects/readthedocs-sphinx-search/badge/?version=latest
-    :alt: Documentation Status
-    :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+   :target: https://readthedocs-sphinx-search.readthedocs.io/en/latest/?badge=latest
 
 .. |license| image:: https://img.shields.io/github/license/readthedocs/readthedocs-sphinx-search.svg
    :target: LICENSE
    :alt: Repository license
 
-.. |build-status| image:: https://travis-ci.org/readthedocs/readthedocs-sphinx-search.svg?branch=master
-   :alt: Build Status
-   :target: https://travis-ci.org/readthedocs/readthedocs-sphinx-search
+.. |build-status| image:: https://circleci.com/gh/readthedocs/readthedocs-sphinx-search.svg?style=svg
+   :alt: Build status
+   :target: https://circleci.com/gh/readthedocs/readthedocs-sphinx-search
 
 
 .. |pypi| image:: https://img.shields.io/pypi/v/readthedocs-sphinx-search.svg
