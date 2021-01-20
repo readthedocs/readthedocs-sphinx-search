@@ -372,6 +372,15 @@ const generateSuggestionsList = (data, projectName) => {
         search_result_single.appendChild(content);
         search_result_box.appendChild(search_result_single);
     }
+
+    // Extra element
+    let search_result_single = createDomNode("div", {
+        class: "search__result__single"
+    });
+    COUNT += 1;
+    search_result_single.appendChild(getDefaultSearchLink(COUNT));
+    search_result_box.appendChild(search_result_single);
+
     return search_result_box;
 };
 
@@ -468,6 +477,22 @@ const getErrorDiv = err_msg => {
     return err_div;
 };
 
+
+const getDefaultSearchLink = (id) => {
+    let link = createDomNode("a", {href: "#"});
+    const content_template =
+        '<div class="outer_div_page_results" id="<%= id %>"> \
+            <p>Show all results.</p> \
+        </div>'
+    let content = $u.template(content_template, {id: 'hit__' + id});
+    link.innerHTML = content;
+    link.onclick = () => {
+        defaultSearch();
+        return false;
+    };
+    return link;
+};
+
 /**
  * Fetch the suggestions from search backend,
  * and appends the results to <div class="search__outer"> node,
@@ -519,15 +544,19 @@ const fetchAndGenerateResults = (search_url, projectName) => {
                             removeAllActive();
                         });
                     } else {
+                        let err_div = getErrorDiv("No results found.");
+                        COUNT = 1;
+                        err_div.appendChild(getDefaultSearchLink(1));
                         removeResults();
-                        let err_div = getErrorDiv("No results found");
                         search_outer.appendChild(err_div);
                     }
                 }
             },
             error: (resp, status_code, error) => {
-                removeResults();
                 let err_div = getErrorDiv("There was an error. Please try again.");
+                COUNT = 1;
+                err_div.appendChild(getDefaultSearchLink(1));
+                removeResults();
                 search_outer.appendChild(err_div);
             }
         });
@@ -558,7 +587,9 @@ const generateAndReturnInitialHtml = () => {
                 <span class="bar"></span> \
             </div> \
             <div class="rtd__search__credits"> \
-                Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
+                <small> \
+                    Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/">readthedocs-sphinx-search</a> \
+                <small> \
             <div> \
         </div>';
 
@@ -622,6 +653,19 @@ const removeSearchModal = () => {
 
     $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
 };
+
+
+/**
+ * Search using the default form.
+ */
+const defaultSearch = () => {
+    const input_field = getInputField();
+    const form = input_field.parentElement;
+
+    input_field.value = getSearchTerm();
+    form.submit();
+};
+
 
 window.addEventListener("DOMContentLoaded", evt => {
     // only add event listeners if READTHEDOCS_DATA global
@@ -721,19 +765,9 @@ window.addEventListener("DOMContentLoaded", evt => {
                 const current_item = document.querySelector(
                     ".outer_div_page_results.active"
                 );
-                // if an item is selected,
-                // then redirect to its link
+                // If an item is selected, click it!
                 if (current_item !== null) {
-                    const link = current_item.parentElement["href"];
-                    window.location.href = link;
-                } else {
-                    // submit search form if there
-                    // is no active item.
-                    const input_field = getInputField();
-                    const form = input_field.parentElement;
-
-                    search_bar.value = getSearchTerm();
-                    form.submit();
+                    current_item.parentElement.click();
                 }
             }
         });
