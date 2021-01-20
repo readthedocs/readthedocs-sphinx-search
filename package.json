@@ -21,14 +21,14 @@
     "@babel/preset-env": "^7.4.5",
     "browserslist": "^4.6.1",
     "del": "^4.1.1",
+    "github-changelog": "git+https://github.com/agjohnson/github-changelog.git",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0",
     "gulp-csso": "^3.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-uglify": "^3.0.2",
-    "run-sequence": "^2.2.1",
-    "github-changelog": "git+https://github.com/agjohnson/github-changelog.git"
+    "run-sequence": "^2.2.1"
   },
   "browserslist": [
     "last 10 versions",
