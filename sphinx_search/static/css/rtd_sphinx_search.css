@@ -156,7 +156,7 @@
 }
 
 .search__result__box .active {
-    background-color: rgb(245, 245, 245);
+    background-color: #eee;
 }
 
 .search__error__box {
@@ -238,7 +238,7 @@
 }
 
 .outer_div_page_results:hover {
-    background-color: rgb(245, 245, 245);
+    background-color: #eee;
 }
 
 .br-for-hits {
@@ -273,7 +273,7 @@
 }
 
 .rtd__search__credits a {
-    color: black;
+    color: #333;
     text-decoration: underline;
 }
 

@@ -647,7 +647,7 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.
-        let current_focus = 1;
+        let current_focus = 0;
 
         // this stores the current request.
         let current_request = null;
