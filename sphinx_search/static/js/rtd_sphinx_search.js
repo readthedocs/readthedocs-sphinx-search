@@ -558,7 +558,9 @@ const generateAndReturnInitialHtml = () => {
                 <span class="bar"></span> \
             </div> \
             <div class="rtd__search__credits"> \
-                Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
+                <small> \
+                    Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/">readthedocs-sphinx-search</a> \
+                <small> \
             <div> \
         </div>';
 
@@ -645,7 +647,7 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         // this denotes the search suggestion which is currently selected
         // via tha ArrowUp/ArrowDown keys.
-        let current_focus = 0;
+        let current_focus = 1;
 
         // this stores the current request.
         let current_request = null;
