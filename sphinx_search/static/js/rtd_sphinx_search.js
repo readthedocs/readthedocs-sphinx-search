@@ -5,10 +5,6 @@ const ANIMATION_TIME = 200;
 const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 
-// this is used to store the total result counts,
-// which includes all the sections and domains of all the pages.
-let COUNT = 0;
-
 /**
  * Debounce the function.
  * Usage::
@@ -179,8 +175,9 @@ const _is_array = arr => {
  *
  * @param {Object} sectionData object containing the result data
  * @param {String} page_link link of the main page. It is used to construct the section link
+ * @param {Number} id to be used in for this section
  */
-const get_section_html = (sectionData, page_link) => {
+const get_section_html = (sectionData, page_link, id) => {
     let section_template =
         '<a href="<%= section_link %>"> \
             <div class="outer_div_page_results" id="<%= section_id %>"> \
@@ -220,7 +217,7 @@ const get_section_html = (sectionData, page_link) => {
 
     let section_link = `${page_link}#${sectionData.id}`;
 
-    let section_id = "hit__" + COUNT;
+    let section_id = "hit__" + id;
 
     let section_html = $u.template(section_template, {
         section_link: section_link,
@@ -238,8 +235,9 @@ const get_section_html = (sectionData, page_link) => {
  *
  * @param {Object} domainData object containing the result data
  * @param {String} page_link link of the main page. It is used to construct the section link
+ * @param {Number} id to be used in for this section
  */
-const get_domain_html = (domainData, page_link) => {
+const get_domain_html = (domainData, page_link, id) => {
     let domain_template =
         '<a href="<%= domain_link %>"> \
             <div class="outer_div_page_results" id="<%= domain_id %>"> \
@@ -268,7 +266,7 @@ const get_domain_html = (domainData, page_link) => {
         domain_content = highlights.content[0];
     }
 
-    let domain_id = "hit__" + COUNT;
+    let domain_id = "hit__" + id;
     domain_role_name = "[" + domain_role_name + "]";
 
     let domain_html = $u.template(domain_template, {
@@ -286,9 +284,11 @@ const get_domain_html = (domainData, page_link) => {
  * Generate search results for a single page.
  *
  * @param {Object} resultData search results of a page
+ * @param {String} projectName
+ * @param {Number} id from the last section
  * @return {Object} a <div> node with the results of a single page
  */
-const generateSingleResult = (resultData, projectName) => {
+const generateSingleResult = (resultData, projectName, id) => {
     let content = createDomNode("div");
 
     let page_link_template =
@@ -330,18 +330,20 @@ const generateSingleResult = (resultData, projectName) => {
 
     for (let i = 0; i < resultData.blocks.length; ++i) {
         let block = resultData.blocks[i];
-        COUNT += 1;
         let html_structure = "";
 
+        id += 1;
         if (block.type === "section") {
             html_structure = get_section_html(
                 block,
-                page_link
+                page_link,
+                id,
             );
         } else if (block.type === "domain") {
             html_structure = get_domain_html(
                 block,
-                page_link
+                page_link,
+                id,
             );
         }
         content.innerHTML += html_structure;
@@ -362,15 +364,18 @@ const generateSuggestionsList = (data, projectName) => {
     });
 
     let max_results = Math.min(MAX_SUGGESTIONS, data.results.length);
+    let id = 0;
     for (let i = 0; i < max_results; ++i) {
         let search_result_single = createDomNode("div", {
             class: "search__result__single"
         });
 
-        let content = generateSingleResult(data.results[i], projectName);
+        let content = generateSingleResult(data.results[i], projectName, id);
 
         search_result_single.appendChild(content);
         search_result_box.appendChild(search_result_single);
+
+        id += data.results[i].blocks.length;
     }
     return search_result_box;
 };
@@ -379,7 +384,7 @@ const generateSuggestionsList = (data, projectName) => {
  * Removes .active class from all the suggestions.
  */
 const removeAllActive = () => {
-    const results = document.querySelectorAll(".outer_div_page_results");
+    const results = document.querySelectorAll(".outer_div_page_results.active");
     const results_arr = Object.keys(results).map(i => results[i]);
     for (let i = 1; i <= results_arr.length; ++i) {
         results_arr[i - 1].classList.remove("active");
@@ -388,13 +393,12 @@ const removeAllActive = () => {
 
 /**
  * Add .active class to the search suggestion
- * corresponding to serial number current_focus',
- * and scroll to that suggestion smoothly.
+ * corresponding to `id`, and scroll to that suggestion smoothly.
  *
- * @param {Number} current_focus serial no. of suggestions which will be active
+ * @param {Number} id of the suggestion to activate
  */
-const addActive = current_focus => {
-    const current_item = document.querySelector("#hit__" + current_focus);
+const addActive = (id) => {
+    const current_item = document.querySelector("#hit__" + id);
     // in case of no results or any error,
     // current_item will not be found in the DOM.
     if (current_item !== null) {
@@ -406,6 +410,51 @@ const addActive = current_focus => {
         });
     }
 };
+
+
+/*
+ * Select next/previous result.
+ * Go to the first result if already in the last result,
+ * or to the last result if already in the first result.
+ *
+ * @param {Boolean} forward.
+ */
+const selectNextResult = (forward) => {
+    const all = document.querySelectorAll(".outer_div_page_results");
+    const current = document.querySelector(".outer_div_page_results.active");
+
+    let next_id = 1;
+    let last_id = 1;
+
+    if (all.length > 0) {
+      let last = all[all.length - 1];
+      if (last.id !== null) {
+        let match = last.id.match(/\d+/);
+        if (match !== null) {
+          last_id = Number(match[0]);
+        }
+      }
+    }
+
+    if (current !== null && current.id !== null) {
+      let match = current.id.match(/\d+/);
+      if (match !== null) {
+        next_id = Number(match[0]);
+        next_id += forward? 1 : -1;
+      }
+    }
+
+    // Cycle to the first or last result.
+    if (next_id <= 0) {
+      next_id = last_id;
+    } else if (next_id > last_id) {
+      next_id = 1;
+    }
+
+    removeAllActive();
+    addActive(next_id);
+};
+
 
 /**
  * Returns initial search input field,
@@ -643,10 +692,6 @@ window.addEventListener("DOMContentLoaded", evt => {
         );
         let cross_icon = document.querySelector(".search__cross");
 
-        // this denotes the search suggestion which is currently selected
-        // via tha ArrowUp/ArrowDown keys.
-        let current_focus = 0;
-
         // this stores the current request.
         let current_request = null;
 
@@ -657,7 +702,6 @@ window.addEventListener("DOMContentLoaded", evt => {
 
         search_outer_input.addEventListener("input", e => {
             let search_query = getSearchTerm();
-            COUNT = 0;
 
             let search_params = {
                 q: search_query,
@@ -696,23 +740,13 @@ window.addEventListener("DOMContentLoaded", evt => {
             // if "ArrowDown is pressed"
             if (e.keyCode === 40) {
                 e.preventDefault();
-                current_focus += 1;
-                if (current_focus > COUNT) {
-                    current_focus = 1;
-                }
-                removeAllActive();
-                addActive(current_focus);
+                selectNextResult(true);
             }
 
             // if "ArrowUp" is pressed.
             if (e.keyCode === 38) {
                 e.preventDefault();
-                current_focus -= 1;
-                if (current_focus < 1) {
-                    current_focus = COUNT;
-                }
-                removeAllActive();
-                addActive(current_focus);
+                selectNextResult(false);
             }
 
             // if "Enter" key is pressed.
