@@ -1,6 +1,6 @@
 {
-  "name": "sphinx-es-suggest",
-  "version": "0.1.0rc3",
+  "name": "readthedocs-sphinx-search",
+  "version": "0.1.0",
   "description": "Enable search-as-you-type feature.",
   "scripts": {
     "build": "gulp",
@@ -8,27 +8,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dojutsu-user/sphinx-es-suggest.git"
+    "url": "git+https://github.com/readthedocs/readthedocs-sphinx-search.git"
   },
   "author": "Vaibhav Gupta",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dojutsu-user/sphinx-es-suggest/issues"
+    "url": "https://github.com/readthedocs/readthedocs-sphinx-search/issues"
   },
-  "homepage": "https://github.com/dojutsu-user/sphinx-es-suggest",
+  "homepage": "https://github.com/readthedocs/readthedocs-sphinx-search",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "browserslist": "^4.6.1",
     "del": "^4.1.1",
+    "github-changelog": "git+https://github.com/agjohnson/github-changelog.git",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0",
     "gulp-csso": "^3.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-uglify": "^3.0.2",
-    "run-sequence": "^2.2.1",
-    "github-changelog": "git+https://github.com/agjohnson/github-changelog.git"
+    "run-sequence": "^2.2.1"
   },
   "browserslist": [
     "last 10 versions",
