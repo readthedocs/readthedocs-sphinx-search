@@ -611,7 +611,9 @@ const generateAndReturnInitialHtml = () => {
             <div> \
         </div>';
 
-    return initialHtml;
+    let div = document.createElement("div");
+    div.innerHTML = initialHtml;
+    return div;
 };
 
 /**
@@ -672,7 +674,7 @@ const removeSearchModal = () => {
     $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
 };
 
-window.addEventListener("DOMContentLoaded", evt => {
+window.addEventListener("DOMContentLoaded", () => {
     // only add event listeners if READTHEDOCS_DATA global
     // variable is found.
     if (window.hasOwnProperty("READTHEDOCS_DATA")) {
@@ -682,7 +684,7 @@ window.addEventListener("DOMContentLoaded", evt => {
         const api_host = '/_';
 
         let initialHtml = generateAndReturnInitialHtml();
-        document.body.innerHTML += initialHtml;
+        document.body.appendChild(initialHtml);
 
         let search_outer_wrapper = document.querySelector(
             ".search__outer__wrapper"
