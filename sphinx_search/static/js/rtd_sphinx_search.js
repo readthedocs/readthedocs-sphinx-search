@@ -39,6 +39,22 @@ const debounce = (func, wait) => {
     return debounced;
 };
 
+
+/**
+ * Wrapper around underscorejs's template function.
+ * 
+ * This is to make it work with new and old versions.
+ */
+const render_template = (template, data) => {
+    // pre-1.7 syntax from underscorejs.
+    let result = $u.template(template, data);
+    if (typeof result === 'function') {
+        // New syntax.
+        result = $u.template(template)(data);
+    }
+    return result;
+};
+
 /**
  * Take an object as parameter and convert it to
  * url params string.
@@ -219,7 +235,7 @@ const get_section_html = (sectionData, page_link, id) => {
 
     let section_id = "hit__" + id;
 
-    let section_html = $u.template(section_template, {
+    let section_html = render_template(section_template, {
         section_link: section_link,
         section_id: section_id,
         section_subheading: section_subheading,
@@ -269,7 +285,7 @@ const get_domain_html = (domainData, page_link, id) => {
     let domain_id = "hit__" + id;
     domain_role_name = "[" + domain_role_name + "]";
 
-    let domain_html = $u.template(domain_template, {
+    let domain_html = render_template(domain_template, {
         domain_link: domain_link,
         domain_id: domain_id,
         domain_content: domain_content,
@@ -311,7 +327,7 @@ const generateSingleResult = (resultData, projectName, id) => {
     if (projectName !== resultData.project) {
         page_title +=
             " " +
-            $u.template(
+            render_template(
                 '<small class="rtd_ui_search_subtitle"> \
                     (from project <%= project %>) \
                 </small>',
@@ -323,7 +339,7 @@ const generateSingleResult = (resultData, projectName, id) => {
 
     page_title += "<br>";
 
-    content.innerHTML += $u.template(page_link_template, {
+    content.innerHTML += render_template(page_link_template, {
         page_link: page_link,
         page_title: page_title
     });
