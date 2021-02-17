@@ -221,5 +221,4 @@ typings/
 # Custom
 
 .vscode/
-package-lock.json
 _build/

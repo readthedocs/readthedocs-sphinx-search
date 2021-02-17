@@ -1,6 +1,6 @@
 {
-  "name": "sphinx-es-suggest",
-  "version": "0.1.0rc3",
+  "name": "readthedocs-sphinx-search",
+  "version": "0.1.0",
   "description": "Enable search-as-you-type feature.",
   "scripts": {
     "build": "gulp",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dojutsu-user/sphinx-es-suggest.git"
+    "url": "git+https://github.com/readthedocs/readthedocs-sphinx-search.git"
   },
   "author": "Vaibhav Gupta",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dojutsu-user/sphinx-es-suggest/issues"
+    "url": "https://github.com/readthedocs/readthedocs-sphinx-search/issues"
   },
-  "homepage": "https://github.com/dojutsu-user/sphinx-es-suggest",
+  "homepage": "https://github.com/readthedocs/readthedocs-sphinx-search",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
