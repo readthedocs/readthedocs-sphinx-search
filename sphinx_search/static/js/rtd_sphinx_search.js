@@ -610,25 +610,25 @@ const fetchAndGenerateResults = (search_url, projectName) => {
  * @return {String} initial html structure
  */
 const generateAndReturnInitialHtml = () => {
-    let initialHtml =
-        '<div class="search__outer__wrapper search__backdrop"> \
-            <div class="search__outer"> \
-                <div class="search__cross" title="Close"> \
-                    <!--?xml version="1.0" encoding="UTF-8"?--> \
-                    <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
-                        <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
-                    </svg> \
-                </div> \
-                <input class="search__outer__input" placeholder="Search ..."> \
-                <span class="bar"></span> \
+    let innerHTML =
+        '<div class="search__outer"> \
+            <div class="search__cross" title="Close"> \
+                <!--?xml version="1.0" encoding="UTF-8"?--> \
+                <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
+                    <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
+                </svg> \
             </div> \
-            <div class="rtd__search__credits"> \
-                Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
-            <div> \
+            <input class="search__outer__input" placeholder="Search ..."> \
+            <span class="bar"></span> \
+        </div> \
+        <div class="rtd__search__credits"> \
+            Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
         </div>';
 
-    let div = document.createElement("div");
-    div.innerHTML = initialHtml;
+    let div = createDomNode("div", {
+        class: "search__outer__wrapper search__backdrop",
+    });
+    div.innerHTML = innerHTML;
     return div;
 };
 
