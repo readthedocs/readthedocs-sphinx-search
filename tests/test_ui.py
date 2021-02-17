@@ -2,20 +2,24 @@
 
 import json
 import os
+import textwrap
 import time
 from urllib import parse
 
-import sphinx
-
 import pytest
+import sphinx
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
 from tests import TEST_DOCS_SRC
-from tests.utils import (InjectJsManager, get_ajax_overwrite_func,
-                         set_viewport_size)
+from tests.utils import (
+    InjectJsManager,
+    get_ajax_overwrite_func,
+    set_viewport_size
+)
 
 READTHEDOCS_DATA = {
     'project': 'docs',
@@ -83,34 +87,35 @@ def test_appending_of_initial_html(selenium, app, status, warning):
             len(search_outer_wrapper) == 1
         ), 'search outer wrapper is not injected correctly in the dom'
 
+        search_outer_wrapper = search_outer_wrapper[0]
+
         assert (
-            search_outer_wrapper[0].is_displayed() is False
+            search_outer_wrapper.is_displayed() is False
         ), 'search outer wrapper shoud not be displayed when the page loads'
 
-        initial_html = '''
-            <div class="search__outer__wrapper search__backdrop">
-                <div class="search__outer">
-                    <div class="search__cross" title="Close">
-                        <!--?xml version="1.0" encoding="UTF-8"?-->
-                        <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-                            <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
-                        </svg>
-                    </div>
-                    <input class="search__outer__input" placeholder="Search ...">
-                    <span class="bar"></span>
+        initial_html = textwrap.dedent(
+            """
+            <div class="search__outer">
+                <div class="search__cross" title="Close">
+                    <!--?xml version="1.0" encoding="UTF-8"?-->
+                    <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
+                    </svg>
                 </div>
-                <div class="rtd__search__credits">
-                    Search by <a href="https://readthedocs.org/">Read the Docs</a> &amp; <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
-                <div>
+                <input class="search__outer__input" placeholder="Search ...">
+                <span class="bar"></span>
             </div>
-        '''
-
-        initial_html = [ele.strip() for ele in initial_html.split('\n') if ele]
-
+            <div class="rtd__search__credits">
+                Search by <a href="https://readthedocs.org/">Read the Docs</a> &amp; <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+            </div>
+            """
+        )
+        search_outer_wrapper_html = search_outer_wrapper.get_attribute('innerHTML')
+        initial_html = [ele.strip() for ele in initial_html.strip().split('\n') if ele]
         for line in initial_html:
             if line:
                 assert (
-                    line in selenium.page_source
+                    line in search_outer_wrapper_html
                 ), f'{line} -- must be present in page source'
 
 
