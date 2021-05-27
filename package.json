@@ -19,7 +19,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
-    "browserslist": "^4.6.1",
+    "browserslist": "^4.16.5",
     "del": "^4.1.1",
     "github-changelog": "git+https://github.com/agjohnson/github-changelog.git",
     "gulp": "^3.9.1",
