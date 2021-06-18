@@ -15,7 +15,7 @@ setuptools.setup(
     description='Sphinx extension to enable search as you type for docs hosted on Read the Docs.',
     url='https://github.com/readthedocs/readthedocs-sphinx-search',
     license='MIT',
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=['tests']),
     long_description=long_description,
     long_description_content_type='text/x-rst',
     include_package_data=True,
