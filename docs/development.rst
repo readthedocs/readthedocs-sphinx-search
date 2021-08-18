@@ -23,6 +23,26 @@ Generate minified JS and CSS files via ``Gulp``:
 Run the test suite with ``tox``. More information about testing is
 available at :doc:`Testing page <testing>`.
 
+Local testing
+-------------
+
+You can test this extension from the docs folder:
+
+.. prompt:: bash
+
+   cd docs
+   pip install sphinx-autobuild
+   pip install -r requirement.txt
+   sphinx-autobuild . _build/html
+
+Go to http://127.0.0.1:8000 and start searching!
+
+.. note::
+
+   The extension works when is hosted on Read the Docs,
+   but to make it work locally a custom ``READTHEDOCS_DATA`` js variable is injected automatically
+   to send the search requests to https://readthedocs.org/api/v2/search/.
+
 Releasing
 ---------
 
