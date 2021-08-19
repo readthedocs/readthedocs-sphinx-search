@@ -643,12 +643,12 @@ const showSearchModal = custom_query => {
     // removes previous results (if there are any).
     removeResults();
 
-    // removes the focus from the initial input field
-    // which as already present in the docs.
-    let search_bar = getInputField();
-    search_bar.blur();
-
     $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, () => {
+        // removes the focus from the initial input field
+        // which as already present in the docs.
+        let search_bar = getInputField();
+        search_bar.blur();
+
         // sets the value of the input field to empty string and focus it.
         let search_outer_input = document.querySelector(
             ".search__outer__input"
