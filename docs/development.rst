@@ -32,7 +32,7 @@ You can test this extension from the docs folder:
 
    cd docs
    pip install sphinx-autobuild
-   pip install -r requirement.txt
+   pip install -r requirements.txt
    sphinx-autobuild . _build/html
 
 Go to http://127.0.0.1:8000 and start searching!
