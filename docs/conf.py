@@ -191,3 +191,7 @@ epub_exclude_files = ['search.html']
 def setup(app):
   app.add_object_type('confval', 'confval',
     'pair: %s; configuration value')
+
+  # Install necessary NPM dependencies
+  import subprocess
+  subprocess.check_output(["npm", "install", "-g", "jsdoc"])
