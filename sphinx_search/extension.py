@@ -1,5 +1,6 @@
 import os
 
+from sphinx_search import __version__
 from sphinx.errors import ExtensionError
 from sphinx.util.fileutil import copy_asset
 
@@ -45,3 +46,9 @@ def setup(app):
 
     app.connect('builder-inited', inject_static_files)
     app.connect('build-finished', copy_asset_files)
+
+    return {
+        'version': __version__,
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+    }
