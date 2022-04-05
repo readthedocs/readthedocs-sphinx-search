@@ -11,7 +11,7 @@ commands:
         type: string
       sphinx-version:
         type: string
-        default: "1,2,3,latest"
+        default: "1,2,3,4,latest"
     steps:
       - browser-tools/install-browser-tools
       - checkout
@@ -48,11 +48,19 @@ jobs:
     steps:
       - run-tox:
           version: py39
+  py310:
+    docker:
+      - image: 'cimg/python:3.10-browsers'
+    steps:
+      - run-tox:
+          version: py310
+          sphinx-version: 4,latest
 
 workflows:
   version: 2
   tests:
     jobs:
+      - py310
       - py39
       - py38
       - py37
