@@ -1,9 +1,9 @@
-readthedocs-sphinx-search
-=========================
+readthedocs-sphinx-search - Search as you type for Read the Docs
+================================================================
 
 |pypi| |docs| |license| |build-status|
 
-`Sphinx`_ extension to enable *search as you type* within a full-page search UI for docs hosted on `Read the Docs`_.
+``readthedocs-sphinx-search`` is a `Sphinx`_ extension to enable *search as you type* for docs hosted on `Read the Docs`_.
 Try it at https://readthedocs-sphinx-search.readthedocs.io/en/latest/?rtd_search=testing.
 
 .. _Sphinx: https://www.sphinx-doc.org/
