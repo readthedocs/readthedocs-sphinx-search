@@ -42,7 +42,7 @@ const debounce = (func, wait) => {
 
 /**
  * Wrapper around underscorejs's template function.
- * 
+ *
  * This is to make it work with new and old versions.
  */
 const render_template = (template, data) => {
@@ -788,6 +788,14 @@ window.addEventListener("DOMContentLoaded", () => {
                     form.submit();
                 }
             }
+
+            // close the search modal if the user pressed
+            // Escape button
+            if (e.keyCode === 27) {
+                // Avoid triggering Sphinx's 'hideSearchWords' shortcut.
+                e.stopPropagation();
+                removeSearchModal();
+            }
         });
 
         search_outer_wrapper.addEventListener("click", e => {
@@ -803,14 +811,6 @@ window.addEventListener("DOMContentLoaded", () => {
         // close the search modal if clicked on cross icon.
         cross_icon.addEventListener("click", e => {
             removeSearchModal();
-        });
-
-        // close the search modal if the user pressed
-        // Escape button
-        document.addEventListener("keydown", e => {
-            if (e.keyCode === 27) {
-                removeSearchModal();
-            }
         });
 
         // open search modal if "forward slash" button is pressed
