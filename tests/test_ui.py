@@ -1,13 +1,11 @@
 """UI tests."""
 
 import json
-import os
 import textwrap
 import time
 from urllib import parse
 
 import pytest
-import sphinx
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -37,10 +35,12 @@ SCRIPT_TAG = '<script>var READTHEDOCS_DATA = {};</script>'.format(
 
 def open_search_modal(driver):
     """Open search modal and checks if its open correctly."""
-    sphinx_search_input = driver.find_element_by_css_selector(
+    sphinx_search_input = driver.find_element(
+        By.CSS_SELECTOR,
         'div[role="search"] input'
     )
-    search_outer_wrapper = driver.find_element_by_class_name(
+    search_outer_wrapper = driver.find_element(
+        By.CLASS_NAME,
         'search__outer__wrapper'
     )
 
@@ -78,7 +78,8 @@ def test_appending_of_initial_html(selenium, app, status, warning):
     with InjectJsManager(path, SCRIPT_TAG) as _:
         selenium.get(f'file://{path}')
 
-        search_outer_wrapper = selenium.find_elements_by_class_name(
+        search_outer_wrapper = selenium.find_elements(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
 
@@ -139,7 +140,8 @@ def test_open_search_modal_when_forward_slash_button_is_pressed(selenium, app, s
     with InjectJsManager(path, SCRIPT_TAG) as _:
         selenium.get(f'file://{path}')
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
 
@@ -147,7 +149,7 @@ def test_open_search_modal_when_forward_slash_button_is_pressed(selenium, app, s
             search_outer_wrapper.is_displayed() == False
         ), 'search__outer__wrapper should not be displayed on page load'
 
-        body = selenium.find_element_by_css_selector('body')
+        body = selenium.find_element(By.TAG_NAME, 'body')
         body.send_keys('/')
 
         assert (
@@ -165,10 +167,12 @@ def test_focussing_of_input_field(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        sphinx_search_input = selenium.find_element_by_css_selector(
+        sphinx_search_input = selenium.find_element(
+            By.CSS_SELECTOR,
             'div[role="search"] input'
         )
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
 
@@ -191,10 +195,11 @@ def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warnin
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
-        search_outer = selenium.find_element_by_class_name('search__outer')
+        search_outer = selenium.find_element(By.CLASS_NAME, 'search__outer')
         actions = webdriver.common.action_chains.ActionChains(selenium)
         actions.move_to_element_with_offset(
             search_outer, -10, -10  # -ve offsets to move the mouse away from the search modal
@@ -220,7 +225,8 @@ def test_closing_the_modal_by_escape_button(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
 
@@ -245,11 +251,13 @@ def test_closing_modal_by_clicking_cross_icon(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
 
-        cross_icon = selenium.find_element_by_class_name(
+        cross_icon = selenium.find_element(
+            By.CLASS_NAME,
             'search__cross'
         )
         cross_icon.click()
@@ -276,7 +284,8 @@ def test_no_results_msg(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys('no results for this')
@@ -286,7 +295,8 @@ def test_no_results_msg(selenium, app, status, warning):
                 'No results found'
             )
         )
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
@@ -295,7 +305,7 @@ def test_no_results_msg(selenium, app, status, warning):
         ), 'user should be notified that there are no results'
 
         assert (
-            len(search_result_box.find_elements_by_css_selector('*')) == 0
+            len(search_result_box.find_elements(By.CSS_SELECTOR, '*')) == 0
         ), 'search result box should not have any child elements because there are no results'
 
 
@@ -313,7 +323,8 @@ def test_error_msg(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys('this will result in error')
@@ -323,7 +334,8 @@ def test_error_msg(selenium, app, status, warning):
                 'There was an error. Please try again.'
             )
         )
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
@@ -332,7 +344,7 @@ def test_error_msg(selenium, app, status, warning):
         ), 'user should be notified that there is an error'
 
         assert (
-            len(search_result_box.find_elements_by_css_selector('*')) == 0
+            len(search_result_box.find_elements(By.CSS_SELECTOR, '*')) == 0
         ), 'search result box should not have any child elements because there are no results'
 
 
@@ -350,13 +362,15 @@ def test_searching_msg(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys(
             'searching the results'
         )
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
@@ -372,12 +386,13 @@ def test_searching_msg(selenium, app, status, warning):
         )
 
         # fetching it again from the DOM to update its status
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
         assert (
-            len(search_result_box.find_elements_by_css_selector('*')) == 0
+            len(search_result_box.find_elements(By.CSS_SELECTOR, '*')) == 0
         ), 'search result box should not have any child elements because there are no results'
         assert (
             search_result_box.text == 'No results found'
@@ -398,11 +413,13 @@ def test_results_displayed_to_user(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys('sphinx')
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
         WebDriverWait(selenium, 10).until(
@@ -412,13 +429,15 @@ def test_results_displayed_to_user(selenium, app, status, warning):
         )
 
         # fetching search_result_box again to update its content
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
         assert (
             len(
-                search_result_box.find_elements_by_class_name(
+                search_result_box.find_elements(
+                    By.CLASS_NAME,
                     'search__result__single'
                 )
             )
@@ -427,7 +446,8 @@ def test_results_displayed_to_user(selenium, app, status, warning):
 
         assert (
             len(
-                search_result_box.find_elements_by_class_name(
+                search_result_box.find_elements(
+                    By.CLASS_NAME,
                     'outer_div_page_results'
                 )
             ) == 3
@@ -448,11 +468,13 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys('sphinx')
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
         WebDriverWait(selenium, 10).until(
@@ -462,31 +484,37 @@ def test_navigate_results_with_arrow_up_and_down(selenium, app, status, warning)
         )
 
         # fetching search_result_box again to update its content
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
-        results = selenium.find_elements_by_class_name(
+        results = selenium.find_elements(
+            By.CLASS_NAME,
             'outer_div_page_results'
         )
         search_outer_input.send_keys(Keys.DOWN)
 
-        assert results[0] == selenium.find_element_by_css_selector(
+        assert results[0] == selenium.find_element(
+            By.CSS_SELECTOR,
             '.outer_div_page_results.active'
         ), 'first result should be active'
 
         search_outer_input.send_keys(Keys.DOWN)
-        assert results[1] == selenium.find_element_by_css_selector(
+        assert results[1] == selenium.find_element(
+            By.CSS_SELECTOR,
             '.outer_div_page_results.active'
         ), 'second result should be active'
 
         search_outer_input.send_keys(Keys.UP)
         search_outer_input.send_keys(Keys.UP)
-        assert results[-1] == selenium.find_element_by_css_selector(
+        assert results[-1] == selenium.find_element(
+            By.CSS_SELECTOR,
             '.outer_div_page_results.active'
         ), 'last result should be active'
 
         search_outer_input.send_keys(Keys.DOWN)
-        assert results[0] == selenium.find_element_by_css_selector(
+        assert results[0] == selenium.find_element(
+            By.CSS_SELECTOR,
             '.outer_div_page_results.active'
         ), 'first result should be active'
 
@@ -511,7 +539,8 @@ def test_enter_button_on_input_field_when_no_result_active(selenium, app, status
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys('i am searching')
@@ -540,10 +569,12 @@ def test_position_search_modal(selenium, app, status, warning):
         selenium.get(f'file://{path}')
         open_search_modal(selenium)
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
-        search_outer = selenium.find_element_by_class_name(
+        search_outer = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer'
         )
 
@@ -605,7 +636,8 @@ def test_writing_query_adds_rtd_search_as_url_param(selenium, app, status, warni
             'rtd_search=' not in parse.unquote(selenium.current_url)
         ), 'rtd_search param must not be present in the url when page loads'
 
-        search_outer_input = selenium.find_element_by_class_name(
+        search_outer_input = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__input'
         )
         search_outer_input.send_keys(query)
@@ -652,10 +684,12 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
         selenium.get(f'file://{path}?rtd_search=i am searching')
         time.sleep(3)  # give time to open modal and start searching
 
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
-        search_result_box = selenium.find_element_by_class_name(
+        search_result_box = selenium.find_element(
+            By.CLASS_NAME,
             'search__result__box'
         )
 
@@ -666,7 +700,7 @@ def test_modal_open_if_rtd_search_is_present(selenium, app, status, warning):
             search_result_box.text == 'There was an error. Please try again.'
         ), 'user should be notified that there is error while searching'
         assert (
-            len(search_result_box.find_elements_by_css_selector('*')) == 0
+            len(search_result_box.find_elements(By.CSS_SELECTOR, '*')) == 0
         ), 'search result box should not have any child elements because there are no results'
 
 
@@ -685,8 +719,12 @@ def test_rtd_search_remove_from_url_when_modal_closed(selenium, app, status, war
         time.sleep(3)  # give time to open modal and start searching
 
         # closing modal
-        search_outer = selenium.find_element_by_class_name('search__outer')
-        search_outer_wrapper = selenium.find_element_by_class_name(
+        search_outer = selenium.find_element(
+            By.CLASS_NAME,
+            'search__outer',
+        )
+        search_outer_wrapper = selenium.find_element(
+            By.CLASS_NAME,
             'search__outer__wrapper'
         )
         actions = webdriver.common.action_chains.ActionChains(selenium)
