@@ -500,7 +500,7 @@ const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
         updateUrl();
         updateSearchBar();
 
-        let url = api_endpoint + "?" + new URLSearchParams(parameters).toString();
+        const url = api_endpoint + "?" + new URLSearchParams(parameters).toString();
 
         fetch(url, {method: "GET"})
         .then(response => {
@@ -662,13 +662,13 @@ window.addEventListener("DOMContentLoaded", () => {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                const search_url = api_host + "/api/v2/search/";
+                const search_endpoint = api_host + "/api/v2/search/";
                 const search_params = {
                     q: search_query,
                     project: project,
                     version: version,
                 };
-                current_request = fetchAndGenerateResults(search_url, search_params, project);
+                current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
                 current_request();
             } else {
                 // if the last request returns the results,
@@ -755,8 +755,8 @@ window.addEventListener("DOMContentLoaded", () => {
         // if "rtd_search" is present in URL parameters,
         // then open the search modal and show the results
         // for the value of "rtd_search"
-        let url_params = new URLSearchParams(document.location.search);
-        let query = url_params.get(RTD_SEARCH_PARAMETER);
+        const url_params = new URLSearchParams(document.location.search);
+        const query = url_params.get(RTD_SEARCH_PARAMETER);
         if (query !== null) {
             showSearchModal(query);
             search_outer_input.value = query;
