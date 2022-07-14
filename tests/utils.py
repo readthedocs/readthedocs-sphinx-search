@@ -82,29 +82,33 @@ def get_ajax_overwrite_func(type_, **kwargs):
     if type_ == 'zero_results':
         ajax_func = '''
             <script>
-                $.ajax = function(params) {
-                    return params.complete(
-                        {
-                            responseJSON: {
-                                results: []
+                fetch = () => {
+                    return new Promise((resolve, reject) => {
+                        resolve(
+                            {
+                                ok: true,
+                                json: () => {
+                                    return {results: []}
+                                }
                             }
-                        },
-                        'success'
-                    )
-                }
+                        );
+                    }
+                )};
             </script>
         '''
 
     elif type_ == 'error':
         ajax_func = '''
             <script>
-                $.ajax = function(params) {
-                    return params.error(
-                        { },
-                        'error',
-                        'Dummy Error.'
-                    )
-                }
+                fetch = () => {
+                    return new Promise((resolve, reject) => {
+                        resolve(
+                            {
+                                ok: false,
+                            }
+                        );
+                    }
+                )};
             </script>
         '''
 
@@ -114,18 +118,20 @@ def get_ajax_overwrite_func(type_, **kwargs):
         # setTimeout is used here to give a real feel of the API call
         ajax_func = f'''
             <script>
-                $.ajax = function(params) {{
-                    return setTimeout(function(params) {{
-                        return params.complete(
-                            {{
-                                responseJSON: {{
-                                    results: []
-                            }}
-                            }},
-                            'success'
-                        )
-                    }}, { timeout }, params);
-                }}
+                fetch = () => {{
+                    return new Promise((resolve, reject) => {{
+                        setTimeout(() => {{
+                            resolve(
+                                {{
+                                    ok: true,
+                                    json: () => {{
+                                        return {{results: []}}
+                                    }}
+                                }}
+                            );
+                        }}, {timeout});
+                    }}
+                )}};
             </script>
         '''
 
@@ -135,13 +141,18 @@ def get_ajax_overwrite_func(type_, **kwargs):
 
         ajax_func = f'''
             <script>
-                $.ajax = function(params) {{
-                    return params.complete(
-                        {{
-                            responseJSON: { dummy_res }
-                        }}
-                    )
-                }}
+                fetch = () => {{
+                    return new Promise((resolve, reject) => {{
+                        resolve(
+                            {{
+                                ok: true,
+                                json: () => {{
+                                    return {dummy_res}
+                                }}
+                            }}
+                        );
+                    }}
+                )}};
             </script>
         '''
 

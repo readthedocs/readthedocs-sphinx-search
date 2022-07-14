@@ -479,12 +479,12 @@ const getErrorDiv = err_msg => {
  * and appends the results to <div class="search__outer"> node,
  * which is already created when the page was loaded.
  *
- * @param {String} url: API URL
+ * @param {String} api_endpoint: API endpoint
  * @param {Object} parameters: search parameters
  * @param {String} projectName: name (slug) of the project
  * @return {Function} debounced function with debounce time of 500ms
  */
-const fetchAndGenerateResults = (url, parameters, projectName) => {
+const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
     let search_outer = document.querySelector(".search__outer");
 
     // Removes all results (if there is any),
@@ -495,15 +495,14 @@ const fetchAndGenerateResults = (url, parameters, projectName) => {
     search_loding.innerHTML = "<strong>Searching ....</strong>";
     search_outer.appendChild(search_loding);
 
-    let parsed_url = new URL(url);
-    parsed_url.search = new URLSearchParams(parameters).toString();
-
     let fetchFunc = () => {
         // Update URL just before fetching the results
         updateUrl();
         updateSearchBar();
 
-        fetch(parsed_url.toString(), {method: "GET"})
+        let url = api_endpoint + "?" + new URLSearchParams(parameters).toString();
+
+        fetch(url, {method: "GET"})
         .then(response => {
             if (!response.ok) {
               throw new Error();

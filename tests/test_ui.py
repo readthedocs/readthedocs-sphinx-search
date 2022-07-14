@@ -6,7 +6,7 @@ import time
 from urllib import parse
 
 import pytest
-from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -199,13 +199,10 @@ def test_closing_the_modal_by_clicking_on_backdrop(selenium, app, status, warnin
             By.CLASS_NAME,
             'search__outer__wrapper'
         )
+        actions = ActionChains(selenium)
         search_outer = selenium.find_element(By.CLASS_NAME, 'search__outer')
-        actions = webdriver.common.action_chains.ActionChains(selenium)
-        actions.move_to_element_with_offset(
-            search_outer, -10, -10  # -ve offsets to move the mouse away from the search modal
-        )
-        actions.click()
-        actions.perform()
+        # Negative offsets to move the mouse away from the search modal
+        actions.move_to_element_with_offset(search_outer, -10, -10).click().perform()
         WebDriverWait(selenium, 10).until(
             EC.invisibility_of_element(search_outer_wrapper)
         )
@@ -727,7 +724,7 @@ def test_rtd_search_remove_from_url_when_modal_closed(selenium, app, status, war
             By.CLASS_NAME,
             'search__outer__wrapper'
         )
-        actions = webdriver.common.action_chains.ActionChains(selenium)
+        actions = ActionChains(selenium)
         actions.move_to_element_with_offset(
             search_outer, -10, -10  # -ve offsets to move the mouse away from the search modal
         )
