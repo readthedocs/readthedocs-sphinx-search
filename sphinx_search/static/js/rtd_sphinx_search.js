@@ -4,6 +4,7 @@ const MAX_SUBSTRING_LIMIT = 100;
 const ANIMATION_TIME = 200;
 const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
+const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 /**
  * Debounce the function.
@@ -42,7 +43,7 @@ const debounce = (func, wait) => {
 
 /**
  * Wrapper around underscorejs's template function.
- * 
+ *
  * This is to make it work with new and old versions.
  */
 const render_template = (template, data) => {
@@ -55,69 +56,21 @@ const render_template = (template, data) => {
     return result;
 };
 
-/**
- * Take an object as parameter and convert it to
- * url params string.
- *
- * Eg. if ``obj = { 'a': 1, 'b': 2, 'c': ['hello', 'world'] }``, then it will return
- * the string ``a=1&b=2&c=hello,world``
- *
- * @param {Object} obj the object to be converted
- * @return {String|Array} object in url params form
- */
-const convertObjToUrlParams = obj => {
-    let params = Object.keys(obj).map(function(key) {
-        if (_is_string(key)) {
-            const s = key + "=" + encodeURI(obj[key]);
-            return s;
-        }
-    });
-
-    // removing empty strings from the 'params' array
-    let final_params = [];
-    for (let i = 0; i < params.length; ++i) {
-        if (_is_string(params[i])) {
-            final_params.push(params[i]);
-        }
-    }
-    if (final_params.length === 1) {
-        return final_params[0];
-    } else {
-        let final_url_params = final_params.join("&");
-        return final_url_params;
-    }
-};
-
 
 /**
  * Adds/removes "rtd_search" url parameter to the url.
  */
 const updateUrl = () => {
-    let origin = window.location.origin;
-    let path = window.location.pathname;
-    let url_params = $.getQueryParameters();
-    let hash = window.location.hash;
+    let parsed_url = new URL(window.location.href);
     let search_query = getSearchTerm();
-    // search_query should not be an empty string
+    // search_query should not be an empty string.
     if (search_query.length > 0) {
-        url_params.rtd_search = search_query;
+        parsed_url.searchParams.set(RTD_SEARCH_PARAMETER, search_query);
     } else {
-        delete url_params.rtd_search;
+        parsed_url.searchParams.delete(RTD_SEARCH_PARAMETER);
     }
-
-    let window_location_search = convertObjToUrlParams(url_params) + hash;
-
-    // this happens during the tests,
-    // when window.location.origin is "null" in Firefox
-    // then correct URL is contained by window.location.pathname
-    // which starts with "file://"
-    let url = path + "?" + window_location_search;
-    if (origin.substring(0, 4) === "http") {
-        url = origin + url;
-    }
-
-    // update url
-    window.history.pushState({}, null, url);
+    // Update url.
+    window.history.pushState({}, null, parsed_url.toString());
 };
 
 
@@ -172,18 +125,6 @@ const _is_string = str => {
     }
 };
 
-/**
- * Checks if data type is a non-empty array
- * @param {*} data data whose type is to be checked
- * @return {Boolean} returns true if data is non-empty array, else returns false
- */
-const _is_array = arr => {
-    if (Array.isArray(arr) && arr.length > 0) {
-        return true;
-    } else {
-        return false;
-    }
-};
 
 /**
  * Generate and return html structure
@@ -538,11 +479,12 @@ const getErrorDiv = err_msg => {
  * and appends the results to <div class="search__outer"> node,
  * which is already created when the page was loaded.
  *
- * @param {String} search_url url on which request will be sent
- * @param {String} projectName name (slug) of the project
+ * @param {String} api_endpoint: API endpoint
+ * @param {Object} parameters: search parameters
+ * @param {String} projectName: name (slug) of the project
  * @return {Function} debounced function with debounce time of 500ms
  */
-const fetchAndGenerateResults = (search_url, projectName) => {
+const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
     let search_outer = document.querySelector(".search__outer");
 
     // Removes all results (if there is any),
@@ -553,52 +495,48 @@ const fetchAndGenerateResults = (search_url, projectName) => {
     search_loding.innerHTML = "<strong>Searching ....</strong>";
     search_outer.appendChild(search_loding);
 
-    let ajaxFunc = () => {
+    let fetchFunc = () => {
         // Update URL just before fetching the results
         updateUrl();
         updateSearchBar();
 
-        $.ajax({
-            url: search_url,
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            complete: (resp, status_code) => {
-                if (
-                    status_code === "success" ||
-                    typeof resp.responseJSON !== "undefined"
-                ) {
-                    if (resp.responseJSON.results.length > 0) {
-                        let search_result_box = generateSuggestionsList(
-                            resp.responseJSON,
-                            projectName
-                        );
-                        removeResults();
-                        search_outer.appendChild(search_result_box);
+        const url = api_endpoint + "?" + new URLSearchParams(parameters).toString();
 
-                        // remove active classes from all suggestions
-                        // if the mouse hovers, otherwise styles from
-                        // :hover and .active will clash.
-                        search_outer.addEventListener("mouseenter", e => {
-                            removeAllActive();
-                        });
-                    } else {
-                        removeResults();
-                        let err_div = getErrorDiv("No results found");
-                        search_outer.appendChild(err_div);
-                    }
-                }
-            },
-            error: (resp, status_code, error) => {
+        fetch(url, {method: "GET"})
+        .then(response => {
+            if (!response.ok) {
+              throw new Error();
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.results.length > 0) {
+                let search_result_box = generateSuggestionsList(
+                    data,
+                    projectName
+                );
                 removeResults();
-                let err_div = getErrorDiv("There was an error. Please try again.");
+                search_outer.appendChild(search_result_box);
+
+                // remove active classes from all suggestions
+                // if the mouse hovers, otherwise styles from
+                // :hover and .active will clash.
+                search_outer.addEventListener("mouseenter", e => {
+                    removeAllActive();
+                });
+            } else {
+                removeResults();
+                let err_div = getErrorDiv("No results found");
                 search_outer.appendChild(err_div);
             }
+        })
+        .catch(error => {
+            removeResults();
+            let err_div = getErrorDiv("There was an error. Please try again.");
+            search_outer.appendChild(err_div);
         });
     };
-    ajaxFunc = debounce(ajaxFunc, FETCH_RESULTS_DELAY);
-    return ajaxFunc;
+    return debounce(fetchFunc, FETCH_RESULTS_DELAY);
 };
 
 /**
@@ -696,7 +634,6 @@ window.addEventListener("DOMContentLoaded", () => {
     if (window.hasOwnProperty("READTHEDOCS_DATA")) {
         const project = READTHEDOCS_DATA.project;
         const version = READTHEDOCS_DATA.version;
-        const language = READTHEDOCS_DATA.language || "en";
         const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
 
         let initialHtml = generateAndReturnInitialHtml();
@@ -720,25 +657,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
         search_outer_input.addEventListener("input", e => {
             let search_query = getSearchTerm();
-
-            let search_params = {
-                q: search_query,
-                project: project,
-                version: version,
-                language: language,
-            };
-
-            const search_url =
-                api_host +
-                "/api/v2/search/?" +
-                convertObjToUrlParams(search_params);
-
             if (search_query.length > 0) {
                 if (current_request !== null) {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                current_request = fetchAndGenerateResults(search_url, project);
+                const search_endpoint = api_host + "/api/v2/search/";
+                const search_params = {
+                    q: search_query,
+                    project: project,
+                    version: version,
+                };
+                current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
                 current_request();
             } else {
                 // if the last request returns the results,
@@ -825,9 +755,9 @@ window.addEventListener("DOMContentLoaded", () => {
         // if "rtd_search" is present in URL parameters,
         // then open the search modal and show the results
         // for the value of "rtd_search"
-        let url_params = $.getQueryParameters();
-        if (_is_array(url_params.rtd_search)) {
-            let query = decodeURIComponent(url_params.rtd_search);
+        const url_params = new URLSearchParams(document.location.search);
+        const query = url_params.get(RTD_SEARCH_PARAMETER);
+        if (query !== null) {
             showSearchModal(query);
             search_outer_input.value = query;
 
