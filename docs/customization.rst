@@ -106,9 +106,14 @@ is given below for reference:
                   <a href="/api-v2?highlight=api#section-1-sphinx-domain">
                      <div class="outer_div_page_results" id="hit__3">
 
-                        <!-- Domain role_name -->
+                        <!-- Domain name -->
                         <span class="search__result__subheading">
-                           http:get
+                           /api/v2/section/
+
+                           <!-- Domain role name -->
+                           <div class="search__domain_role_name">
+                              [http:get]
+                           </div>
                         </span>
 
                         <!-- Domain Content -->

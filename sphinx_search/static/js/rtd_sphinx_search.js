@@ -42,18 +42,46 @@ const debounce = (func, wait) => {
 
 
 /**
- * Wrapper around underscorejs's template function.
- *
- * This is to make it work with new and old versions.
- */
-const render_template = (template, data) => {
-    // pre-1.7 syntax from underscorejs.
-    let result = $u.template(template, data);
-    if (typeof result === 'function') {
-        // New syntax.
-        result = $u.template(template)(data);
+  * Build a section with its matching results.
+  *
+  * A section has the form:
+  *
+  *   <a href="{link}">
+  *     <div class="outer_div_page_results" id="{id}">
+  *       <span class="search__result__subheading">
+  *         {title}
+  *       </span>
+  *       <p class="search__result__content">
+  *         {contents[0]}
+  *       </p>
+  *       <p class="search__result__content">
+  *         {contents[1]}
+  *       </p>
+  *       ...
+  *     </div>
+  *   </a>
+  *
+  * @param {String} id.
+  * @param {String} title.
+  * @param {String} link.
+  * @param {Array} contents.
+  */
+const buildSection = function (id, title, link, contents) {
+    let span_element = createDomNode("span", {class: "search__result__subheading"});
+    span_element.innerHTML = title;
+
+    let div_element = createDomNode("div", {class: "outer_div_page_results", id: id});
+    div_element.appendChild(span_element);
+
+    for (var i = 0; i < contents.length; i += 1) {
+        let p_element = createDomNode("p", {class: "search__result__content"});
+        p_element.innerHTML = contents[i];
+        div_element.appendChild(p_element);
     }
-    return result;
+
+    let section = createDomNode("a", {href: link});
+    section.appendChild(div_element);
+    return section;
 };
 
 
@@ -105,8 +133,10 @@ const isModalVisible = () => {
  */
 const createDomNode = (nodeName, attributes) => {
     let node = document.createElement(nodeName);
-    for (let attr in attributes) {
-        node.setAttribute(attr, attributes[attr]);
+    if (attributes !== null) {
+        for (let attr in attributes) {
+            node.setAttribute(attr, attributes[attr]);
+        }
     }
     return node;
 };
@@ -135,21 +165,6 @@ const _is_string = str => {
  * @param {Number} id to be used in for this section
  */
 const get_section_html = (sectionData, page_link, id) => {
-    let section_template =
-        '<a href="<%= section_link %>"> \
-            <div class="outer_div_page_results" id="<%= section_id %>"> \
-                <span class="search__result__subheading"> \
-                    <%= section_subheading %> \
-                </span> \
-                <% for (var i = 0; i < section_content.length; ++i) { %> \
-                    <p class="search__result__content"> \
-                        <%= section_content[i] %> \
-                    </p> \
-                <% } %>\
-            </div> \
-        </a> \
-        <br class="br-for-hits">';
-
     let section_subheading = sectionData.title;
     let highlights = sectionData.highlights;
     if (highlights.title.length) {
@@ -173,17 +188,8 @@ const get_section_html = (sectionData, page_link, id) => {
     }
 
     let section_link = `${page_link}#${sectionData.id}`;
-
     let section_id = "hit__" + id;
-
-    let section_html = render_template(section_template, {
-        section_link: section_link,
-        section_id: section_id,
-        section_subheading: section_subheading,
-        section_content: section_content
-    });
-
-    return section_html;
+    return buildSection(section_id, section_subheading, section_link, section_content);
 };
 
 /**
@@ -195,20 +201,6 @@ const get_section_html = (sectionData, page_link, id) => {
  * @param {Number} id to be used in for this section
  */
 const get_domain_html = (domainData, page_link, id) => {
-    let domain_template =
-        '<a href="<%= domain_link %>"> \
-            <div class="outer_div_page_results" id="<%= domain_id %>"> \
-                <span class="search__result__subheading"> \
-                    <%= domain_subheading %> \
-                    <div class="search__domain_role_name"> \
-                        <%= domain_role_name %> \
-                    </div> \
-                </span> \
-                <p class="search__result__content"><%= domain_content %></p> \
-            </div> \
-        </a> \
-        <br class="br-for-hits">';
-
     let domain_link = `${page_link}#${domainData.id}`;
     let domain_role_name = domainData.role;
     let domain_name = domainData.name;
@@ -224,21 +216,43 @@ const get_domain_html = (domainData, page_link, id) => {
     }
 
     let domain_id = "hit__" + id;
-    domain_role_name = "[" + domain_role_name + "]";
 
-    let domain_html = render_template(domain_template, {
-        domain_link: domain_link,
-        domain_id: domain_id,
-        domain_content: domain_content,
-        domain_subheading: domain_name,
-        domain_role_name: domain_role_name
-    });
+    let div_role_name = createDomNode("div", {class: "search__domain_role_name"});
+    div_role_name.innerText = `[${domain_role_name}]`;
+    domain_name += div_role_name.outerHTML;
 
-    return domain_html;
+    return buildSection(
+        domain_id,
+        domain_name,
+        domain_link,
+        [domain_content]
+    );
 };
+
 
 /**
  * Generate search results for a single page.
+ *
+ * This has the form:
+ *   <div>
+ *     <a href="{link}">
+ *       <h2 class="search__result__title">
+ *         {title}
+ *         <small class="rtd_ui_search_subtitle">{subtitle}</small>
+ *         <br/>
+ *       </h2>
+ *     </a>
+ *
+ *     <a href="{link}">
+ *       {section}
+ *     </a>
+ *     <br class="br-for-hits" />
+ *
+ *     <a href="{link}">
+ *       {section}
+ *     </a>
+ *     <br class="br-for-hits" />
+ *   </div>
  *
  * @param {Object} resultData search results of a page
  * @param {String} projectName
@@ -246,15 +260,6 @@ const get_domain_html = (domainData, page_link, id) => {
  * @return {Object} a <div> node with the results of a single page
  */
 const generateSingleResult = (resultData, projectName, id) => {
-    let content = createDomNode("div");
-
-    let page_link_template =
-        '<a href="<%= page_link %>"> \
-            <h2 class="search__result__title"> \
-                <%= page_title %> \
-            </h2> \
-        </a>';
-
     let page_link = resultData.path;
     let page_title = resultData.title;
     let highlights = resultData.highlights;
@@ -263,47 +268,47 @@ const generateSingleResult = (resultData, projectName, id) => {
         page_title = highlights.title[0];
     }
 
-    // if result is not from the same project,
-    // then it must be from subproject.
+    let h2_element = createDomNode("h2", {class: "search__result__title"});
+    h2_element.innerHTML = page_title;
+
+    // If the result is not from the same project,
+    // then it's from a subproject.
     if (projectName !== resultData.project) {
-        page_title +=
-            " " +
-            render_template(
-                '<small class="rtd_ui_search_subtitle"> \
-                    (from project <%= project %>) \
-                </small>',
-                {
-                    project: resultData.project
-                }
-            );
+        let subtitle = createDomNode("small", {class: "rtd_ui_search_subtitle"});
+        subtitle.innerText = `(from project ${resultData.project})`;
+        h2_element.appendChild(subtitle);
     }
+    h2_element.appendChild(createDomNode("br"))
 
-    page_title += "<br>";
+    let a_element = createDomNode("a", {href: page_link});
+    a_element.appendChild(h2_element);
 
-    content.innerHTML += render_template(page_link_template, {
-        page_link: page_link,
-        page_title: page_title
-    });
+    let content = createDomNode("div");
+    content.appendChild(a_element);
 
+    let separator = createDomNode("br", {class: "br-for-hits"});
     for (let i = 0; i < resultData.blocks.length; ++i) {
         let block = resultData.blocks[i];
-        let html_structure = "";
-
+        let section = null;
         id += 1;
         if (block.type === "section") {
-            html_structure = get_section_html(
+            section = get_section_html(
                 block,
                 page_link,
                 id,
             );
         } else if (block.type === "domain") {
-            html_structure = get_domain_html(
+            section = get_domain_html(
                 block,
                 page_link,
                 id,
             );
         }
-        content.innerHTML += html_structure;
+
+        if (section !== null) {
+          content.appendChild(section);
+          content.appendChild(separator);
+        }
     }
     return content;
 };
