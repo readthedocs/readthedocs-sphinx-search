@@ -15,7 +15,8 @@ commands:
     steps:
       - browser-tools/install-browser-tools
       - checkout
-      - run: pip install --user tox
+      # Upgrade tox once https://github.com/tox-dev/tox/issues/2850 is solved.
+      - run: pip install --user 'tox<4'
       - run:
           name: Test with Chrome driver
           command: tox -e "<<parameters.version>>-sphinx{<<parameters.sphinx-version>>}" -- --driver Chrome
