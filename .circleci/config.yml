@@ -11,7 +11,7 @@ commands:
         type: string
       sphinx-version:
         type: string
-        default: "1,2,3,4,latest"
+        default: "1,2,3,4,5,latest"
     steps:
       - browser-tools/install-browser-tools
       - checkout
@@ -25,12 +25,6 @@ commands:
           command: tox -e "<<parameters.version>>-sphinx{<<parameters.sphinx-version>>}" -- --driver Firefox
 
 jobs:
-  py36:
-    docker:
-      - image: 'cimg/python:3.6-browsers'
-    steps:
-      - run-tox:
-          version: py36
   py37:
     docker:
       - image: 'cimg/python:3.7-browsers'
@@ -55,7 +49,14 @@ jobs:
     steps:
       - run-tox:
           version: py310
-          sphinx-version: 4,latest
+          sphinx-version: 4,5,latest
+  py311:
+    docker:
+      - image: 'cimg/python:3.11-browsers'
+    steps:
+      - run-tox:
+          version: py311
+          sphinx-version: 4,5,latest
 
 workflows:
   version: 2
