@@ -586,7 +586,7 @@ const showSearchModal = custom_query => {
     // removes previous results (if there are any).
     removeResults();
 
-    $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, () => {
+    let show_modal = function () {
         // removes the focus from the initial input field
         // which as already present in the docs.
         let search_bar = getInputField();
@@ -608,7 +608,17 @@ const showSearchModal = custom_query => {
             }
             search_outer_input.focus();
         }
-    });
+    };
+    
+    if (window.jQuery) {
+      $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
+    } else {
+      let element = document.querySelector(".search__outer__wrapper");
+      if (element && element.style) {
+        element.style.display = "block";
+      }
+      show_modal();
+    }
 };
 
 /**
@@ -630,7 +640,14 @@ const removeSearchModal = () => {
     // update url (remove 'rtd_search' param)
     updateUrl();
 
-    $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
+    if (window.jQuery) {
+      $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
+    } else {
+      let element = document.querySelector(".search__outer__wrapper");
+      if (element && element.style) {
+        element.style.display = "none";
+      }
+    }
 };
 
 window.addEventListener("DOMContentLoaded", () => {
