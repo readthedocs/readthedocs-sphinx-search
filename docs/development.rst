@@ -50,7 +50,7 @@ Make sure you have the latest version of these packages:
 
 .. code-block:: bash
 
-   python -m pip install --upgrade setuptools wheel twine
+   python -m pip install --upgrade setuptools wheel twine build
 
 Update the version in ``sphinx_search/__init__.py`` and ``package.json``,
 and run:

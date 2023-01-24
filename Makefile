@@ -1,7 +1,7 @@
 release: clean
 	git checkout main
 	git pull origin main
-	python setup.py sdist bdist_wheel
+	python -m build --sdist --wheel
 	python -m twine upload --sign --identity security@readthedocs.org dist/*
 
 tag:

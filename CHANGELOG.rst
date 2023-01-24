@@ -1,3 +1,17 @@
+Version 0.2.0
+-------------
+
+:Date: Jan 24, 2023
+
+This version adds support for sphinx 6.x,
+and makes JQuery optional for animations.
+
+* @stsewd: CI: fix tests (#127)
+* @dependabot[bot]: Bump decode-uri-component from 0.2.0 to 0.2.2 (#120)
+* @dependabot[bot]: Bump minimatch and gulp (#119)
+* @stsewd: Refactor: don't depend on underscore.js (#116)
+* @stsewd: Remove usage of jquery (#115)
+
 Version 0.1.2
 -------------
 
