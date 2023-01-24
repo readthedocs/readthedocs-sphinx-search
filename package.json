@@ -22,7 +22,7 @@
     "browserslist": "^4.16.5",
     "del": "^4.1.1",
     "github-changelog": "git+https://github.com/agjohnson/github-changelog.git",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0",
     "gulp-csso": "^3.0.1",
