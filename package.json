@@ -1,6 +1,6 @@
 {
   "name": "readthedocs-sphinx-search",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Enable search-as-you-type feature.",
   "scripts": {
     "build": "gulp",
