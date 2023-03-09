@@ -6,6 +6,26 @@ const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
+function parseQuery(search_query) {
+  let query = [];
+  let options = {};
+  search_query.split(/\s+/).forEach(function (term) {
+    let result = term.split(":", 2);
+    if (result.length < 2) {
+      query.push(term);
+    } else {
+      if (result[0] in options) {
+        options[result[0]].push(result[1]);
+      } else {
+        options[result[0]] = [result[1]];
+      }
+    }
+  });
+  query = query.join(" ");
+  return [query, options];
+}
+
+
 /**
  * Debounce the function.
  * Usage::
@@ -109,6 +129,12 @@ const updateSearchBar = () => {
   let search_bar = getInputField();
   search_bar.value = getSearchTerm();
 };
+
+
+function setSearchQuery(query) {
+  let search_outer_input = document.querySelector(".search__outer__input");
+  search_outer_input.value = query;
+}
 
 
 /*
@@ -273,9 +299,10 @@ const generateSingleResult = (resultData, projectName, id) => {
 
     // If the result is not from the same project,
     // then it's from a subproject.
-    if (projectName !== resultData.project) {
+    const project_slug = resultData.project.slug
+    if (projectName !== project_slug) {
         let subtitle = createDomNode("small", {class: "rtd_ui_search_subtitle"});
-        subtitle.innerText = `(from project ${resultData.project})`;
+        subtitle.innerText = ` (from project ${project_slug})`;
         h2_element.appendChild(subtitle);
     }
     h2_element.appendChild(createDomNode("br"))
@@ -489,7 +516,7 @@ const getErrorDiv = err_msg => {
  * @param {String} projectName: name (slug) of the project
  * @return {Function} debounced function with debounce time of 500ms
  */
-const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
+const fetchAndGenerateResults = (api_endpoint, parameters) => {
     let search_outer = document.querySelector(".search__outer");
 
     // Removes all results (if there is any),
@@ -518,7 +545,7 @@ const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
             if (data.results.length > 0) {
                 let search_result_box = generateSuggestionsList(
                     data,
-                    projectName
+                    parameters.project
                 );
                 removeResults();
                 search_outer.appendChild(search_result_box);
@@ -550,28 +577,56 @@ const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
  * This html structure will serve as the boilerplate
  * to show our search results.
  *
+ * @param {Array} filters: filters to be applied to the search
  * @return {String} initial html structure
  */
-const generateAndReturnInitialHtml = () => {
-    let innerHTML =
-        '<div class="search__outer"> \
-            <div class="search__cross" title="Close"> \
-                <!--?xml version="1.0" encoding="UTF-8"?--> \
-                <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
-                    <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
-                </svg> \
-            </div> \
-            <input class="search__outer__input" placeholder="Search ..."> \
-            <span class="bar"></span> \
-        </div> \
-        <div class="rtd__search__credits"> \
-            Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
-        </div>';
+const generateAndReturnInitialHtml = (filters) => {
+    let innerHTML = `
+        <div class="search__outer">
+          <div class="search__cross" title="Close">
+            <!--?xml version="1.0" encoding="UTF-8"?-->
+            <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
+            </svg>
+          </div>
+          <input class="search__outer__input" placeholder="Search...">
+          <div class="bar"></div>
+          <div class="search__filters">
+            <ul>
+            </ul>
+          </div>
+        </div>
+        <div class="rtd__search__credits">
+          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+        </div>
+    `;
 
     let div = createDomNode("div", {
         class: "search__outer__wrapper search__backdrop",
     });
     div.innerHTML = innerHTML;
+    let filters_list = div.querySelector(".search__filters ul");
+    const config = getConfig();
+    for (const [filter, value] of filters) {
+        let li = createDomNode("li");
+        let button = createDomNode("button");
+        button.innerText = filter;
+        button.value = value;
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          let search_query = getSearchTerm();
+          let [query, _] = parseQuery(search_query);
+          setSearchQuery(event.target.value + " " + query);
+          const search_params = {
+            q: search_query,
+            project: config.project,
+            version: config.version,
+          };
+          fetchAndGenerateResults(config.api_endpoint, search_params)();
+        });
+        li.appendChild(button);
+        filters_list.appendChild(li);
+    }
     return div;
 };
 
@@ -609,7 +664,7 @@ const showSearchModal = custom_query => {
             search_outer_input.focus();
         }
     };
-    
+
     if (window.jQuery) {
       $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
     } else {
@@ -650,15 +705,43 @@ const removeSearchModal = () => {
     }
 };
 
+
+/**
+  * Get the config used by the search.
+  *
+  * This configiration is extracted from the global variable
+  * READTHEDOCS_DATA, which is defined by Read the Docs,
+  * and the global variable RTD_SEARCH_CONFIG, which is defined
+  * by the sphinx extension.
+  *
+  * @return {Object} config
+  */
+function getConfig() {
+    const project = READTHEDOCS_DATA.project;
+    const version = READTHEDOCS_DATA.version;
+    const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
+    // This variable is defined in another file.
+    // that is loaded before this file,
+    // containing settings from the sphinx extension.
+    const search_config = RTD_SEARCH_CONFIG || {};
+    const api_endpoint = api_host + "/api/v3/search/";
+    return {
+      project: project,
+      version: version,
+      api_endpoint: api_endpoint,
+      filters: search_config.filters,
+      default_filter: search_config.default_filter,
+    }
+}
+
+
 window.addEventListener("DOMContentLoaded", () => {
     // only add event listeners if READTHEDOCS_DATA global
     // variable is found.
     if (window.hasOwnProperty("READTHEDOCS_DATA")) {
-        const project = READTHEDOCS_DATA.project;
-        const version = READTHEDOCS_DATA.version;
-        const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
+        const config = getConfig();
 
-        let initialHtml = generateAndReturnInitialHtml();
+        let initialHtml = generateAndReturnInitialHtml(config.filters);
         document.body.appendChild(initialHtml);
 
         let search_outer_wrapper = document.querySelector(
@@ -684,13 +767,16 @@ window.addEventListener("DOMContentLoaded", () => {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                const search_endpoint = api_host + "/api/v2/search/";
+                let [query, options] = parseQuery(search_query);
+                if (Object.keys(options).length == 0) {
+                    search_query = config.default_filter + " " + query;
+                }
                 const search_params = {
                     q: search_query,
-                    project: project,
-                    version: version,
+                    project: config.project,
+                    version: config.version,
                 };
-                current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
+                current_request = fetchAndGenerateResults(config.api_endpoint, search_params);
                 current_request();
             } else {
                 // if the last request returns the results,

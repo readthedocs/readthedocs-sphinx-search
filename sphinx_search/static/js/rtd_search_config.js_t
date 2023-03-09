@@ -1,0 +1,1 @@
+var RTD_SEARCH_CONFIG = {{ rtd_search_config | tojson }};

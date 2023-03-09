@@ -11,9 +11,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+from pathlib import Path
 import sys
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.append(os.path.abspath("./_ext"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent / "_ext"))
 
 ON_RTD = os.environ.get('READTHEDOCS', False)
 

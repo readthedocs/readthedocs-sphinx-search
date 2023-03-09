@@ -282,6 +282,17 @@
     letter-spacing: 1px;
 }
 
+.search__filters ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search__filters li {
+   display: inline;
+   margin-right: 0.5em;
+}
+
 @media (max-width: 670px) {
     .rtd__search__credits {
         height: 50px;
