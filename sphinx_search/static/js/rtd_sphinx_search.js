@@ -6,6 +6,16 @@ const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
+/**
+ * Parse the search query and return an array with the query and the options.
+ *
+ * This is a simplified version of our parser
+ * https://github.com/readthedocs/readthedocs.org/blob/main/readthedocs/search/api/v3/queryparser.py.
+ * All `foo:bar` terms are considered options, and the rest are considered part of the query.
+ *
+ *  @param {String} search_query
+ *  @return {Array} [query, options]
+ */
 function parseQuery(search_query) {
   let query = [];
   let options = {};
@@ -131,6 +141,11 @@ const updateSearchBar = () => {
 };
 
 
+/**
+ * Set the search query in the modal.
+ *
+ * @param {String} query
+ */
 function setSearchQuery(query) {
   let search_outer_input = document.querySelector(".search__outer__input");
   search_outer_input.value = query;
@@ -297,13 +312,16 @@ const generateSingleResult = (resultData, projectName, id) => {
     let h2_element = createDomNode("h2", {class: "search__result__title"});
     h2_element.innerHTML = page_title;
 
-    // If the result is not from the same project,
-    // then it's from a subproject.
+    // Results can belong to different projects.
+    // If the result isn't from the current project, add a note about it.
     const project_slug = resultData.project.slug
     if (projectName !== project_slug) {
         let subtitle = createDomNode("small", {class: "rtd_ui_search_subtitle"});
         subtitle.innerText = ` (from project ${project_slug})`;
         h2_element.appendChild(subtitle);
+        // If the result isn't from the current project,
+        // then we create an absolute link to the page.
+        page_link = `${resultData.domain}${page_link}`;
     }
     h2_element.appendChild(createDomNode("br"))
 
@@ -577,7 +595,8 @@ const fetchAndGenerateResults = (api_endpoint, parameters) => {
  * This html structure will serve as the boilerplate
  * to show our search results.
  *
- * @param {Array} filters: filters to be applied to the search
+ * @param {Array} filters: filters to be applied to the search.
+ *  {["Filter name", "Filter value"]}
  * @return {String} initial html structure
  */
 const generateAndReturnInitialHtml = (filters) => {
@@ -597,7 +616,8 @@ const generateAndReturnInitialHtml = (filters) => {
           </div>
         </div>
         <div class="rtd__search__credits">
-          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>.
+          <a href="https://docs.readthedocs.io/page/server-side-search/syntax.html">Search syntax</a>.
         </div>
     `;
 
@@ -605,27 +625,44 @@ const generateAndReturnInitialHtml = (filters) => {
         class: "search__outer__wrapper search__backdrop",
     });
     div.innerHTML = innerHTML;
+
     let filters_list = div.querySelector(".search__filters ul");
     const config = getConfig();
-    for (const [filter, value] of filters) {
-        let li = createDomNode("li");
-        let button = createDomNode("button");
-        button.innerText = filter;
-        button.value = value;
-        button.addEventListener("click", event => {
-          event.preventDefault();
-          let search_query = getSearchTerm();
-          let [query, _] = parseQuery(search_query);
-          setSearchQuery(event.target.value + " " + query);
-          const search_params = {
-            q: search_query,
-            project: config.project,
-            version: config.version,
-          };
-          fetchAndGenerateResults(config.api_endpoint, search_params)();
-        });
-        li.appendChild(button);
-        filters_list.appendChild(li);
+    // Add filters below the search box if present.
+    if (filters.length > 0) {
+      let li = createDomNode("li", {"class": "search__filters__title"});
+      li.innerText = "Filters:";
+      filters_list.appendChild(li);
+    }
+    // Each filter is a button in the filters list.
+    // Each button contains the index of the filter,
+    // so we can get the proper filter when clicked.
+    for (let i = 0, len = filters.length; i < len; i++) {
+      const [name, filter] = filters[i];
+      let li = createDomNode("li");
+      let button = createDomNode("button");
+      button.innerText = name;
+      button.value = i;
+      button.title = filter;
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        // To apply a filter, we extract the current query and
+        // replace the current options with the selected filter.
+        let filter = filters[parseInt(event.target.value)][1];
+        let search_query = getSearchTerm();
+        let [query, _] = parseQuery(search_query);
+        search_query = filter + " " + query;
+        setSearchQuery(search_query);
+        // Perform the search with the new query.
+        const search_params = {
+          q: search_query,
+          project: config.project,
+          version: config.version,
+        };
+        fetchAndGenerateResults(config.api_endpoint, search_params)();
+      });
+      li.appendChild(button);
+      filters_list.appendChild(li);
     }
     return div;
 };
@@ -767,6 +804,8 @@ window.addEventListener("DOMContentLoaded", () => {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
+                // If the query doesn't have options,
+                // use the default filter.
                 let [query, options] = parseQuery(search_query);
                 if (Object.keys(options).length == 0) {
                     search_query = config.default_filter + " " + query;

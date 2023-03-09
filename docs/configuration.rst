@@ -16,3 +16,11 @@ You can customize these configuration options in your ``conf.py`` file:
    Default: ``'minified'``
 
    Type: ``string``
+
+.. confval:: rtd_sphinx_search_filters
+
+   Description: List of filters to show in the search bar.
+
+   Default: ``{"default": "project:@this"}``
+
+   Type: ``dict``

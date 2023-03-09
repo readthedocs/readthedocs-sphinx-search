@@ -26,9 +26,16 @@ def _get_static_files(config):
 
 
 def get_context(config):
+    """
+    Get context for templates.
+
+    This mainly returns the settings from the extension
+    that are needed in our JS code.
+    """
     filters = config.rtd_sphinx_search_filters.copy()
     default_filter = filters.pop("default", "")
     # When converting to JSON, the order of the keys is not guaranteed.
+    # So we pass a list of tuples to preserve the order.
     filters = [(name, filter) for name, filter in filters.items()]
     return {
         "rtd_search_config": {
@@ -39,6 +46,11 @@ def get_context(config):
 
 
 def copy_asset_files(app, exception):
+    """
+    Copy assets files to the output directory.
+
+    If the name of the file ends with ``_t``, it will be interpreted as a template.
+    """
     if exception is None:  # build succeeded
         root = Path(__file__).parent
         for file in _get_static_files(app.config):
@@ -56,6 +68,7 @@ def inject_static_files(app):
     """Inject correct CSS and JS files based on the value of ``rtd_sphinx_search_file_type``."""
     for file in _get_static_files(app.config):
         file = str(file)
+        # Templates end with `_t`, Sphinx removes the _t when copying the file.
         if file.endswith('_t'):
             file = file[:-2]
         if file.endswith('.js'):
