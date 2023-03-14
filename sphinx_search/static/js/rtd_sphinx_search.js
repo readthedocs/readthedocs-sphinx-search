@@ -6,6 +6,135 @@ const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
+
+export function initializeSearchAsYouType(config) {
+    const project = config.project.slug;
+    const version = config.version.slug;
+    const api_host = '/_';
+
+    let initialHtml = generateAndReturnInitialHtml();
+    document.body.appendChild(initialHtml);
+
+    let search_outer_wrapper = document.querySelector(
+        ".search__outer__wrapper"
+    );
+    let search_outer_input = document.querySelector(
+        ".search__outer__input"
+    );
+    let cross_icon = document.querySelector(".search__cross");
+
+    // this stores the current request.
+    let current_request = null;
+
+    let search_bar = getInputField();
+    search_bar.addEventListener("focus", e => {
+        showSearchModal();
+    });
+
+    search_outer_input.addEventListener("input", e => {
+        let search_query = getSearchTerm();
+        if (search_query.length > 0) {
+            if (current_request !== null) {
+                // cancel previous ajax request.
+                current_request.cancel();
+            }
+            const search_endpoint = api_host + "/api/v2/search/";
+            const search_params = {
+                q: search_query,
+                project: project,
+                version: version,
+            };
+            current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
+            current_request();
+        } else {
+            // if the last request returns the results,
+            // the suggestions list is generated even if there
+            // is no query. To prevent that, this function
+            // is debounced here.
+            let func = () => {
+                removeResults();
+                updateUrl();
+            };
+            debounce(func, CLEAR_RESULTS_DELAY)();
+            updateUrl();
+        }
+    });
+
+    search_outer_input.addEventListener("keydown", e => {
+        // if "ArrowDown is pressed"
+        if (e.keyCode === 40) {
+            e.preventDefault();
+            selectNextResult(true);
+        }
+
+        // if "ArrowUp" is pressed.
+        if (e.keyCode === 38) {
+            e.preventDefault();
+            selectNextResult(false);
+        }
+
+        // if "Enter" key is pressed.
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            const current_item = document.querySelector(
+                ".outer_div_page_results.active"
+            );
+            // if an item is selected,
+            // then redirect to its link
+            if (current_item !== null) {
+                const link = current_item.parentElement["href"];
+                window.location.href = link;
+            }
+        }
+    });
+
+    search_outer_wrapper.addEventListener("click", e => {
+        // HACK: only close the search modal if the
+        // element clicked has <body> as the parent Node.
+        // This is done so that search modal only gets closed
+        // if the user clicks on the backdrop area.
+        if (e.target.parentNode === document.body) {
+            removeSearchModal();
+        }
+    });
+
+    // close the search modal if clicked on cross icon.
+    cross_icon.addEventListener("click", e => {
+        removeSearchModal();
+    });
+
+    // close the search modal if the user pressed
+    // Escape button
+    document.addEventListener("keydown", e => {
+        if (e.keyCode === 27) {
+            removeSearchModal();
+        }
+    });
+
+    // open search modal if "forward slash" button is pressed
+    document.addEventListener("keydown", e => {
+        if (e.keyCode === 191 && !isModalVisible()) {
+            // prevent opening "Quick Find" in Firefox
+            e.preventDefault();
+            showSearchModal();
+        }
+    });
+
+    // if "rtd_search" is present in URL parameters,
+    // then open the search modal and show the results
+    // for the value of "rtd_search"
+    const url_params = new URLSearchParams(document.location.search);
+    const query = url_params.get(RTD_SEARCH_PARAMETER);
+    if (query !== null) {
+        showSearchModal(query);
+        search_outer_input.value = query;
+
+        let event = document.createEvent("Event");
+        event.initEvent("input", true, true);
+        search_outer_input.dispatchEvent(event);
+    }
+};
+
 /**
  * Debounce the function.
  * Usage::
@@ -278,7 +407,7 @@ const generateSingleResult = (resultData, projectName, id) => {
         subtitle.innerText = `(from project ${resultData.project})`;
         h2_element.appendChild(subtitle);
     }
-    h2_element.appendChild(createDomNode("br"))
+    h2_element.appendChild(createDomNode("br"));
 
     let a_element = createDomNode("a", {href: page_link});
     a_element.appendChild(h2_element);
@@ -427,17 +556,11 @@ const selectNextResult = (forward) => {
 const getInputField = () => {
     let inputField;
 
-    // on search some pages (like search.html),
-    // no div is present with role="search",
-    // in that case, use the other query to select
-    // the input field
-    try {
-        inputField = document.querySelector("[role='search'] input");
-        if (inputField === undefined || inputField === null) {
-            throw "'[role='search'] input' not found";
-        }
-    } catch (err) {
-        inputField = document.querySelector("input[name='q']");
+    // Integration with the flyout search input only
+    // TODO: make this trigger configurable by the user
+    inputField = document.querySelector("#flyout-search-form");
+    if (inputField === undefined || inputField === null) {
+        console.error("Flyout search form not found");
     }
 
     return inputField;
@@ -452,7 +575,7 @@ const getSearchTerm = () => {
       return search_outer_input.value || "";
   }
   return "";
-}
+};
 
 /**
  * Removes all results from the search modal.
@@ -609,7 +732,7 @@ const showSearchModal = custom_query => {
             search_outer_input.focus();
         }
     };
-    
+
     if (window.jQuery) {
       $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
     } else {
@@ -650,146 +773,3 @@ const removeSearchModal = () => {
     }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-    // only add event listeners if READTHEDOCS_DATA global
-    // variable is found.
-    if (window.hasOwnProperty("READTHEDOCS_DATA")) {
-        const project = READTHEDOCS_DATA.project;
-        const version = READTHEDOCS_DATA.version;
-        const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
-
-        let initialHtml = generateAndReturnInitialHtml();
-        document.body.appendChild(initialHtml);
-
-        let search_outer_wrapper = document.querySelector(
-            ".search__outer__wrapper"
-        );
-        let search_outer_input = document.querySelector(
-            ".search__outer__input"
-        );
-        let cross_icon = document.querySelector(".search__cross");
-
-        // this stores the current request.
-        let current_request = null;
-
-        let search_bar = getInputField();
-        search_bar.addEventListener("focus", e => {
-            showSearchModal();
-        });
-
-        search_outer_input.addEventListener("input", e => {
-            let search_query = getSearchTerm();
-            if (search_query.length > 0) {
-                if (current_request !== null) {
-                    // cancel previous ajax request.
-                    current_request.cancel();
-                }
-                const search_endpoint = api_host + "/api/v2/search/";
-                const search_params = {
-                    q: search_query,
-                    project: project,
-                    version: version,
-                };
-                current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
-                current_request();
-            } else {
-                // if the last request returns the results,
-                // the suggestions list is generated even if there
-                // is no query. To prevent that, this function
-                // is debounced here.
-                let func = () => {
-                  removeResults();
-                  updateUrl();
-                };
-                debounce(func, CLEAR_RESULTS_DELAY)();
-                updateUrl();
-            }
-        });
-
-        search_outer_input.addEventListener("keydown", e => {
-            // if "ArrowDown is pressed"
-            if (e.keyCode === 40) {
-                e.preventDefault();
-                selectNextResult(true);
-            }
-
-            // if "ArrowUp" is pressed.
-            if (e.keyCode === 38) {
-                e.preventDefault();
-                selectNextResult(false);
-            }
-
-            // if "Enter" key is pressed.
-            if (e.keyCode === 13) {
-                e.preventDefault();
-                const current_item = document.querySelector(
-                    ".outer_div_page_results.active"
-                );
-                // if an item is selected,
-                // then redirect to its link
-                if (current_item !== null) {
-                    const link = current_item.parentElement["href"];
-                    window.location.href = link;
-                } else {
-                    // submit search form if there
-                    // is no active item.
-                    const input_field = getInputField();
-                    const form = input_field.parentElement;
-
-                    search_bar.value = getSearchTerm();
-                    form.submit();
-                }
-            }
-        });
-
-        search_outer_wrapper.addEventListener("click", e => {
-            // HACK: only close the search modal if the
-            // element clicked has <body> as the parent Node.
-            // This is done so that search modal only gets closed
-            // if the user clicks on the backdrop area.
-            if (e.target.parentNode === document.body) {
-                removeSearchModal();
-            }
-        });
-
-        // close the search modal if clicked on cross icon.
-        cross_icon.addEventListener("click", e => {
-            removeSearchModal();
-        });
-
-        // close the search modal if the user pressed
-        // Escape button
-        document.addEventListener("keydown", e => {
-            if (e.keyCode === 27) {
-                removeSearchModal();
-            }
-        });
-
-        // open search modal if "forward slash" button is pressed
-        document.addEventListener("keydown", e => {
-            if (e.keyCode === 191 && !isModalVisible()) {
-                // prevent opening "Quick Find" in Firefox
-                e.preventDefault();
-                showSearchModal();
-            }
-        });
-
-        // if "rtd_search" is present in URL parameters,
-        // then open the search modal and show the results
-        // for the value of "rtd_search"
-        const url_params = new URLSearchParams(document.location.search);
-        const query = url_params.get(RTD_SEARCH_PARAMETER);
-        if (query !== null) {
-            showSearchModal(query);
-            search_outer_input.value = query;
-
-            let event = document.createEvent("Event");
-            event.initEvent("input", true, true);
-            search_outer_input.dispatchEvent(event);
-        }
-    } else {
-        console.log(
-            "[INFO] Docs are not being served on Read the Docs, readthedocs-sphinx-search will not work."
-        );
-    }
-});
