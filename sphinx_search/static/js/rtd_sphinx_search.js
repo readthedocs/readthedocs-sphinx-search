@@ -575,8 +575,7 @@ const generateAndReturnInitialHtml = (filters) => {
           </div>
         </div>
         <div class="rtd__search__credits">
-          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>.
-          <a href="https://docs.readthedocs.io/page/server-side-search/syntax.html">Search syntax</a>.
+          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
         </div>
     `;
 
