@@ -41,7 +41,7 @@ Go to http://127.0.0.1:8000 and start searching!
 
    The extension works when is hosted on Read the Docs,
    but to make it work locally a custom ``READTHEDOCS_DATA`` js variable is injected automatically
-   to send the search requests to https://readthedocs.org/api/v2/search/.
+   to send the search requests to https://readthedocs.org/api/v3/search/.
 
 Releasing
 ---------

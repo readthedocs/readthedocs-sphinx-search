@@ -111,17 +111,6 @@ const updateSearchBar = () => {
 };
 
 
-/**
- * Set the search query in the modal.
- *
- * @param {String} query
- */
-function setSearchQuery(query) {
-  let search_outer_input = document.querySelector(".search__outer__input");
-  search_outer_input.value = query;
-}
-
-
 /*
  * Returns true if the modal window is visible.
  */
@@ -604,9 +593,8 @@ const generateAndReturnInitialHtml = (filters) => {
       li.innerText = "Filters:";
       filters_list.appendChild(li);
     }
-    // Each filter is a button in the filters list.
-    // Each button contains the index of the filter,
-    // so we can get the proper filter when clicked.
+    // Each checkbox contains the index of the filter,
+    // so we can get the proper filter when selected.
     for (let i = 0, len = filters.length; i < len; i++) {
       const [name, filter] = filters[i];
       let li = createDomNode("li", {"class": "search__filter", "title": filter});
@@ -615,6 +603,10 @@ const generateAndReturnInitialHtml = (filters) => {
       let label = createDomNode("label", {"for": id});
       label.innerText = name;
       checkbox.value = i;
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      filters_list.appendChild(li);
+
       checkbox.addEventListener("click", event => {
         // Uncheck all other filters when one is checked.
         // We only support one filter at a time.
@@ -634,9 +626,6 @@ const generateAndReturnInitialHtml = (filters) => {
         };
         fetchAndGenerateResults(config.api_endpoint, search_params, config.project)();
       });
-      li.appendChild(checkbox);
-      li.appendChild(label);
-      filters_list.appendChild(li);
     }
     return div;
 };
@@ -745,6 +734,14 @@ function getConfig() {
     }
 }
 
+
+/**
+  * Get the current selected filter.
+  *
+  * If no filter is selected, the default filter is returned.
+  *
+  * @param {Object} config
+  */
 function getCurrentFilter(config) {
   const checkbox = document.querySelector('.search__filters input:checked');
   if (checkbox == null) {
