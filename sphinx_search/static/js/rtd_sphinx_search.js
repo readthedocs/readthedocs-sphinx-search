@@ -9,8 +9,8 @@ const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 
 export function initializeSearchAsYouType(config) {
-    // Inject our styles for the flyout
-    document.adoptedStyleSheets = [styles];
+    // Inject our styles for the search-as-you-type
+    document.adoptedStyleSheets.push(styles);
 
     const project = config.project.slug;
     const version = config.version.slug;

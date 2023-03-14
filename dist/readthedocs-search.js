@@ -1,8 +1,11 @@
 /******/ var __webpack_modules__ = ({
 
 /***/ 968:
-/***/ ((module, __unused_webpack___webpack_exports__, __webpack_require__) => {
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(645);
@@ -21,7 +24,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".search__outer__wrapper {\n    positio
 // Exports
 var ___CSS_LOADER_STYLE_SHEET___ = new CSSStyleSheet();
 ___CSS_LOADER_STYLE_SHEET___.replaceSync(___CSS_LOADER_EXPORT___.toString());
-/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = ((/* unused pure expression or super */ null && (___CSS_LOADER_STYLE_SHEET___)));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_STYLE_SHEET___);
 
 
 /***/ }),
@@ -271,8 +274,8 @@ const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 
 function initializeSearchAsYouType(config) {
-    // Inject our styles for the flyout
-    // document.adoptedStyleSheets = [styles];
+    // Inject our styles for the search-as-you-type
+    document.adoptedStyleSheets.push(_css_rtd_sphinx_search_css__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z);
 
     const project = config.project.slug;
     const version = config.version.slug;
@@ -399,7 +402,7 @@ function initializeSearchAsYouType(config) {
         event.initEvent("input", true, true);
         search_outer_input.dispatchEvent(event);
     }
-}
+};
 
 /**
  * Debounce the function.
