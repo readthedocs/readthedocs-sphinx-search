@@ -3,6 +3,7 @@
     "version": "0.3.0",
     "description": "Read the Docs search-as-you-type integration.",
     "main": "dist/readthedocs-search.js",
+    "module": "dist/readthedocs-search.js",
     "files": [
         "dist/readthedocs-search.js"
     ],
