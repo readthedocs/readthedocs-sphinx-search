@@ -265,7 +265,6 @@ var __webpack_exports__ = {};
 const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
 const MAX_SUBSTRING_LIMIT = 100;
-const ANIMATION_TIME = 200;
 const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
