@@ -827,9 +827,9 @@ const getInputField = () => {
 
     // Integration with the flyout search input only
     // TODO: make this trigger configurable by the user
-    inputField = document.querySelector("#flyout-search-form");
+    inputField = document.querySelector("#flyout-search-form > input");
     if (inputField === undefined || inputField === null) {
-        console.error("Flyout search form not found");
+        console.log("Flyout search form not found");
     }
 
     return inputField;
