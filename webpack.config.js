@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
             "readthedocs-search": ["./sphinx_search/static/js/rtd_sphinx_search.js"],
         },
         output: {
-            filename: "[name].mjs?[fullhash]",
+            filename: "[name].js?[fullhash]",
             chunkFilename: "[name].js?[chunkhash]",
             path: path.join(__dirname, "dist"),
         },

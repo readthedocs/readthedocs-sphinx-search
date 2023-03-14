@@ -2,12 +2,12 @@
     "name": "readthedocs-search",
     "version": "0.3.0",
     "description": "Read the Docs search-as-you-type integration.",
-    "module": "dist/readthedocs-search.mjs",
+    "module": "dist/readthedocs-search.js",
     "exports": {
-        ".": "dist/readthedocs-search.mjs"
+        ".": "dist/readthedocs-search.js"
     },
     "files": [
-        "dist/readthedocs-search.mjs"
+        "dist/readthedocs-search.js"
     ],
     "scripts": {
         "build": "webpack --mode=production --progress",
