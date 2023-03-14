@@ -1,14 +1,10 @@
-var search;
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 968:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(645);
@@ -27,7 +23,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".search__outer__wrapper {\n    positio
 // Exports
 var ___CSS_LOADER_STYLE_SHEET___ = new CSSStyleSheet();
 ___CSS_LOADER_STYLE_SHEET___.replaceSync(___CSS_LOADER_EXPORT___.toString());
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_STYLE_SHEET___);
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = ((/* unused pure expression or super */ null && (___CSS_LOADER_STYLE_SHEET___)));
 
 
 /***/ }),
@@ -232,17 +228,6 @@ module.exports = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGlu
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
 /******/ 	(() => {
 /******/ 		__webpack_require__.b = document.baseURI || self.location.href;
@@ -273,10 +258,7 @@ module.exports = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGlu
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "initializeSearchAsYouType": () => (/* binding */ initializeSearchAsYouType)
-/* harmony export */ });
+/* unused harmony export initializeSearchAsYouType */
 /* harmony import */ var _css_rtd_sphinx_search_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(968);
 
 
@@ -290,7 +272,7 @@ const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 function initializeSearchAsYouType(config) {
     // Inject our styles for the flyout
-    document.adoptedStyleSheets = [_css_rtd_sphinx_search_css__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z];
+    document.adoptedStyleSheets = [styles];
 
     const project = config.project.slug;
     const version = config.version.slug;
@@ -1051,6 +1033,5 @@ const removeSearchModal = () => {
 
 })();
 
-search = __webpack_exports__;
 /******/ })()
 ;
