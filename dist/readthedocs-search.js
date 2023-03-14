@@ -1,9 +1,216 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 968:
+/***/ ((module, __unused_webpack___webpack_exports__, __webpack_require__) => {
+
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(645);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(667);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
+// Imports
+
+
+
+var ___CSS_LOADER_URL_IMPORT_0___ = new URL(/* asset import */ __webpack_require__(896), __webpack_require__.b);
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_0___);
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".search__outer__wrapper {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 700;\n}\n\n/* Backdrop */\n\n.search__backdrop {\n    /* Positioning */\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 500;\n\n    /* Display and box model */\n    width: 100%;\n    height: 100%;\n    display: none;\n\n    /* Other */\n    background-color: rgba(0, 0, 0, 0.502);\n}\n\n.search__outer {\n    /* Positioning */\n    margin: auto;\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    z-index: 100000;\n\n    /* Display and box model */\n    height: 80%;\n    width: 80%;\n    max-height: 1000px;\n    max-width: 1500px;\n    padding: 10px;\n    overflow-y: scroll;\n\n    /* Other */\n    border: 1px solid #e0e0e0;\n    line-height: 1.875;\n    background-color: #fcfcfc;\n    box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.09);\n    text-align: left;\n}\n\n/* Custom scrollbar */\n\n.search__outer::-webkit-scrollbar-track {\n    border-radius: 10px;\n    background-color: #fcfcfc;\n}\n\n.search__outer::-webkit-scrollbar {\n    width: 7px;\n    height: 7px;\n    background-color: #fcfcfc;\n}\n\n.search__outer::-webkit-scrollbar-thumb {\n    border-radius: 10px;\n    background-color: #8f8f8f;\n}\n\n/* Cross icon on top-right corner */\n\n.search__cross__img {\n    width: 15px;\n    height: 15px;\n    margin: 12px;\n}\n\n.search__cross {\n    position: absolute;\n    top: 0;\n    right: 0;\n}\n\n.search__cross:hover {\n    cursor: pointer;\n}\n\n/* Input field on search modal */\n\n.search__outer__input {\n    /* Display and box model */\n    width: 90%;\n    height: 30px;\n    font-size: 19px;\n    outline: none;\n    box-sizing: border-box;\n\n    /* Other */\n    background-color: #fcfcfc;\n    border: none;\n    border-bottom: 1px solid #757575;\n\n    /* search icon */\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n    background-repeat: no-repeat;\n    background-position: left;\n    background-size: 15px 15px;\n    padding-left: 25px;\n}\n\n.search__outer__input:focus {\n    outline: none;\n}\n\n/* For material UI style underline on input field */\n\n.search__outer .bar {\n    position: relative;\n    display: block;\n    width: 90%;\n    margin-bottom: 15px;\n}\n\n.search__outer .bar:before,\n.search__outer .bar:after {\n    content: \"\";\n    height: 2px;\n    width: 0;\n    bottom: 1px;\n    position: absolute;\n    background: #5264ae;\n    transition: 0.2s ease all;\n}\n\n.search__outer .bar:before {\n    left: 50%;\n}\n\n.search__outer .bar:after {\n    right: 50%;\n}\n\n.search__outer__input:focus ~ .bar:before,\n.search__outer__input:focus ~ .bar:after {\n    width: 50%;\n}\n\n/* Search result */\n\n.search__result__single {\n    margin-top: 10px;\n    padding: 0px 10px;\n    border-bottom: 1px solid #e6e6e6;\n}\n\n.search__result__box .active {\n    background-color: rgb(245, 245, 245);\n}\n\n.search__error__box {\n    color: black;\n    min-width: 300px;\n    font-weight: 700;\n}\n\n.outer_div_page_results {\n    margin: 5px 0px;\n    overflow: auto;\n    padding: 3px 5px;\n}\n\n.search__result__single a {\n    text-decoration: none;\n    cursor: pointer;\n}\n\n/* Title of each search result */\n\n.search__result__title {\n    /* Display and box model */\n    display: inline-block;\n    font-weight: 500;\n    margin-bottom: 15px;\n    margin-top: 0;\n    font-size: 15px;\n\n    /* Other */\n    color: #6ea0ec;\n    border-bottom: 1px solid #6ea0ec;\n}\n\n.search__result__subheading {\n    color: black;\n    font-weight: 700;\n    float: left;\n    width: 20%;\n    font-size: 15px;\n    margin-right: 10px;\n    word-break: break-all;\n    overflow-x: hidden;\n}\n\n.search__result__content {\n    margin: 0;\n    text-decoration: none;\n    color: black;\n    font-size: 15px;\n    display: block;\n    margin-bottom: 5px;\n    margin-bottom: 0;\n    line-height: inherit;\n    float: right;\n    width: calc(80% - 15px);\n    text-align: left;\n}\n\n/* Highlighting of matched results */\n\n.search__outer span {\n    font-style: normal;\n}\n\n.search__outer .search__result__title span {\n    background-color: #e5f6ff;\n    padding-bottom: 3px;\n    border-bottom-color: black;\n}\n\n.search__outer .search__result__content span {\n    background-color: #e5f6ff;\n    border-bottom: 1px solid black;\n}\n\n.search__result__subheading span {\n    border-bottom: 1px solid black;\n}\n\n.outer_div_page_results:hover {\n    background-color: rgb(245, 245, 245);\n}\n\n.br-for-hits {\n    display: block;\n    content: \"\";\n    margin-top: 10px;\n}\n\n.rtd_ui_search_subtitle {\n    all: unset;\n    color: inherit;\n    font-size: 85%;\n}\n\n.rtd__search__credits {\n    margin: auto;\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: calc(-80% - 20px);\n    width: 80%;\n    max-width: 1500px;\n    height: 30px;\n    overflow: hidden;\n    background: #eee;\n    z-index: 100000;\n    border: 1px solid #eee;\n    padding: 5px 10px;\n    text-align: center;\n    color: black;\n}\n\n.rtd__search__credits a {\n    color: black;\n    text-decoration: underline;\n}\n\n.search__domain_role_name {\n    font-size: 80%;\n    letter-spacing: 1px;\n}\n\n@media (max-width: 670px) {\n    .rtd__search__credits {\n        height: 50px;\n        bottom: calc(-80% - 40px);\n        overflow: hidden;\n    }\n}\n\n@media (min-height: 1250px) {\n    .rtd__search__credits {\n        bottom: calc(-1000px - 30px);\n    }\n}\n\n@media (max-width: 630px) {\n    .search__result__subheading {\n        float: none;\n        width: 90%;\n    }\n\n    .search__result__content {\n        float: none;\n        width: 90%;\n    }\n}\n\n@keyframes fade-in {\n    from {\n        opacity: 0;\n    }\n    to {\n        opacity: 1;\n    }\n}\n", ""]);
+// Exports
+var ___CSS_LOADER_STYLE_SHEET___ = new CSSStyleSheet();
+___CSS_LOADER_STYLE_SHEET___.replaceSync(___CSS_LOADER_EXPORT___.toString());
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = ((/* unused pure expression or super */ null && (___CSS_LOADER_STYLE_SHEET___)));
+
+
+/***/ }),
+
+/***/ 645:
+/***/ ((module) => {
+
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = [];
+
+  // return the list of modules as css string
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+      content += cssWithMappingToString(item);
+      if (needLayer) {
+        content += "}";
+      }
+      if (item[2]) {
+        content += "}";
+      }
+      if (item[4]) {
+        content += "}";
+      }
+      return content;
+    }).join("");
+  };
+
+  // import a list of modules into the list
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+    var alreadyImportedModules = {};
+    if (dedupe) {
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+      list.push(item);
+    }
+  };
+  return list;
+};
+
+/***/ }),
+
+/***/ 667:
+/***/ ((module) => {
+
+
+
+module.exports = function (url, options) {
+  if (!options) {
+    options = {};
+  }
+  if (!url) {
+    return url;
+  }
+  url = String(url.__esModule ? url.default : url);
+
+  // If url is already wrapped in quotes, remove them
+  if (/^['"].*['"]$/.test(url)) {
+    url = url.slice(1, -1);
+  }
+  if (options.hash) {
+    url += options.hash;
+  }
+
+  // Should url be wrapped?
+  // See https://drafts.csswg.org/css-values-3/#urls
+  if (/["'() \t\n]|(%20)/.test(url) || options.needQuotes) {
+    return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, "\\n"), "\"");
+  }
+  return url;
+};
+
+/***/ }),
+
+/***/ 81:
+/***/ ((module) => {
+
+
+
+module.exports = function (i) {
+  return i[1];
+};
+
+/***/ }),
+
+/***/ 896:
+/***/ ((module) => {
+
+module.exports = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgNDUxIDQ1MSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDUxIDQ1MTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTQ0Ny4wNSw0MjhsLTEwOS42LTEwOS42YzI5LjQtMzMuOCw0Ny4yLTc3LjksNDcuMi0xMjYuMUMzODQuNjUsODYuMiwyOTguMzUsMCwxOTIuMzUsMEM4Ni4yNSwwLDAuMDUsODYuMywwLjA1LDE5Mi4zDQoJCXM4Ni4zLDE5Mi4zLDE5Mi4zLDE5Mi4zYzQ4LjIsMCw5Mi4zLTE3LjgsMTI2LjEtNDcuMkw0MjguMDUsNDQ3YzIuNiwyLjYsNi4xLDQsOS41LDRzNi45LTEuMyw5LjUtNA0KCQlDNDUyLjI1LDQ0MS44LDQ1Mi4yNSw0MzMuMiw0NDcuMDUsNDI4eiBNMjYuOTUsMTkyLjNjMC05MS4yLDc0LjItMTY1LjMsMTY1LjMtMTY1LjNjOTEuMiwwLDE2NS4zLDc0LjIsMTY1LjMsMTY1LjMNCgkJcy03NC4xLDE2NS40LTE2NS4zLDE2NS40QzEwMS4xNSwzNTcuNywyNi45NSwyODMuNSwyNi45NSwxOTIuM3oiLz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjwvc3ZnPg0K";
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -21,9 +228,40 @@
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = document.baseURI || self.location.href;
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			773: 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		// no on chunks loaded
+/******/ 		
+/******/ 		// no jsonp function
+/******/ 	})();
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
 /* unused harmony export initializeSearchAsYouType */
+/* harmony import */ var _css_rtd_sphinx_search_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(968);
+
+
 const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
 const MAX_SUBSTRING_LIMIT = 100;
@@ -34,6 +272,9 @@ const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 
 function initializeSearchAsYouType(config) {
+    // Inject our styles for the flyout
+    document.adoptedStyleSheets = [styles];
+
     const project = config.project.slug;
     const version = config.version.slug;
     const api_host = '/_';
@@ -759,15 +1000,11 @@ const showSearchModal = custom_query => {
         }
     };
 
-    if (window.jQuery) {
-      $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
-    } else {
-      let element = document.querySelector(".search__outer__wrapper");
-      if (element && element.style) {
-        element.style.display = "block";
-      }
-      show_modal();
+    let element = document.querySelector(".search__outer__wrapper");
+    if (element && element.style) {
+    element.style.display = "block";
     }
+    show_modal();
 };
 
 /**
@@ -789,16 +1026,13 @@ const removeSearchModal = () => {
     // update url (remove 'rtd_search' param)
     updateUrl();
 
-    if (window.jQuery) {
-      $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
-    } else {
-      let element = document.querySelector(".search__outer__wrapper");
-      if (element && element.style) {
-        element.style.display = "none";
-      }
+    let element = document.querySelector(".search__outer__wrapper");
+    if (element && element.style) {
+    element.style.display = "none";
     }
 };
 
+})();
 
 /******/ })()
 ;
