@@ -8,7 +8,7 @@ const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 
-export default function initializeSearchAsYouType(config) {
+export function initializeSearchAsYouType(config) {
     // Inject our styles for the flyout
     document.adoptedStyleSheets = [styles];
 
