@@ -293,29 +293,25 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
 }
 
 .search__filters li {
-    display: inline;
-    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.search__filters label {
+    color: black;
+    font-size: 15px;
+    margin: auto;
 }
 
 .search__filters .search__filters__title {
     color: black;
     font-size: 15px;
 }
-
-.search__filters button {
-    background: #f3f4f5;
-    border-color: #d0d7de;
-    color: black;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 999px;
-    padding: 2px 7px;
-    font-size: 15px;
-}
-
 
 @media (max-width: 670px) {
     .rtd__search__credits {

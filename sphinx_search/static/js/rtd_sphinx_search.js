@@ -7,36 +7,6 @@ const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 /**
- * Parse the search query and return an array with the query and the options.
- *
- * This is a simplified version of our parser
- * https://github.com/readthedocs/readthedocs.org/blob/main/readthedocs/search/api/v3/queryparser.py.
- * All `foo:bar` terms are considered options, and the rest are considered part of the query.
- *
- *  @param {String} search_query
- *  @return {Array} [query, options]
- */
-function parseQuery(search_query) {
-  let query = [];
-  let options = {};
-  search_query.split(/\s+/).forEach(function (term) {
-    let result = term.split(":", 2);
-    if (result.length < 2) {
-      query.push(term);
-    } else {
-      if (result[0] in options) {
-        options[result[0]].push(result[1]);
-      } else {
-        options[result[0]] = [result[1]];
-      }
-    }
-  });
-  query = query.join(" ");
-  return [query, options];
-}
-
-
-/**
  * Debounce the function.
  * Usage::
  *
@@ -534,7 +504,7 @@ const getErrorDiv = err_msg => {
  * @param {String} projectName: name (slug) of the project
  * @return {Function} debounced function with debounce time of 500ms
  */
-const fetchAndGenerateResults = (api_endpoint, parameters) => {
+const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
     let search_outer = document.querySelector(".search__outer");
 
     // Removes all results (if there is any),
@@ -563,7 +533,7 @@ const fetchAndGenerateResults = (api_endpoint, parameters) => {
             if (data.results.length > 0) {
                 let search_result_box = generateSuggestionsList(
                     data,
-                    parameters.project
+                    projectName
                 );
                 removeResults();
                 search_outer.appendChild(search_result_box);
@@ -639,29 +609,33 @@ const generateAndReturnInitialHtml = (filters) => {
     // so we can get the proper filter when clicked.
     for (let i = 0, len = filters.length; i < len; i++) {
       const [name, filter] = filters[i];
-      let li = createDomNode("li");
-      let button = createDomNode("button");
-      button.innerText = name;
-      button.value = i;
-      button.title = filter;
-      button.addEventListener("click", event => {
-        event.preventDefault();
-        // To apply a filter, we extract the current query and
-        // replace the current options with the selected filter.
-        let filter = filters[parseInt(event.target.value)][1];
+      let li = createDomNode("li", {"class": "search__filter", "title": filter});
+      let id = "rtd-search-filter-" + i;
+      let checkbox = createDomNode("input", {"type": "checkbox", "id": id});
+      let label = createDomNode("label", {"for": id});
+      label.innerText = name;
+      checkbox.value = i;
+      checkbox.addEventListener("click", event => {
+        // Uncheck all other filters when one is checked.
+        // We only support one filter at a time.
+        const checkboxes = document.querySelectorAll('.search__filters input');
+        for (const checkbox of checkboxes) {
+          if (checkbox.checked && checkbox.value != event.target.value) {
+            checkbox.checked = false;
+          }
+        }
+
+        // Trigger a search with the current selected filter.
         let search_query = getSearchTerm();
-        let [query, _] = parseQuery(search_query);
-        search_query = filter + " " + query;
-        setSearchQuery(search_query);
-        // Perform the search with the new query.
+        const filter = getCurrentFilter(config);
+        search_query = filter + " " + search_query;
         const search_params = {
           q: search_query,
-          project: config.project,
-          version: config.version,
         };
-        fetchAndGenerateResults(config.api_endpoint, search_params)();
+        fetchAndGenerateResults(config.api_endpoint, search_params, config.project)();
       });
-      li.appendChild(button);
+      li.appendChild(checkbox);
+      li.appendChild(label);
       filters_list.appendChild(li);
     }
     return div;
@@ -771,6 +745,13 @@ function getConfig() {
     }
 }
 
+function getCurrentFilter(config) {
+  const checkbox = document.querySelector('.search__filters input:checked');
+  if (checkbox == null) {
+    return config.default_filter;
+  }
+  return config.filters[parseInt(checkbox.value)][1];
+}
 
 window.addEventListener("DOMContentLoaded", () => {
     // only add event listeners if READTHEDOCS_DATA global
@@ -804,18 +785,12 @@ window.addEventListener("DOMContentLoaded", () => {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                // If the query doesn't have options,
-                // use the default filter.
-                let [query, options] = parseQuery(search_query);
-                if (Object.keys(options).length == 0) {
-                    search_query = config.default_filter + " " + query;
-                }
+                const filter = getCurrentFilter(config);
+                search_query = filter + " " + search_query;
                 const search_params = {
                     q: search_query,
-                    project: config.project,
-                    version: config.version,
                 };
-                current_request = fetchAndGenerateResults(config.api_endpoint, search_params);
+                current_request = fetchAndGenerateResults(config.api_endpoint, search_params, config.project);
                 current_request();
             } else {
                 // if the last request returns the results,

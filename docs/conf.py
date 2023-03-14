@@ -101,6 +101,8 @@ html_static_path = ['_static']
 
 if not ON_RTD:
     html_js_files = ['rtd_dummy_data.js']
+    os.environ['READTHEDOCS_PROJECT'] = 'readthedocs-sphinx-search'
+    os.environ['READTHEDOCS_VERSION'] = 'latest'
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

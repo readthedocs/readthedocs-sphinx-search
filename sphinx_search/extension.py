@@ -1,3 +1,4 @@
+import os
 from sphinx_search import __version__
 from sphinx.errors import ExtensionError
 from pathlib import Path
@@ -32,8 +33,8 @@ def get_context(config):
     This mainly returns the settings from the extension
     that are needed in our JS code.
     """
-    filters = config.rtd_sphinx_search_filters.copy()
-    default_filter = filters.pop("default", "")
+    default_filter = config.rtd_sphinx_search_default_filter
+    filters = config.rtd_sphinx_search_filters
     # When converting to JSON, the order of the keys is not guaranteed.
     # So we pass a list of tuples to preserve the order.
     filters = [(name, filter) for name, filter in filters.items()]
@@ -78,17 +79,12 @@ def inject_static_files(app):
 
 
 def setup(app):
+    project = os.environ.get('READTHEDOCS_PROJECT', '')
+    version = os.environ.get('READTHEDOCS_VERSION', '')
 
     app.add_config_value('rtd_sphinx_search_file_type', 'minified', 'html')
-    app.add_config_value(
-        'rtd_sphinx_search_filters',
-        {
-            "default": "project:@this",
-            "Search this project": "project:@this",
-            "Search subprojects": "subprojects:@this",
-        },
-        'html',
-    )
+    app.add_config_value('rtd_sphinx_search_default_filter', f'project:{project}/{version}', 'html')
+    app.add_config_value('rtd_sphinx_search_filters', {}, 'html')
 
     app.connect('builder-inited', inject_static_files)
     app.connect('build-finished', copy_asset_files)
