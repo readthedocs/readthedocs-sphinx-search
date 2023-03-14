@@ -598,7 +598,7 @@ const generateAndReturnInitialHtml = (filters) => {
     for (let i = 0, len = filters.length; i < len; i++) {
       const [name, filter] = filters[i];
       let li = createDomNode("li", {"class": "search__filter", "title": filter});
-      let id = "rtd-search-filter-" + i;
+      let id = `rtd-search-filter-${i}`;
       let checkbox = createDomNode("input", {"type": "checkbox", "id": id});
       let label = createDomNode("label", {"for": id});
       label.innerText = name;
@@ -720,7 +720,7 @@ function getConfig() {
     const project = READTHEDOCS_DATA.project;
     const version = READTHEDOCS_DATA.version;
     const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
-    // This variable is defined in another file.
+    // This variable is defined in the `rtd_search_config.js` file
     // that is loaded before this file,
     // containing settings from the sphinx extension.
     const search_config = RTD_SEARCH_CONFIG || {};
@@ -738,7 +738,7 @@ function getConfig() {
 /**
   * Get the current selected filter.
   *
-  * If no filter is selected, the default filter is returned.
+  * If no filter checkbox is selected, the default filter is returned.
   *
   * @param {Object} config
   */
