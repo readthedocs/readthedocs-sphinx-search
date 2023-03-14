@@ -1,3 +1,5 @@
+import styles from "../css/rtd_sphinx_search.css";
+
 const MAX_SUGGESTIONS = 50;
 const MAX_SECTION_RESULTS = 3;
 const MAX_SUBSTRING_LIMIT = 100;
@@ -8,6 +10,9 @@ const RTD_SEARCH_PARAMETER  = "rtd_search";
 
 
 export function initializeSearchAsYouType(config) {
+    // Inject our styles for the flyout
+    document.adoptedStyleSheets = [styles];
+
     const project = config.project.slug;
     const version = config.version.slug;
     const api_host = '/_';
@@ -733,15 +738,11 @@ const showSearchModal = custom_query => {
         }
     };
 
-    if (window.jQuery) {
-      $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
-    } else {
-      let element = document.querySelector(".search__outer__wrapper");
-      if (element && element.style) {
-        element.style.display = "block";
-      }
-      show_modal();
+    let element = document.querySelector(".search__outer__wrapper");
+    if (element && element.style) {
+    element.style.display = "block";
     }
+    show_modal();
 };
 
 /**
@@ -763,13 +764,8 @@ const removeSearchModal = () => {
     // update url (remove 'rtd_search' param)
     updateUrl();
 
-    if (window.jQuery) {
-      $(".search__outer__wrapper").fadeOut(ANIMATION_TIME);
-    } else {
-      let element = document.querySelector(".search__outer__wrapper");
-      if (element && element.style) {
-        element.style.display = "none";
-      }
+    let element = document.querySelector(".search__outer__wrapper");
+    if (element && element.style) {
+    element.style.display = "none";
     }
 };
-
