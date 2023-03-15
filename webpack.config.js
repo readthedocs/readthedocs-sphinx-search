@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
             chunkFilename: "[name].js?[chunkhash]",
             path: path.join(__dirname, "dist"),
             library: {
+                name: "readthedocs-search",
                 type: "umd",
             },
         },
