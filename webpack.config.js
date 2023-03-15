@@ -9,18 +9,16 @@ module.exports = (env, argv) => {
         entry: {
             "readthedocs-search": ["./sphinx_search/static/js/rtd_sphinx_search.js"],
         },
-        experiments: {
-            outputModule: true,
-        },
         output: {
             filename: "[name].js?[fullhash]",
             chunkFilename: "[name].js?[chunkhash]",
             path: path.join(__dirname, "dist"),
-            module: true,
-            libraryTarget: "module",
+            library: {
+                "type": "umd",
+            },
         },
         optimization: {
-            minimize: false,  // is_production,
+            minimize: is_production,
             minimizer: [new TerserPlugin()],
         },
         module: {
