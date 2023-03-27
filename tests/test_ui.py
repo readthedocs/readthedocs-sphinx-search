@@ -104,7 +104,7 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                     </svg>
                 </div>
                 <input class="search__outer__input" placeholder="Search...">
-                <span class="bar"></span>
+                <div class="bar"></div>
                 <div class="search__filters">
                     <ul>
                     </ul>

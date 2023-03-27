@@ -27,10 +27,8 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
 
     for file in ASSETS_FILES[file_type]:
         file_path = Path(app.outdir) / '_static' / file
-        file_path = str(file_path)
-        if file_path.endswith('_t'):
-            file_path = file_path[:-2]
-        file_path = Path(file_path)
+        if file_path.name.endswith('_t'):
+            file_path = Path(str(file_path)[:-2])
         assert (
             file_path.exists()
         ), f'{file_path} should be present in the _build folder'
@@ -59,10 +57,8 @@ def test_un_minified_static_files_injected_in_html(selenium, app, status, warnin
 
     for file in ASSETS_FILES[file_type]:
         file_path = Path(app.outdir) / '_static' / file
-        file_path = str(file_path)
-        if file_path.endswith('_t'):
-            file_path = file_path[:-2]
-        file_path = Path(file_path)
+        if file_path.name.endswith('_t'):
+            file_path = Path(str(file_path)[:-2])
         assert file_path.exists(), f'{file_path} should be present in the _build folder'
 
         assert (
