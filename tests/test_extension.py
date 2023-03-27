@@ -1,6 +1,6 @@
 """Test working of extension."""
 
-import os
+from pathlib import Path
 
 import pytest
 
@@ -26,15 +26,16 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
     assert file_type == 'minified'
 
     for file in ASSETS_FILES[file_type]:
-        file_path = os.path.join(app.outdir, '_static', file)
+        file_path = Path(app.outdir) / '_static' / file
+        if file_path.name.endswith('_t'):
+            file_path = Path(str(file_path)[:-2])
         assert (
-            os.path.exists(file_path)
+            file_path.exists()
         ), f'{file_path} should be present in the _build folder'
 
-        file_name = file.split('/')[-1]
         assert (
-            page_source.count(file_name) == 1
-        ), f'{file} should be present in the page source'
+            page_source.count(file_path.name) == 1
+        ), f'{file_path} should be present in the page source'
 
 
 @pytest.mark.sphinx(
@@ -55,12 +56,11 @@ def test_un_minified_static_files_injected_in_html(selenium, app, status, warnin
     assert file_type == 'un-minified'
 
     for file in ASSETS_FILES[file_type]:
-        file_path = os.path.join(app.outdir, '_static', file)
-        assert (
-            os.path.exists(file_path)
-        ), f'{file_path} should be present in the _build folder'
+        file_path = Path(app.outdir) / '_static' / file
+        if file_path.name.endswith('_t'):
+            file_path = Path(str(file_path)[:-2])
+        assert file_path.exists(), f'{file_path} should be present in the _build folder'
 
-        file_name = file.split('/')[-1]
         assert (
-            page_source.count(file_name) == 1
-        ), f'{file} should be present in the page source'
+            page_source.count(file_path.name) == 1
+        ), f'{file_path} should be present in the page source'

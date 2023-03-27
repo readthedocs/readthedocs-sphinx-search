@@ -271,12 +271,16 @@ const generateSingleResult = (resultData, projectName, id) => {
     let h2_element = createDomNode("h2", {class: "search__result__title"});
     h2_element.innerHTML = page_title;
 
-    // If the result is not from the same project,
-    // then it's from a subproject.
-    if (projectName !== resultData.project) {
+    // Results can belong to different projects.
+    // If the result isn't from the current project, add a note about it.
+    const project_slug = resultData.project.slug
+    if (projectName !== project_slug) {
         let subtitle = createDomNode("small", {class: "rtd_ui_search_subtitle"});
-        subtitle.innerText = `(from project ${resultData.project})`;
+        subtitle.innerText = ` (from project ${project_slug})`;
         h2_element.appendChild(subtitle);
+        // If the result isn't from the current project,
+        // then we create an absolute link to the page.
+        page_link = `${resultData.domain}${page_link}`;
     }
     h2_element.appendChild(createDomNode("br"))
 
@@ -550,28 +554,78 @@ const fetchAndGenerateResults = (api_endpoint, parameters, projectName) => {
  * This html structure will serve as the boilerplate
  * to show our search results.
  *
+ * @param {Array} filters: filters to be applied to the search.
+ *  {["Filter name", "Filter value"]}
  * @return {String} initial html structure
  */
-const generateAndReturnInitialHtml = () => {
-    let innerHTML =
-        '<div class="search__outer"> \
-            <div class="search__cross" title="Close"> \
-                <!--?xml version="1.0" encoding="UTF-8"?--> \
-                <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"> \
-                    <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon> \
-                </svg> \
-            </div> \
-            <input class="search__outer__input" placeholder="Search ..."> \
-            <span class="bar"></span> \
-        </div> \
-        <div class="rtd__search__credits"> \
-            Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a> \
-        </div>';
+const generateAndReturnInitialHtml = (filters) => {
+    let innerHTML = `
+        <div class="search__outer">
+          <div class="search__cross" title="Close">
+            <!--?xml version="1.0" encoding="UTF-8"?-->
+            <svg class="search__cross__img" width="15px" height="15px" enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
+            </svg>
+          </div>
+          <input class="search__outer__input" placeholder="Search...">
+          <div class="bar"></div>
+          <div class="search__filters">
+            <ul>
+            </ul>
+          </div>
+        </div>
+        <div class="rtd__search__credits">
+          Search by <a href="https://readthedocs.org/">Read the Docs</a> & <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
+        </div>
+    `;
 
     let div = createDomNode("div", {
         class: "search__outer__wrapper search__backdrop",
     });
     div.innerHTML = innerHTML;
+
+    let filters_list = div.querySelector(".search__filters ul");
+    const config = getConfig();
+    // Add filters below the search box if present.
+    if (filters.length > 0) {
+      let li = createDomNode("li", {"class": "search__filters__title"});
+      li.innerText = "Filters:";
+      filters_list.appendChild(li);
+    }
+    // Each checkbox contains the index of the filter,
+    // so we can get the proper filter when selected.
+    for (let i = 0, len = filters.length; i < len; i++) {
+      const [name, filter] = filters[i];
+      let li = createDomNode("li", {"class": "search__filter", "title": filter});
+      let id = `rtd-search-filter-${i}`;
+      let checkbox = createDomNode("input", {"type": "checkbox", "id": id});
+      let label = createDomNode("label", {"for": id});
+      label.innerText = name;
+      checkbox.value = i;
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      filters_list.appendChild(li);
+
+      checkbox.addEventListener("click", event => {
+        // Uncheck all other filters when one is checked.
+        // We only support one filter at a time.
+        const checkboxes = document.querySelectorAll('.search__filters input');
+        for (const checkbox of checkboxes) {
+          if (checkbox.checked && checkbox.value != event.target.value) {
+            checkbox.checked = false;
+          }
+        }
+
+        // Trigger a search with the current selected filter.
+        let search_query = getSearchTerm();
+        const filter = getCurrentFilter(config);
+        search_query = filter + " " + search_query;
+        const search_params = {
+          q: search_query,
+        };
+        fetchAndGenerateResults(config.api_endpoint, search_params, config.project)();
+      });
+    }
     return div;
 };
 
@@ -609,7 +663,7 @@ const showSearchModal = custom_query => {
             search_outer_input.focus();
         }
     };
-    
+
     if (window.jQuery) {
       $(".search__outer__wrapper").fadeIn(ANIMATION_TIME, show_modal);
     } else {
@@ -650,15 +704,58 @@ const removeSearchModal = () => {
     }
 };
 
+
+/**
+  * Get the config used by the search.
+  *
+  * This configiration is extracted from the global variable
+  * READTHEDOCS_DATA, which is defined by Read the Docs,
+  * and the global variable RTD_SEARCH_CONFIG, which is defined
+  * by the sphinx extension.
+  *
+  * @return {Object} config
+  */
+function getConfig() {
+    const project = READTHEDOCS_DATA.project;
+    const version = READTHEDOCS_DATA.version;
+    const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
+    // This variable is defined in the `rtd_search_config.js` file
+    // that is loaded before this file,
+    // containing settings from the sphinx extension.
+    const search_config = RTD_SEARCH_CONFIG || {};
+    const api_endpoint = api_host + "/api/v3/search/";
+    return {
+      project: project,
+      version: version,
+      api_endpoint: api_endpoint,
+      filters: search_config.filters,
+      default_filter: search_config.default_filter,
+    }
+}
+
+
+/**
+  * Get the current selected filter.
+  *
+  * If no filter checkbox is selected, the default filter is returned.
+  *
+  * @param {Object} config
+  */
+function getCurrentFilter(config) {
+  const checkbox = document.querySelector('.search__filters input:checked');
+  if (checkbox == null) {
+    return config.default_filter;
+  }
+  return config.filters[parseInt(checkbox.value)][1];
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     // only add event listeners if READTHEDOCS_DATA global
     // variable is found.
     if (window.hasOwnProperty("READTHEDOCS_DATA")) {
-        const project = READTHEDOCS_DATA.project;
-        const version = READTHEDOCS_DATA.version;
-        const api_host = READTHEDOCS_DATA.proxied_api_host || '/_';
+        const config = getConfig();
 
-        let initialHtml = generateAndReturnInitialHtml();
+        let initialHtml = generateAndReturnInitialHtml(config.filters);
         document.body.appendChild(initialHtml);
 
         let search_outer_wrapper = document.querySelector(
@@ -684,13 +781,12 @@ window.addEventListener("DOMContentLoaded", () => {
                     // cancel previous ajax request.
                     current_request.cancel();
                 }
-                const search_endpoint = api_host + "/api/v2/search/";
+                const filter = getCurrentFilter(config);
+                search_query = filter + " " + search_query;
                 const search_params = {
                     q: search_query,
-                    project: project,
-                    version: version,
                 };
-                current_request = fetchAndGenerateResults(search_endpoint, search_params, project);
+                current_request = fetchAndGenerateResults(config.api_endpoint, search_params, config.project);
                 current_request();
             } else {
                 // if the last request returns the results,

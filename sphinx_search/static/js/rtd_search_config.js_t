@@ -1,0 +1,2 @@
+{# Set the extension options as a JSON object, so it can be used from our JS code. #}
+var RTD_SEARCH_CONFIG = {{ rtd_search_config | tojson }};

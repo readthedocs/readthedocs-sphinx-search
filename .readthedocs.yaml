@@ -1,11 +1,9 @@
 version: 2
 
 build:
-  os: "ubuntu-20.04"
+  os: "ubuntu-22.04"
   tools:
-    # sphinx-js isn't compatible with python 3.10.
-    # https://github.com/mozilla/sphinx-js/issues/186
-    python: "3.9"
+    python: "3"
     nodejs: "16"
 
 python:
@@ -16,5 +14,3 @@ python:
 
 sphinx:
   configuration: docs/conf.py
-
-formats: []

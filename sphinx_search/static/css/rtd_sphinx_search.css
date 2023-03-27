@@ -149,9 +149,12 @@
 
 /* Search result */
 
+.search__result__box {
+    padding: 0px 10px;
+}
+
 .search__result__single {
     margin-top: 10px;
-    padding: 0px 10px;
     border-bottom: 1px solid #e6e6e6;
 }
 
@@ -280,6 +283,34 @@
 .search__domain_role_name {
     font-size: 80%;
     letter-spacing: 1px;
+}
+
+.search__filters {
+    padding: 0px 10px;
+}
+
+.search__filters ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.search__filters li {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.search__filters label {
+    color: black;
+    font-size: 15px;
+    margin: auto;
+}
+
+.search__filters .search__filters__title {
+    color: black;
+    font-size: 15px;
 }
 
 @media (max-width: 670px) {
