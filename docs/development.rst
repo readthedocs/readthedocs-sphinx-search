@@ -65,6 +65,8 @@ After the pull request is merged, run:
 
 .. prompt:: bash
 
+   TWINE_USERNAME=__token__
+   TWINE_PASSWORD=<your-pypi-token>
    make release
    make tag
 
