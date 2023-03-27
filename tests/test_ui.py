@@ -103,8 +103,12 @@ def test_appending_of_initial_html(selenium, app, status, warning):
                         <polygon points="612 36.004 576.52 0.603 306 270.61 35.478 0.603 0 36.004 270.52 306.01 0 576 35.478 611.4 306 341.41 576.52 611.4 612 576 341.46 306.01"></polygon>
                     </svg>
                 </div>
-                <input class="search__outer__input" placeholder="Search ...">
+                <input class="search__outer__input" placeholder="Search...">
                 <span class="bar"></span>
+                <div class="search__filters">
+                    <ul>
+                    </ul>
+                </div>
             </div>
             <div class="rtd__search__credits">
                 Search by <a href="https://readthedocs.org/">Read the Docs</a> &amp; <a href="https://readthedocs-sphinx-search.readthedocs.io/en/latest/">readthedocs-sphinx-search</a>
