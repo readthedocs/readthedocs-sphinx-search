@@ -35,7 +35,7 @@ def test_minified_static_files_injected_in_html(selenium, app, status, warning):
 
         assert (
             page_source.count(file_path.name) == 1
-        ), f'{file} should be present in the page source'
+        ), f'{file_path} should be present in the page source'
 
 
 @pytest.mark.sphinx(
@@ -62,5 +62,5 @@ def test_un_minified_static_files_injected_in_html(selenium, app, status, warnin
         assert file_path.exists(), f'{file_path} should be present in the _build folder'
 
         assert (
-            page_source.count(file.name) == 1
-        ), f'{file} should be present in the page source'
+            page_source.count(file_path.name) == 1
+        ), f'{file_path} should be present in the page source'
