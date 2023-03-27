@@ -3,7 +3,7 @@ Version 0.3.0
 
 :Date: Mar 27, 2023
 
- * @stsewd: Use the search API V3 with support for custom filters (#132)
+ * @stsewd: Use the search API V3 and add support for custom filters (#132)
 
 Version 0.2.0
 -------------
