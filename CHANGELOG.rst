@@ -1,3 +1,10 @@
+Version 0.3.1
+-------------
+
+:Date: Mar 27, 2023
+
+ * @stsewd: Add missing static file (#135)
+
 Version 0.3.0
 -------------
 

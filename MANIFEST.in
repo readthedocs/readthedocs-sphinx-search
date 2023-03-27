@@ -2,5 +2,6 @@ prune common
 include LICENSE
 include sphinx_search/static/js/rtd_sphinx_search.js
 include sphinx_search/static/js/rtd_sphinx_search.min.js
+include sphinx_search/static/js/rtd_search_config.js_t
 include sphinx_search/static/css/rtd_sphinx_search.css
 include sphinx_search/static/css/rtd_sphinx_search.min.css
