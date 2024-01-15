@@ -2,7 +2,7 @@ release: clean
 	git checkout main
 	git pull origin main
 	python -m build --sdist --wheel
-	python -m twine upload --sign --identity security@readthedocs.org dist/*
+	python -m twine upload dist/*
 
 tag:
 	git checkout main
