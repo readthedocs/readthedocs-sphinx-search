@@ -1,3 +1,10 @@
+Version 0.3.2
+-------------
+
+:Date: Jan 15, 2024
+
+* @stsewd: Security fix, more information in `GHSA-xgfm-fjx6-62mj <https://github.com/readthedocs/readthedocs-sphinx-search/security/advisories/GHSA-xgfm-fjx6-62mj>`__.
+
 Version 0.3.1
 -------------
 
