@@ -6,6 +6,38 @@ const FETCH_RESULTS_DELAY = 250;
 const CLEAR_RESULTS_DELAY = 300;
 const RTD_SEARCH_PARAMETER  = "rtd_search";
 
+
+/**
+ * Mark a string as safe to be used as HTML in setNodeContent.
+ */
+function SafeHtmlString(value) {
+  this.value = value;
+  this.isSafe = true;
+}
+
+/**
+ * Create a SafeHtmlString instance from a string.
+ *
+ * @param {String} value
+ */
+function markAsSafe(value) {
+  return new SafeHtmlString(value);
+}
+
+/**
+ * Set the content of an element as text or HTML.
+ *
+ * @param {Element} element
+ * @param {String|SafeHtmlString} content
+ */
+function setElementContent(element, content) {
+  if (content.isSafe) {
+    element.innerHTML = content.value;
+  } else {
+    element.innerText = content;
+  }
+}
+
 /**
  * Debounce the function.
  * Usage::
@@ -68,14 +100,14 @@ const debounce = (func, wait) => {
   */
 const buildSection = function (id, title, link, contents) {
     let span_element = createDomNode("span", {class: "search__result__subheading"});
-    span_element.innerHTML = title;
+    setElementContent(span_element, title)
 
     let div_element = createDomNode("div", {class: "outer_div_page_results", id: id});
     div_element.appendChild(span_element);
 
     for (var i = 0; i < contents.length; i += 1) {
         let p_element = createDomNode("p", {class: "search__result__content"});
-        p_element.innerHTML = contents[i];
+        setElementContent(p_element, contents[i]);
         div_element.appendChild(p_element);
     }
 
@@ -168,7 +200,7 @@ const get_section_html = (sectionData, page_link, id) => {
     let section_subheading = sectionData.title;
     let highlights = sectionData.highlights;
     if (highlights.title.length) {
-        section_subheading = highlights.title[0];
+        section_subheading = markAsSafe(highlights.title[0]);
     }
 
     let section_content = [
@@ -183,50 +215,13 @@ const get_section_html = (sectionData, page_link, id) => {
             j < highlight_content.length && j < MAX_SECTION_RESULTS;
             ++j
         ) {
-            section_content.push("... " + highlight_content[j] + " ...");
+            section_content.push(markAsSafe("... " + highlight_content[j] + " ..."));
         }
     }
 
     let section_link = `${page_link}#${sectionData.id}`;
     let section_id = "hit__" + id;
     return buildSection(section_id, section_subheading, section_link, section_content);
-};
-
-/**
- * Generate and return html structure
- * for a sphinx domain result.
- *
- * @param {Object} domainData object containing the result data
- * @param {String} page_link link of the main page. It is used to construct the section link
- * @param {Number} id to be used in for this section
- */
-const get_domain_html = (domainData, page_link, id) => {
-    let domain_link = `${page_link}#${domainData.id}`;
-    let domain_role_name = domainData.role;
-    let domain_name = domainData.name;
-    let domain_content =
-        domainData.content.substr(0, MAX_SUBSTRING_LIMIT) + " ...";
-
-    let highlights = domainData.highlights;
-    if (highlights.name.length) {
-        domain_name = highlights.name[0];
-    }
-    if (highlights.content.length) {
-        domain_content = highlights.content[0];
-    }
-
-    let domain_id = "hit__" + id;
-
-    let div_role_name = createDomNode("div", {class: "search__domain_role_name"});
-    div_role_name.innerText = `[${domain_role_name}]`;
-    domain_name += div_role_name.outerHTML;
-
-    return buildSection(
-        domain_id,
-        domain_name,
-        domain_link,
-        [domain_content]
-    );
 };
 
 
@@ -265,11 +260,11 @@ const generateSingleResult = (resultData, projectName, id) => {
     let highlights = resultData.highlights;
 
     if (highlights.title.length) {
-        page_title = highlights.title[0];
+        page_title = markAsSafe(highlights.title[0]);
     }
 
     let h2_element = createDomNode("h2", {class: "search__result__title"});
-    h2_element.innerHTML = page_title;
+    setElementContent(h2_element, page_title);
 
     // Results can belong to different projects.
     // If the result isn't from the current project, add a note about it.
@@ -297,12 +292,6 @@ const generateSingleResult = (resultData, projectName, id) => {
         id += 1;
         if (block.type === "section") {
             section = get_section_html(
-                block,
-                page_link,
-                id,
-            );
-        } else if (block.type === "domain") {
-            section = get_domain_html(
                 block,
                 page_link,
                 id,
@@ -479,7 +468,7 @@ const getErrorDiv = err_msg => {
     let err_div = createDomNode("div", {
         class: "search__result__box search__error__box"
     });
-    err_div.innerHTML = err_msg;
+    err_div.innerText = err_msg;
     return err_div;
 };
 
