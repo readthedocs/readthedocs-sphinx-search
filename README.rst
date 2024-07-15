@@ -3,7 +3,7 @@ readthedocs-sphinx-search - Search as you type for Read the Docs
 
 .. warning::
 
-  **This extension deprecated and it shouldn't be used.**
+  **This extension is deprecated and it shouldn't be used.**
   Read more about this deprecation at https://github.com/readthedocs/readthedocs-sphinx-search/issues/144.
 
 |pypi| |docs| |license| |build-status|
